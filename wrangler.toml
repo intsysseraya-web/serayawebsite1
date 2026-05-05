@@ -1,7 +1,13 @@
-# Cloudflare Pages — deploy from this folder:
-#   npx wrangler pages deploy
-# Change `name` to match a NEW or EXISTING Pages project slug in your account.
-# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+# Workers Static Assets — use when deploy command is: npx wrangler deploy
+# (Cloudflare shows this if the project is a Worker or build uses wrangler deploy.)
+#
+# For Cloudflare Pages only (Connect to Git, no Worker): leave Build command empty,
+# set output to "/", and you may DELETE this file or switch to wrangler pages deploy.
+#
+# https://developers.cloudflare.com/workers/static-assets/
 
 name = "seraya-static-site"
-pages_build_output_dir = "."
+compatibility_date = "2026-05-05"
+
+[assets]
+directory = "."

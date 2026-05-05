@@ -69,7 +69,11 @@ OPTION B - CLOUDFLARE PAGES (Upload / Wrangler, no Git)
    First time: log in to Cloudflare when Wrangler prompts. Create the project
    name in the dashboard or let Wrangler create one.
 
-2. wrangler.toml in this folder sets pages_build_output_dir to "." for reference.
+2. wrangler.toml in this folder is set for Workers Static Assets (wrangler deploy).
+   If the dashboard build command is `npx wrangler deploy`, this file must include
+   compatibility_date and [assets] directory (see wrangler.toml). Do not mix with
+   a Pages-only wrangler that only had pages_build_output_dir — that triggers the
+   deploy error you saw.
 
 3. Custom domain + DNS: same as steps 5–7 in Option A.
 

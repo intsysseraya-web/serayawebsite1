@@ -1,0 +1,3 @@
+# Excluded from Workers asset upload (paths relative to [assets].directory)
+node_modules/
+.git/
