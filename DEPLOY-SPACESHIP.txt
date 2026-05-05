@@ -78,6 +78,64 @@ OPTION B - CLOUDFLARE PAGES (Upload / Wrangler, no Git)
 3. Custom domain + DNS: same as steps 5–7 in Option A.
 
 ================================================================================
+WORKER (STATIC ASSETS) ON YOUR MAIN DOMAIN — APEX + HTTPS
+================================================================================
+This applies when the site is deployed as a Cloudflare **Worker** with
+`npx wrangler deploy` and `[assets]` in wrangler.toml (this repo).
+
+PREREQUISITE
+--------------------------------------------------------------------------------
+The hostname must live in an **active Cloudflare zone** on the same account as
+the Worker. Custom Domains cannot attach to a domain whose DNS you only manage
+at Spaceship unless that domain also uses Cloudflare as DNS.
+
+1) Cloudflare Dashboard -> Add a site -> enter your root domain -> continue.
+2) At Spaceship: set **nameservers** for the domain to the two Cloudflare
+   nameservers (replaces Spaceship DNS). Wait until the zone shows Active.
+
+CLOUDFLARE DASHBOARD (easiest)
+--------------------------------------------------------------------------------
+1. Workers & Pages -> select your Worker (e.g. seraya-static-site).
+2. Settings -> **Domains & Routes** -> **Add** -> **Custom Domain**.
+3. Enter your **main domain** exactly: `yourdomain.com` (no `https://`, no path).
+4. Confirm. Cloudflare creates DNS + edge certificate for that hostname.
+
+WWW VS APEX
+--------------------------------------------------------------------------------
+A Custom Domain is an **exact hostname** match. `yourdomain.com` and
+`www.yourdomain.com` are two hostnames.
+
+- To serve the Worker on **both**: add **two** Custom Domains (apex and www).
+- To use **only apex** and redirect www: add Custom Domain for apex only, then
+  use a Cloudflare **Single Redirect** rule (www -> root). You need a proxied
+  placeholder DNS record on `www` for the redirect to apply; see:
+  https://developers.cloudflare.com/rules/url-forwarding/examples/redirect-www-to-root/
+
+WRANGLER (optional — keeps domains in git)
+--------------------------------------------------------------------------------
+After the zone exists on Cloudflare, you can add to wrangler.toml (replace with
+your real domain), then `npx wrangler deploy`:
+
+   [[routes]]
+   pattern = "yourdomain.com"
+   custom_domain = true
+
+   [[routes]]
+   pattern = "www.yourdomain.com"
+   custom_domain = true
+
+If you later change domains only in the dashboard, the next deploy may overwrite
+routes defined in wrangler.toml — pick one place as source of truth.
+
+CONFLICTS TO AVOID
+--------------------------------------------------------------------------------
+- You cannot add a Custom Domain on a hostname that already has a **CNAME** you
+  rely on for something else; remove or replace conflicting records per Cloudflare
+  prompts when adding the domain.
+- Do not point apex at a different host (A record to old server) while expecting
+  the Worker Custom Domain to take over — follow the dashboard’s DNS updates.
+
+================================================================================
 OPTION C - NETLIFY (optional)
 ================================================================================
 1. https://app.netlify.com/ -> Deploy manually or connect Git.

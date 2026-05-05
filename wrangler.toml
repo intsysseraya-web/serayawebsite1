@@ -11,3 +11,15 @@ compatibility_date = "2026-05-05"
 
 [assets]
 directory = "."
+
+# --- Main domain (optional): uncomment and set YOURDOMAIN, then `npx wrangler deploy`.
+# Requires an active Cloudflare zone for that domain on this account.
+# https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
+#
+# [[routes]]
+# pattern = "YOURDOMAIN.com"
+# custom_domain = true
+#
+# [[routes]]
+# pattern = "www.YOURDOMAIN.com"
+# custom_domain = true
