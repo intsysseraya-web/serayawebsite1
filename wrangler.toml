@@ -6,7 +6,7 @@
 #
 # https://developers.cloudflare.com/workers/static-assets/
 
-name = "seraya-static-site"
+name = "serayawebsite1"
 compatibility_date = "2026-05-05"
 
 [assets]
