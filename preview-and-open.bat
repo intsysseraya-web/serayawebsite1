@@ -5,7 +5,7 @@ echo.
 
 where npx >nul 2>&1
 if %ERRORLEVEL%==0 (
-  start "Seraya preview server" cmd /k "cd /d "%~dp0" && npx --yes http-server . -p 8765 -a 127.0.0.1 -c-1"
+  start "Seraya preview server" cmd /k "cd /d "%~dp0" && npx --yes http-server . -p 8880 -a 127.0.0.1 -c-1"
   goto :wait
 )
 
@@ -27,7 +27,7 @@ exit /b 1
 
 :wait
 timeout /t 3 /nobreak >nul
-start http://127.0.0.1:8765/
+start http://127.0.0.1:8880/
 echo.
 echo If the page fails, wait a few seconds and refresh. Check the server window for errors.
 pause
