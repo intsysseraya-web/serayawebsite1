@@ -1,0 +1,97 @@
+================================================================================
+SERAYA STATIC SITE -> SPACESHIP DOMAIN + CLOUDFLARE PAGES (RECOMMENDED)
+================================================================================
+
+WHAT YOU NEED
+--------------------------------------------------------------------------------
+1) This folder (all HTML, styles.css, script.js, assets) on Cloudflare Pages.
+2) Your domain registered at Spaceship; DNS either on Cloudflare (best) or at
+   Spaceship using the records Cloudflare Pages shows for a custom domain.
+
+Spaceship sells domains; Cloudflare Pages hosts the files and HTTPS.
+
+BEFORE UPLOAD / GIT PUSH
+--------------------------------------------------------------------------------
+- Save every .html, .css, .js as UTF-8 (NOT UTF-16 / "Unicode" in Notepad).
+- Keep index.html at the site root (same folder as styles.css).
+- This repo includes _headers for Cloudflare Pages (charset on HTML/CSS/JS).
+- netlify.toml is only needed if you use Netlify; Cloudflare ignores it.
+
+================================================================================
+OPTION A - CLOUDFLARE PAGES (Git connected) — RECOMMENDED
+================================================================================
+1. Push this repo to GitHub (or GitLab / Bitbucket supported by Cloudflare).
+
+2. Cloudflare Dashboard -> Workers & Pages -> Create application -> Pages ->
+   Connect to Git -> authorize and select the repo.
+
+3. Build settings (static site, no framework):
+   - Framework preset: None
+   - Build command: (leave empty)
+   - Build output directory: /   (root — the folder that contains index.html)
+   OR if the UI requires a name, use "." or "/" per Cloudflare's hint for root.
+
+4. Save and Deploy. You get https://<project-name>.pages.dev
+
+5. Custom domain:
+   - Workers & Pages -> your project -> Custom domains -> Set up a custom domain.
+   - Add yourdomain.com (and optionally www).
+
+6. DNS — pick ONE approach:
+
+   (6A) USE CLOUDFLARE NAMESERVERS (simplest SSL + one dashboard)
+   ---------------------------------------------------------
+   a. Cloudflare Dashboard -> Add a site -> enter yourdomain.com -> Free plan.
+   b. Cloudflare shows two nameservers (e.g. xxx.ns.cloudflare.com).
+   c. Spaceship: Domain -> your domain -> Nameservers -> Custom / Change ->
+      paste Cloudflare's two nameservers only (replaces Spaceship DNS).
+   d. Wait until DNS propagates (often under an hour).
+   e. In Pages -> Custom domains: add yourdomain.com — Cloudflare can auto-create
+      the needed DNS records on the same account.
+
+   (6B) KEEP DNS AT SPACESHIP
+   ---------------------------------------------------------
+   - After adding the custom domain in Pages, Cloudflare shows the exact records
+     (usually CNAME for www -> <project>.pages.dev).
+   - For apex (yourdomain.com without www): use whatever Spaceship supports
+     (ALIAS/ANAME to <project>.pages.dev), or redirect apex to https://www... in
+     Spaceship's URL forwarding, or move nameservers to Cloudflare (6A).
+
+7. Wait for SSL: Pages issues certificates once DNS is correct.
+
+================================================================================
+OPTION B - CLOUDFLARE PAGES (Upload / Wrangler, no Git)
+================================================================================
+1. Install Node.js if needed. From THIS folder (where index.html lives):
+
+      npx wrangler pages deploy . --project-name=YOUR_PROJECT_NAME
+
+   First time: log in to Cloudflare when Wrangler prompts. Create the project
+   name in the dashboard or let Wrangler create one.
+
+2. wrangler.toml in this folder sets pages_build_output_dir to "." for reference.
+
+3. Custom domain + DNS: same as steps 5–7 in Option A.
+
+================================================================================
+OPTION C - NETLIFY (optional)
+================================================================================
+1. https://app.netlify.com/ -> Deploy manually or connect Git.
+2. Use netlify.toml in this folder. Add custom domain in Netlify; at Spaceship
+   add A/CNAME as Netlify's UI shows (verify apex IP in Netlify — it can change).
+
+================================================================================
+OPTION D - GITHUB PAGES / SPACESHIP HOSTING
+================================================================================
+- GitHub Pages: push repo; Settings -> Pages; custom domain + DNS per GitHub docs.
+- Spaceship shared hosting: upload files to public_html per their docs.
+
+================================================================================
+CHECKLIST AFTER GO-LIVE
+--------------------------------------------------------------------------------
+[ ] https://yourdomain.com/ loads index.html
+[ ] styles.css returns 200 (F12 -> Network), page is dark theme not white
+[ ] works.html, about.html, case-study.html open
+[ ] Mixed content: Unsplash / Google Fonts over https — OK
+
+================================================================================

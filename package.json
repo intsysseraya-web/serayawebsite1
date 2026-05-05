@@ -1,0 +1,8 @@
+{
+  "name": "seraya-system-integration-site",
+  "private": true,
+  "description": "Static site - use npm run preview to serve locally",
+  "scripts": {
+    "preview": "npx --yes http-server . -p 8765 -a 127.0.0.1 -c-1"
+  }
+}

@@ -1,0 +1,7 @@
+# Cloudflare Pages — deploy from this folder:
+#   npx wrangler pages deploy
+# Change `name` to match a NEW or EXISTING Pages project slug in your account.
+# https://developers.cloudflare.com/pages/functions/wrangler-configuration/
+
+name = "seraya-static-site"
+pages_build_output_dir = "."

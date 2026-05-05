@@ -1,0 +1,11 @@
+# Cloudflare Pages: https://developers.cloudflare.com/pages/configuration/headers/
+# (netlify.toml is only for Netlify; this file applies on Cloudflare Pages.)
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.html
+  Content-Type: text/html; charset=utf-8
