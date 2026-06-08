@@ -142,6 +142,11 @@ a:hover {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 8.25rem;
+  height: 2.5rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -149,7 +154,18 @@ a:hover {
   white-space: nowrap;
 }
 
-.logo span {
+.logo:hover {
+  text-decoration: none;
+}
+
+.logo-mark {
+  height: 2rem;
+  width: auto;
+  flex: 0 0 auto;
+  display: block;
+}
+
+.logo-text {
   color: var(--text-muted);
   font-weight: 600;
 }
@@ -1076,6 +1092,13 @@ a:hover {
 
 .footer-links a:hover {
   color: var(--text);
+}
+
+.footer-brand-logo {
+  display: block;
+  width: min(13.75rem, 100%);
+  height: auto;
+  margin-bottom: 0.75rem;
 }
 
 .footer-bottom {
