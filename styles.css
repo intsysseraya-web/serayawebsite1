@@ -142,16 +142,21 @@ a:hover {
 }
 
 .logo {
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  width: clamp(8.5rem, 42vw, 11rem);
+  height: 2.5rem;
 }
 
-.logo span {
-  color: var(--text-muted);
-  font-weight: 600;
+.logo:hover {
+  text-decoration: none;
+}
+
+.logo-lockup {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .main-nav {
@@ -1076,6 +1081,13 @@ a:hover {
 
 .footer-links a:hover {
   color: var(--text);
+}
+
+.footer-brand-logo {
+  display: block;
+  width: min(13.75rem, 100%);
+  height: auto;
+  margin-bottom: 0.75rem;
 }
 
 .footer-bottom {
