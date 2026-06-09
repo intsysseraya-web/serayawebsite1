@@ -144,30 +144,19 @@ a:hover {
 .logo {
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
-  min-width: 8.25rem;
+  flex: 0 0 auto;
+  width: clamp(8.5rem, 42vw, 11rem);
   height: 2.5rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  white-space: nowrap;
 }
 
 .logo:hover {
   text-decoration: none;
 }
 
-.logo-mark {
-  height: 2rem;
-  width: auto;
-  flex: 0 0 auto;
+.logo-lockup {
   display: block;
-}
-
-.logo-text {
-  color: var(--text-muted);
-  font-weight: 600;
+  width: 100%;
+  height: auto;
 }
 
 .main-nav {
