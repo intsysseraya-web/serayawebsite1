@@ -1,0 +1,123 @@
+<script>
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduceMotion) {
+    startMotion();
+  }
+
+  async function startMotion() {
+    const [{ gsap }, { ScrollTrigger }] = await Promise.all([
+      import("gsap"),
+      import("gsap/ScrollTrigger"),
+    ]);
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const ctx = gsap.context(() => {
+      const heroCopy = document.querySelectorAll("[data-hero-copy] > *");
+      if (heroCopy.length > 0) {
+        gsap.from(heroCopy, {
+          autoAlpha: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.08,
+          y: 24,
+        });
+      }
+
+      const heroVisual = document.querySelector(".seraya-hero-visual");
+      const firstSection = document.querySelector("main > section:first-child");
+      if (heroVisual && firstSection) {
+        gsap.to(heroVisual, {
+          ease: "none",
+          scale: 1.045,
+          scrollTrigger: {
+            trigger: firstSection,
+            scrub: 0.8,
+            start: "top top",
+            end: "bottom top",
+          },
+          yPercent: 4,
+        });
+      }
+
+      gsap.utils.toArray("[data-reveal]").forEach((section) => {
+        gsap.from(section, {
+          autoAlpha: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          scrollTrigger: {
+            end: "top 46%",
+            start: "top 82%",
+            toggleActions: "play none none reverse",
+            trigger: section,
+          },
+          y: 36,
+        });
+      });
+
+      gsap.utils.toArray("[data-reveal-card]").forEach((card) => {
+        gsap.from(card, {
+          autoAlpha: 0,
+          duration: 0.62,
+          ease: "power2.out",
+          scrollTrigger: {
+            start: "top 86%",
+            toggleActions: "play none none reverse",
+            trigger: card,
+          },
+          y: 26,
+        });
+      });
+
+      gsap.utils.toArray("[data-core-map]").forEach((map) => {
+        gsap.from(map.querySelectorAll("[data-core-node]"), {
+          autoAlpha: 0,
+          duration: 0.72,
+          ease: "power3.out",
+          scale: 0.92,
+          scrollTrigger: {
+            start: "top 76%",
+            toggleActions: "play none none reverse",
+            trigger: map,
+          },
+          stagger: 0.08,
+          y: 18,
+        });
+      });
+
+      gsap.utils.toArray("[data-proof-pipeline]").forEach((pipeline) => {
+        const rail = pipeline.querySelector("[data-pipeline-rail]");
+        const steps = pipeline.querySelectorAll("[data-pipeline-step]");
+
+        if (rail) {
+          gsap.from(rail, {
+            duration: 0.9,
+            ease: "power2.out",
+            scaleY: 0,
+            scrollTrigger: {
+              start: "top 78%",
+              toggleActions: "play none none reverse",
+              trigger: pipeline,
+            },
+          });
+        }
+
+        gsap.from(steps, {
+          autoAlpha: 0,
+          duration: 0.68,
+          ease: "power3.out",
+          scrollTrigger: {
+            start: "top 78%",
+            toggleActions: "play none none reverse",
+            trigger: pipeline,
+          },
+          stagger: 0.09,
+          y: 24,
+        });
+      });
+    });
+
+    window.addEventListener("pagehide", () => ctx.revert(), { once: true });
+  }
+</script>

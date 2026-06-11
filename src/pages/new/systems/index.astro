@@ -1,0 +1,84 @@
+---
+import NewSiteFooter from "../../../components/NewSiteFooter.astro";
+import NewSiteHeader from "../../../components/NewSiteHeader.astro";
+import NewSiteMotion from "../../../components/NewSiteMotion.astro";
+import SerayaContactBand from "../../../components/SerayaContactBand.astro";
+import SerayaPageHero from "../../../components/SerayaPageHero.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { referenceSystems, rfqInputs } from "../../../data/serayaContent";
+---
+
+<BaseLayout
+  title="Systems catalog | Seraya System Integration"
+  description="Reference systems and RFQ-led hardware integration services from Seraya System Integration in Kuala Lumpur."
+  bodyClass="min-h-screen"
+>
+  <NewSiteHeader />
+
+  <main class="overflow-hidden">
+    <SerayaPageHero
+      eyebrow="Systems catalog"
+      title="Reference systems for RFQ-led hardware programs."
+      body="The old catalog is preserved as a reference shape: GPU nodes, workstations, short-depth rack systems, validation services, and storage expansion. Pricing remains RFQ because the value is configuration, availability, warranty path, and tested handoff."
+    />
+
+    <section class="px-5 pb-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {referenceSystems.map((system) => (
+          <article class="seraya-system-card seraya-lab-card rounded-lg border border-white/10 bg-white/[0.035] p-6" data-reveal-card>
+            <div class="seraya-system-card__visual" aria-hidden="true">
+              <div></div>
+              <span>{system.signal}</span>
+            </div>
+            <div class="mt-6 flex items-start justify-between gap-4">
+              <h2 class="text-2xl font-semibold text-seraya-text">{system.name}</h2>
+              {system.badge && <span class="rounded-full border border-seraya-amber/40 px-3 py-1 text-xs font-semibold text-seraya-amber">{system.badge}</span>}
+            </div>
+            <ul class="mt-6 space-y-3 text-sm leading-6 text-seraya-muted">
+              {system.specs.map((spec) => (
+                <li class="flex items-center gap-3">
+                  <span class="h-1.5 w-1.5 rounded-full bg-seraya-cyan"></span>
+                  {spec}
+                </li>
+              ))}
+            </ul>
+            <div class="mt-8 flex items-center justify-between border-t border-white/10 pt-5">
+              <span class="text-sm text-seraya-muted">From</span>
+              <strong class="text-lg text-seraya-text">RFQ</strong>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="border-y border-white/10 bg-black/20 px-5 py-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">What to send</p>
+          <h2 class="mt-4 text-3xl font-semibold text-seraya-text md:text-5xl">
+            Useful RFQs beat perfect spec sheets.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            Send the practical constraints. Seraya turns them into a build path, lead-time view, and warranty route.
+          </p>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2">
+          {rfqInputs.map((input) => (
+            <div class="seraya-signal-row rounded-lg border border-white/10 bg-seraya-panel/60 px-5 py-4" data-reveal-card>
+              <span>{input}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <SerayaContactBand
+      eyebrow="Start a systems RFQ"
+      title="Reference SKU, custom constraint, or mixed batch?"
+      body="Email the target workload, quantity, owned parts, and deadline. Seraya replies with availability, configuration path, lead time, and warranty notes."
+    />
+  </main>
+
+  <NewSiteFooter />
+  <NewSiteMotion />
+</BaseLayout>

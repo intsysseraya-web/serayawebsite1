@@ -1,0 +1,91 @@
+---
+import NewSiteFooter from "../../../components/NewSiteFooter.astro";
+import NewSiteHeader from "../../../components/NewSiteHeader.astro";
+import NewSiteMotion from "../../../components/NewSiteMotion.astro";
+import SerayaContactBand from "../../../components/SerayaContactBand.astro";
+import SerayaPageHero from "../../../components/SerayaPageHero.astro";
+import SerayaProofPipeline from "../../../components/SerayaProofPipeline.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { caseStudySections, programs } from "../../../data/serayaContent";
+---
+
+<BaseLayout
+  title="Programs | Seraya System Integration"
+  description="Seraya regional GPU supply program example, tranche scheduling, warranty path, and on-site handoff services."
+  bodyClass="min-h-screen"
+>
+  <NewSiteHeader />
+
+  <main class="overflow-hidden">
+    <SerayaPageHero
+      eyebrow="Programs"
+      title="Regional hardware supply without configuration drift."
+      body="The old case study described a regional GPU supply program: matched accelerator batches, rolling tranches, and a single warranty narrative instead of ad hoc marketplace lots."
+    />
+
+    <section class="px-5 pb-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Case study - Supply - 2024</p>
+          <h2 class="mt-4 text-3xl font-semibold text-seraya-text md:text-5xl">
+            Regional GPU supply program.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            This remains an illustrative old-site program narrative, carried forward carefully without turning demo metrics into public audited claims.
+          </p>
+        </div>
+        <div class="grid gap-4">
+          {caseStudySections.map((section) => (
+            <article class="seraya-lab-card rounded-lg border border-white/10 bg-white/[0.035] p-6" data-reveal-card>
+              <h3 class="text-2xl font-semibold text-seraya-text">{section.title}</h3>
+              <p class="mt-4 leading-8 text-seraya-muted">{section.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-white/10 bg-seraya-panel/35 px-5 py-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Program controls</p>
+          <h2 class="mt-4 text-3xl font-semibold text-seraya-text md:text-5xl">
+            Batch, document, hand off.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            The program surface is less about glossy inventory and more about controlling variation across supply, firmware, serials, and support paths.
+          </p>
+        </div>
+        <div class="grid gap-4 md:grid-cols-3">
+          {programs.map((program) => (
+            <article class="seraya-lab-card rounded-lg border border-white/10 bg-black/25 p-6" data-reveal-card>
+              <h3 class="text-xl font-semibold text-seraya-text">{program.title}</h3>
+              <p class="mt-4 leading-7 text-seraya-muted">{program.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Delivery chain</p>
+          <h2 class="mt-4 text-3xl font-semibold text-seraya-text md:text-5xl">
+            Every tranche still follows the lab chain.
+          </h2>
+        </div>
+        <SerayaProofPipeline />
+      </div>
+    </section>
+
+    <SerayaContactBand
+      eyebrow="Plan a program"
+      title="Rolling tranches, matched batches, or install handoff?"
+      body="Email the rollout shape, target sites, quantity waves, warranty expectations, and any required documentation pack."
+    />
+  </main>
+
+  <NewSiteFooter />
+  <NewSiteMotion />
+</BaseLayout>

@@ -1,0 +1,17 @@
+---
+import { proofSteps } from "../data/serayaContent";
+---
+
+<div class="seraya-proof-pipeline" data-proof-pipeline>
+  <div class="seraya-proof-pipeline__rail" data-pipeline-rail></div>
+  {proofSteps.map((step) => (
+    <article class="seraya-pipeline-step" data-pipeline-step>
+      <div class="seraya-pipeline-step__index">{step.step}</div>
+      <div>
+        <h3>{step.title}</h3>
+        <p>{step.body}</p>
+      </div>
+      <span>{step.output}</span>
+    </article>
+  ))}
+</div>

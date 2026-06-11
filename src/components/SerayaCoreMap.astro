@@ -1,0 +1,25 @@
+---
+import { deliveryNodes } from "../data/serayaContent";
+---
+
+<div class="seraya-core-map" data-core-map aria-hidden="true">
+  <div class="seraya-core-map__grid"></div>
+  <div class="seraya-core-map__orbit is-outer"></div>
+  <div class="seraya-core-map__orbit is-inner"></div>
+  <div class="seraya-core-map__beam is-nw"></div>
+  <div class="seraya-core-map__beam is-ne"></div>
+  <div class="seraya-core-map__beam is-se"></div>
+  <div class="seraya-core-map__beam is-sw"></div>
+
+  <div class="seraya-core-map__core">
+    <span>Seraya core</span>
+    <strong>RFQ + supply + lab</strong>
+  </div>
+
+  {deliveryNodes.map((node) => (
+    <div class={`seraya-core-map__node ${node.className}`} data-core-node>
+      <span>{node.label}</span>
+      <strong>{node.detail}</strong>
+    </div>
+  ))}
+</div>

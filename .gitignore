@@ -6,6 +6,8 @@ node_modules/
 dist/
 .superpowers/
 docs/
+.agents/
+skills-lock.json
 
 # Local environment and secrets. Keep the example tracked.
 .env

@@ -1,0 +1,60 @@
+---
+import NewSiteFooter from "../../../components/NewSiteFooter.astro";
+import NewSiteHeader from "../../../components/NewSiteHeader.astro";
+import NewSiteMotion from "../../../components/NewSiteMotion.astro";
+import SerayaContactBand from "../../../components/SerayaContactBand.astro";
+import SerayaCoreMap from "../../../components/SerayaCoreMap.astro";
+import SerayaPageHero from "../../../components/SerayaPageHero.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { companyPrinciples } from "../../../data/serayaContent";
+---
+
+<BaseLayout
+  title="Company | Seraya System Integration"
+  description="About Seraya System Integration, a Kuala Lumpur trading-led technology partner for traceable hardware supply and integration."
+  bodyClass="min-h-screen"
+>
+  <NewSiteHeader />
+
+  <main class="overflow-hidden">
+    <SerayaPageHero
+      eyebrow="Company"
+      title="Kuala Lumpur system integration with one accountable thread."
+      body="Seraya System Integration serves regional demand for traceable hardware supply, configuration, assembly, validation, and handoff."
+    />
+
+    <section class="px-5 pb-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Positioning</p>
+          <h2 class="mt-4 text-3xl font-semibold text-seraya-text md:text-5xl">
+            Trading-led technology partner.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            The company page says it plainly: factory-aligned procurement, authorised channels where possible, and disciplined assembly and validation before delivery.
+          </p>
+        </div>
+        <SerayaCoreMap />
+      </div>
+    </section>
+
+    <section class="border-y border-white/10 bg-black/20 px-5 py-20" data-reveal>
+      <div class="mx-auto grid w-full max-w-7xl gap-4 md:grid-cols-3">
+        {companyPrinciples.map((principle) => (
+          <article class="seraya-lab-card rounded-lg border border-white/10 bg-white/[0.035] p-6" data-reveal-card>
+            <h3 class="text-xl font-semibold text-seraya-text">{principle.title}</h3>
+            <p class="mt-4 leading-7 text-seraya-muted">{principle.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <SerayaContactBand
+      title="Email quantities, targets, and constraints."
+      body="No web form; send the practical details and Seraya replies with availability, lead time, warranty path, and the next useful step."
+    />
+  </main>
+
+  <NewSiteFooter />
+  <NewSiteMotion />
+</BaseLayout>

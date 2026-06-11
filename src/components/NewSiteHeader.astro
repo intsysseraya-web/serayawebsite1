@@ -1,17 +1,17 @@
 ---
 const navItems = [
-  { label: "Systems", href: "#systems" },
-  { label: "Advantage", href: "#advantage" },
-  { label: "Process", href: "#process" },
-  { label: "Programs", href: "#programs" },
-  { label: "Contact", href: "#contact" },
+  { label: "Systems", href: "/new/systems/" },
+  { label: "Method", href: "/new/#process" },
+  { label: "Programs", href: "/new/programs/" },
+  { label: "Company", href: "/new/about/" },
+  { label: "Contact", href: "/new/about/#contact" },
 ];
 ---
 
 <div class="border-b border-white/10 bg-seraya-panel/80 text-xs text-seraya-muted">
   <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-center gap-x-6 gap-y-2 px-5 py-2 text-center sm:justify-between">
-    <a class="transition hover:text-seraya-text" href="#contact">RFQ response within one business day</a>
-    <a class="transition hover:text-seraya-text" href="#contact">Kuala Lumpur HQ</a>
+    <a class="transition hover:text-seraya-text" href="/new/about/#contact">RFQ response within one business day</a>
+    <a class="hidden transition hover:text-seraya-text sm:inline" href="/new/about/">Kuala Lumpur HQ</a>
   </div>
 </div>
 
@@ -27,7 +27,7 @@ const navItems = [
       />
     </a>
 
-    <nav class="order-3 flex w-full flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold uppercase tracking-[0.08em] text-seraya-muted md:order-2 md:w-auto">
+    <nav class="hidden items-center gap-x-5 gap-y-2 text-xs font-semibold uppercase tracking-[0.08em] text-seraya-muted md:flex">
       {navItems.map((item) => <a class="transition hover:text-seraya-text" href={item.href}>{item.label}</a>)}
     </nav>
 
