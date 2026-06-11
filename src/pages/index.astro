@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="Seraya Website Comparison"
+  description="Compare the current Seraya site snapshot with the new technical-lab redesign prototype."
+  bodyClass="min-h-screen"
+>
+  <main class="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-center px-6 py-16">
+    <p class="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-seraya-cyan">Seraya redesign lab</p>
+    <h1 class="max-w-3xl break-words text-4xl font-semibold tracking-tight text-seraya-text md:text-5xl lg:text-6xl">
+      Compare the current site against the new technical-lab direction.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg leading-8 text-seraya-muted">
+      The legacy snapshot stays available while the Astro rebuild evolves through review gates.
+    </p>
+
+    <div class="mt-10 grid gap-4 md:grid-cols-2">
+      <a
+        class="group rounded-lg border border-white/10 bg-white/[0.04] p-6 transition hover:border-seraya-cyan/60 hover:bg-white/[0.07]"
+        href="/old/"
+      >
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-muted">Current snapshot</span>
+        <strong class="mt-4 block text-2xl text-seraya-text">/old/</strong>
+        <span class="mt-3 block text-seraya-muted">The existing static site preserved for side-by-side review.</span>
+      </a>
+      <a
+        class="group rounded-lg border border-seraya-accent/30 bg-seraya-accent/10 p-6 transition hover:border-seraya-accent hover:bg-seraya-accent/15"
+        href="/new/"
+      >
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-muted">Astro prototype</span>
+        <strong class="mt-4 block text-2xl text-seraya-text">/new/</strong>
+        <span class="mt-3 block text-seraya-muted">The new technical-lab site shell for staged iteration.</span>
+      </a>
+    </div>
+  </main>
+</BaseLayout>

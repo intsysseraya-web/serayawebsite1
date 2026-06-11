@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Systems | Seraya System Integration</title>
+    <meta name="description" content="Reference systems and SKUs from Seraya System Integration." />
+    <link rel="icon" type="image/svg+xml" href="/old/favicon.svg" />
+    <link rel="alternate icon" href="/old/favicon.ico" />
+    <link rel="apple-touch-icon" href="/old/assets/brand/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/old/styles.css" />
+    <style id="critical-theme">
+      :root {
+        --bg: #050508;
+        --text: #e4e4e7;
+        --text-muted: #a1a1aa;
+        --accent: #c084fc;
+      }
+      html {
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        background: var(--bg) !important;
+        color: var(--text) !important;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announcement-bar" aria-label="Promotions">
+      <div class="announcement-inner">
+        <a href="/old/about.html#contact">RFQ response within one business day</a>
+        <span class="muted" aria-hidden="true">|</span>
+        <a href="/old/">Back to home</a>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="/old/" aria-label="Seraya System Integration home">
+          <img
+            class="logo-lockup"
+            src="/old/assets/brand/seraya-lockup-horizontal-reversed.svg"
+            alt=""
+            width="1150"
+            height="260"
+          />
+        </a>
+        <nav class="main-nav" aria-label="Primary">
+          <a href="/old/">Home</a>
+          <a href="/old/works.html" aria-current="page">Systems</a>
+          <a href="/old/case-study.html">Programs</a>
+          <a href="/old/about.html">Company</a>
+          <a href="/old/about.html#contact">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">Search</button>
+          <button type="button" class="icon-btn" id="btnCart" aria-label="Open quote request">Quote</button>
+          <button type="button" class="icon-btn mobile-menu-btn" id="btnMenu" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobileDrawer" hidden role="dialog" aria-modal="true" aria-label="Mobile menu">
+      <div class="mobile-drawer-panel">
+        <div class="overlay-head">
+          <strong>Navigate</strong>
+          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">X</button>
+        </div>
+        <nav class="mobile-nav">
+          <a href="/old/">Home</a>
+          <a href="/old/works.html">Systems</a>
+          <a href="/old/case-study.html">Programs</a>
+          <a href="/old/about.html">Company</a>
+          <a href="/old/about.html#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="searchPanel" hidden role="dialog" aria-modal="true" aria-label="Search">
+      <div class="overlay-sheet search-sheet">
+        <div class="overlay-head">
+          <strong>Search</strong>
+          <button type="button" class="icon-btn" id="btnCloseSearch" aria-label="Close search">X</button>
+        </div>
+        <label class="muted" for="q">Keyword</label>
+        <input class="search-input" id="q" type="search" placeholder="SKU, GPU, chassis..." autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="cartPanel" hidden role="dialog" aria-modal="true" aria-label="Quote">
+      <div class="overlay-sheet cart-sheet">
+        <div class="overlay-head">
+          <strong>Quote request</strong>
+          <button type="button" class="icon-btn" id="btnCloseCart" aria-label="Close quote panel">X</button>
+        </div>
+        <p class="muted">Email your RFQ for pricing.</p>
+        <p style="margin-top: 1rem"><a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a></p>
+      </div>
+    </div>
+
+    <div class="page-hero">
+      <div class="page-hero-inner">
+        <h1>Systems catalog</h1>
+        <p class="muted">Collection-style layout: filters (visual placeholder) and a responsive product grid.</p>
+        <div class="toolbar">
+          <span class="muted">14 reference SKUs (demo)</span>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap">
+            <label class="muted" for="sort">Sort</label>
+            <select class="select" id="sort" title="Sort">
+              <option>Featured</option>
+              <option>Lead time</option>
+              <option>Price band</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <main id="main" class="section product-section" style="padding-top: 1.5rem">
+      <div class="product-grid">
+        <article class="product-card">
+          <div class="product-card-media">
+            <span class="badge">Quick ship</span>
+            <img src="https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Cluster node | Bronze</h2>
+            <ul class="spec-list">
+              <li>Entry accelerators</li>
+              <li>1TB NVMe</li>
+              <li>32GB RAM</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+        <article class="product-card">
+          <div class="product-card-media">
+            <img src="https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Tower | Silver</h2>
+            <ul class="spec-list">
+              <li>Mid accelerators</li>
+              <li>2TB NVMe</li>
+              <li>64GB RAM</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+        <article class="product-card">
+          <div class="product-card-media">
+            <span class="badge">Popular</span>
+            <img src="https://images.unsplash.com/photo-1555613800-eac9ec6d7a7b?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Workstation | Gold</h2>
+            <ul class="spec-list">
+              <li>Pro GPU tier</li>
+              <li>ECC memory</li>
+              <li>Quiet cooling</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+        <article class="product-card">
+          <div class="product-card-media">
+            <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Short rack | Edge</h2>
+            <ul class="spec-list">
+              <li>Depth optimised</li>
+              <li>Redundant PSU</li>
+              <li>BMC</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+        <article class="product-card">
+          <div class="product-card-media">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Integration lab | Test</h2>
+            <ul class="spec-list">
+              <li>Burn-in scope</li>
+              <li>Serial capture</li>
+              <li>Report pack</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+        <article class="product-card">
+          <div class="product-card-media">
+            <span class="badge">Program</span>
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=80" alt="" loading="lazy" />
+          </div>
+          <div class="product-card-body">
+            <h2 class="product-title">Storage expansion</h2>
+            <ul class="spec-list">
+              <li>NVMe shelves</li>
+              <li>Validated HBAs</li>
+              <li>Cable kits</li>
+            </ul>
+            <div class="price-row"><span class="muted">From</span><span class="price">RFQ</span></div>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-bottom" style="border-top: none; margin-top: 0; padding-top: 0">
+        <a class="muted" href="/old/">Home</a>
+        <span class="muted">Seraya System Integration</span>
+      </div>
+    </footer>
+
+    <script src="/old/script.js"></script>
+  </body>
+</html>

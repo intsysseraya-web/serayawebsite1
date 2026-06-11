@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seraya Systems Integration | Kuala Lumpur system integrator</title>
+    <meta
+      name="description"
+      content="Seraya Systems Integration — KL's friendly neighborhood system integrator for startups, studios, and custom PC builds. Authorised parts, assembly, burn-in, same care for business and personal."
+    />
+    <link rel="icon" type="image/svg+xml" href="/old/favicon.svg" />
+    <link rel="alternate icon" href="/old/favicon.ico" />
+    <link rel="apple-touch-icon" href="/old/assets/brand/apple-touch-icon.png" />
+    <link rel="stylesheet" href="/old/styles.css" />
+    <!-- If ./styles.css fails (wrong server root), page still stays dark -->
+    <style id="critical-theme">
+      :root {
+        --bg: #050508;
+        --text: #e4e4e7;
+        --text-muted: #a1a1aa;
+        --accent: #c084fc;
+      }
+      html {
+        background: var(--bg);
+      }
+      body {
+        margin: 0;
+        background-color: var(--bg) !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg transform='rotate(45 24 24)' fill='%23C084FC' fill-opacity='0.12'%3E%3Cpath fill-rule='evenodd' d='M5 3.59L1.46.05.05 1.46 3.59 5 .05 8.54l1.41 1.41L5 6.41l3.54 3.54 1.41-1.41L6.41 5l3.54-3.54L8.54.05 5 3.59zM17 2h24v2H17V2zm0 4h24v2H17V6zM2 17h2v24H2V17zm4 0h2v24H6V17z'/%3E%3C/g%3E%3C/svg%3E") !important;
+        background-blend-mode: screen !important;
+        color: var(--text) !important;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announcement-bar" aria-label="Promotions">
+      <div class="announcement-inner">
+        <a href="/old/about.html#contact">RFQ response within one business day</a>
+        <span class="muted" aria-hidden="true">|</span>
+        <a href="/old/works.html">View configured systems</a>
+        <span class="muted" aria-hidden="true">|</span>
+        <a href="/old/about.html">Kuala Lumpur HQ</a>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="/old/" aria-label="Seraya System Integration home">
+          <img
+            class="logo-lockup"
+            src="/old/assets/brand/seraya-lockup-horizontal-reversed.svg"
+            alt=""
+            width="1150"
+            height="260"
+          />
+        </a>
+        <nav class="main-nav" aria-label="Primary">
+          <a href="/old/" aria-current="page">Home</a>
+          <a href="/old/works.html">Systems</a>
+          <a href="/old/case-study.html">Programs</a>
+          <a href="/old/about.html">Company</a>
+          <a href="/old/about.html#contact">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">
+            Search
+          </button>
+          <button type="button" class="icon-btn" id="btnCart" aria-label="Open quote request">
+            Quote
+          </button>
+          <button
+            type="button"
+            class="icon-btn mobile-menu-btn"
+            id="btnMenu"
+            aria-expanded="false"
+            aria-controls="mobileDrawer"
+          >
+            Menu
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div
+      class="mobile-drawer"
+      id="mobileDrawer"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-label="Mobile menu"
+    >
+      <div class="mobile-drawer-panel">
+        <div class="overlay-head">
+          <strong>Navigate</strong>
+          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">
+            X
+          </button>
+        </div>
+        <nav class="mobile-nav">
+          <a href="/old/">Home</a>
+          <a href="/old/works.html">Systems</a>
+          <a href="/old/case-study.html">Programs</a>
+          <a href="/old/about.html">Company</a>
+          <a href="/old/about.html#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="searchPanel" hidden role="dialog" aria-modal="true" aria-label="Search">
+      <div class="overlay-sheet search-sheet">
+        <div class="overlay-head">
+          <strong>Search</strong>
+          <button type="button" class="icon-btn" id="btnCloseSearch" aria-label="Close search">
+            X
+          </button>
+        </div>
+        <label class="muted" for="q">Keyword</label>
+        <input class="search-input" id="q" type="search" placeholder="SKU, GPU, chassis..." autocomplete="off" />
+        <p class="muted" style="margin-top: 0.75rem">Tip: browse Systems for full lists.</p>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="cartPanel" hidden role="dialog" aria-modal="true" aria-label="Quote">
+      <div class="overlay-sheet cart-sheet">
+        <div class="overlay-head">
+          <strong>Quote request</strong>
+          <button type="button" class="icon-btn" id="btnCloseCart" aria-label="Close quote panel">
+            X
+          </button>
+        </div>
+        <p class="muted">No items yet. Email your RFQ and we reply with availability and lead time.</p>
+        <p style="margin-top: 1rem">
+          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>
+        </p>
+      </div>
+    </div>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title hero-subtitle">
+        <div class="hero-inner">
+          <p class="hero-kicker">Seraya Systems Integration</p>
+          <h1 id="hero-title">KL&apos;s friendly neighborhood system integrator</h1>
+          <p id="hero-subtitle" class="hero-subtitle">
+            — for startups, studios, and that one friend who always asks &ldquo;can you build my PC?&rdquo;
+          </p>
+          <p>One workstation, one server room, doesn&apos;t matter.</p>
+          <p>
+            We get the good parts, put them together, burn them in, and hand you a machine
+            that just works. Business or personal — same bench, same care.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="/old/works.html">For Business →</a>
+            <a class="btn btn-ghost" href="/old/about.html#contact">For Individuals →</a>
+          </div>
+        </div>
+
+        <div class="hero-marquee-wrap" aria-hidden="true">
+          <div class="hero-marquee">
+            <div class="hero-marquee-track">
+              <ul class="hero-marquee-list">
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intel.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amd.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nvidia.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/asus.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/msi.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Gigabyte</span>
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/corsair.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/kingstontechnology.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/samsung.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/westerndigital.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/seagate.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/coolermaster.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nzxt.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Lian Li</span>
+                </li>
+              </ul>
+              <ul class="hero-marquee-list">
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intel.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amd.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nvidia.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/asus.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/msi.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Gigabyte</span>
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/corsair.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/kingstontechnology.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/samsung.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/westerndigital.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/seagate.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/coolermaster.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nzxt.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Lian Li</span>
+                </li>
+              </ul>
+              <ul class="hero-marquee-list" aria-hidden="true">
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/intel.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amd.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nvidia.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/asus.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/msi.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Gigabyte</span>
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/corsair.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/kingstontechnology.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/samsung.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/westerndigital.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/seagate.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/coolermaster.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/nzxt.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Lian Li</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="promo-title">
+        <div class="section-head">
+          <h2 id="promo-title">Featured lines</h2>
+          <p>Three ways to work with us &#8212; new builds, BYO parts, or trade&#8209;ins. No secret handshake required.</p>
+        </div>
+        <div class="promo-grid">
+          <article class="promo-card">
+            <div class="promo-card-media-wrap">
+              <img
+                class="promo-media"
+                src="https://images.unsplash.com/photo-1591488320449-011701bb6704?w=1200&q=80"
+                alt="Open PC case showing GPU and custom cooling inside a tower build"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="promo-card-body">
+              <h3>Quick&#8209;config towers</h3>
+              <p>For when you just want a GPU node that works &#8211; no PhD in compatibility.</p>
+              <p>
+                Pick from our pre&#8209;tested parts lists (Corsair, Gigabyte, etc.). We match batches, flash the same
+                BIOS, and ship ready to run.
+              </p>
+              <p>Predictable lead time. Boring stability.</p>
+              <div class="promo-card-cta-push" aria-hidden="true"></div>
+              <a class="btn btn-primary" href="/old/works.html">View SKUs →</a>
+            </div>
+          </article>
+          <article class="promo-card">
+            <div class="promo-card-media-wrap">
+              <img
+                class="promo-media"
+                src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=80"
+                alt="Rack-mounted servers and cabling in a data centre row"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="promo-card-body">
+              <h3>BYO parts? No problem.</h3>
+              <p>Send us your RAM, SSDs, or that GPU you got on sale.</p>
+              <p>
+                We&apos;ll integrate them into our assembly &amp; burn&#8209;in process. You get a single warranty and a
+                single throat to choke &#8211; even if the parts came from different boxes.
+              </p>
+              <div class="promo-card-cta-push" aria-hidden="true"></div>
+              <a class="btn btn-primary" href="/old/about.html">How it works →</a>
+            </div>
+          </article>
+          <article class="promo-card">
+            <div class="promo-card-media-wrap">
+              <img
+                class="promo-media"
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=80"
+                alt="Stacked used laptops and small electronics ready for processing"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <div class="promo-card-body">
+              <h3>Old gear? We&apos;ll take it.</h3>
+              <p>
+                Don&apos;t let that GPU gather dust &#8212; or worse, end up in a landfill.
+              </p>
+              <p>
+                Trade in your used PC, server, or even a box of DDR3. We wipe the data, test what&#8217;s salvageable,
+                and recycle the rest properly.
+              </p>
+              <p>You get cash / store credit. Mother Earth gets a break.</p>
+              <div class="promo-card-cta-push" aria-hidden="true"></div>
+              <a class="btn btn-primary" href="/old/about.html#contact">Get a quote</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="split-title">
+        <div class="adv-tree">
+          <article class="adv-card adv-card-root">
+            <h2 id="split-title">Small shop. Big advantage.</h2>
+            <p>No layers, no wait-for-approval, no "let me ask my manager."</p>
+          </article>
+
+          <div class="adv-tree-branches">
+            <div class="adv-col adv-col-left">
+              <article class="adv-card">
+                <h3>Same-day response from a real person.</h3>
+                <p>
+                  You won't get a bot or a ticket number. When you reach out - WhatsApp, email, phone - you'll speak to
+                  the actual person who builds or sources your hardware. We reply within hours, not days.
+                </p>
+              </article>
+              <article class="adv-card">
+                <h3>One accountable contact - from start to finish.</h3>
+                <p>
+                  If a part arrives dead, firmware mismatches, or shipping damages something - you don't get passed between
+                  OEM, and the courier. You come back to us. We take responsibility, we coordinate the fix, and
+                  you only talk to one team.
+                </p>
+              </article>
+            </div>
+            <div class="adv-col adv-col-right">
+              <article class="adv-card">
+                <h3>Build exactly what you need.</h3>
+                <p>
+                  Mixing components from different brands? Need an unusual port layout? Want a quiet server that doesn't
+                  sound like a vacuum cleaner? We don't say "not in our catalog." We say yes, then figure out how to make
+                  it work.
+                </p>
+              </article>
+              <article class="adv-card">
+                <h3>Batch-matched with no minimum order ego.</h3>
+                <p>
+                  Whether you need one workstation or fifty server nodes: we match components from the same batch, test
+                  them the same way, and provide the same build manifest. We never tell you "your order is too small to
+                  care about."
+                </p>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section product-section" aria-labelledby="grid-title">
+        <div class="section-head">
+          <h2 id="grid-title">How we turn your idea into hardware</h2>
+          <p>No engineering degree required.</p>
+        </div>
+        <div class="tile-grid">
+          <article class="tile">
+            <h3>Tell us what you need</h3>
+            <p>
+              Gaming? AI training? A quiet office PC? A 50-node render farm? Just say it in plain English.
+            </p>
+          </article>
+          <article class="tile">
+            <h3>We recommend &amp; quote</h3>
+            <p>
+              We pick the right parts (new or refurbished), draft a manifest, and send you a clear price - no hidden
+              fees.
+            </p>
+          </article>
+          <article class="tile">
+            <h3>We build, test, ship</h3>
+            <p>
+              Assembly, burn-in, photos, manifests. You get a machine that just works.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="tiles-title">
+        <div class="section-head">
+          <h2 id="tiles-title">Programs and updates</h2>
+          <p>Three-up editorial tiles similar to homepage promos and bundle callouts.</p>
+        </div>
+        <div class="tile-grid">
+          <article class="tile">
+            <h3>Tranche scheduling</h3>
+            <p>Rollout waves for distributed teams that need matched firmware and cooler revisions.</p>
+          </article>
+          <article class="tile">
+            <h3>Warranty path</h3>
+            <p>One accountable counterparty for RMA coordination with manufacturer policies.</p>
+          </article>
+          <article class="tile">
+            <h3>On-site handoff</h3>
+            <p>Optional briefing packs for rack install teams and acceptance checklists.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section values" aria-labelledby="values-title">
+        <div class="section-head">
+          <h2 id="values-title">Why teams work with Seraya</h2>
+          <p>Three-column value strip modeled after builder trust sections.</p>
+        </div>
+        <div class="value-grid">
+          <div class="value-card">
+            <h3>Integration-first</h3>
+            <p>We assemble, test, and document before hardware leaves the bench.</p>
+          </div>
+          <div class="value-card">
+            <h3>Authorised flow</h3>
+            <p>We prioritise factory-aligned and authorised routes whenever the stack allows.</p>
+          </div>
+          <div class="value-card">
+            <h3>Human support</h3>
+            <p>Direct thread with integration leads - not a script, not a black box.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <div>
+          <img
+            class="footer-brand-logo"
+            src="/old/assets/brand/seraya-lockup-stacked-reversed.svg"
+            alt="Seraya System Integration"
+            width="220"
+            height="164"
+          />
+          <p class="muted" style="max-width: 28rem">
+            Trading-led technology partner for GPU compute, servers, and workstation programs. Kuala Lumpur.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h4>Shop</h4>
+          <ul class="footer-links">
+            <li><a href="/old/works.html">Systems</a></li>
+            <li><a href="/old/case-study.html">Programs</a></li>
+            <li><a href="/old/about.html#contact">RFQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul class="footer-links">
+            <li><a href="/old/about.html">About</a></li>
+            <li><a href="mailto:hello@serayasystem.com">Email</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="#">Terms (placeholder)</a></li>
+            <li><a href="#">Privacy (placeholder)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>English</span>
+        <span>Copyright Seraya System Integration. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <script src="/old/script.js"></script>
+  </body>
+</html>

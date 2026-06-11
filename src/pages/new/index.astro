@@ -1,0 +1,291 @@
+---
+import NewSiteFooter from "../../components/NewSiteFooter.astro";
+import NewSiteHeader from "../../components/NewSiteHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const featuredLines = [
+  {
+    title: "Quick-config towers",
+    body: "Pre-tested parts lists for GPU nodes and workstations that need predictable lead time, matched BIOS, and boring stability.",
+    cta: "View configured systems",
+    href: "#systems",
+  },
+  {
+    title: "BYO parts integration",
+    body: "Send RAM, SSDs, GPUs, or specialty components. We fold them into the same assembly, compatibility, and burn-in process.",
+    cta: "How it works",
+    href: "#process",
+  },
+  {
+    title: "Used gear and trade-in",
+    body: "We test what can be reused, wipe data when relevant, and route the rest responsibly before quoting store credit or cash.",
+    cta: "Start a quote",
+    href: "#contact",
+  },
+];
+
+const advantages = [
+  {
+    title: "Same-day response from a real person.",
+    body: "Email or WhatsApp starts a direct thread with the person sourcing or building the hardware, not a generic ticket queue.",
+  },
+  {
+    title: "One accountable contact from start to finish.",
+    body: "If a part arrives dead, firmware mismatches, or shipping damages something, Seraya coordinates the fix as one counterparty.",
+  },
+  {
+    title: "Build exactly what you need.",
+    body: "Mixed brands, unusual port layouts, quiet office builds, or short-depth rack constraints are handled as integration work.",
+  },
+  {
+    title: "Batch-matched without minimum-order ego.",
+    body: "One workstation or fifty server nodes get the same discipline: batch matching, repeatable validation, and a usable manifest.",
+  },
+];
+
+const processSteps = [
+  {
+    step: "01",
+    title: "Tell us what you need",
+    body: "Share workload, quantity, target budget, operating constraints, and any parts you already own.",
+  },
+  {
+    step: "02",
+    title: "We recommend and quote",
+    body: "Seraya maps options across authorised supply, available batches, compatibility risk, warranty path, and lead time.",
+  },
+  {
+    step: "03",
+    title: "We build, test, ship",
+    body: "Assembly, burn-in, photos, serials, manifests, and handoff notes are prepared before the system leaves the bench.",
+  },
+];
+
+const programs = [
+  {
+    title: "Tranche scheduling",
+    body: "Rollout waves for distributed teams that need matched firmware, cooler revisions, and predictable replacement paths.",
+  },
+  {
+    title: "Warranty path",
+    body: "A single Seraya thread coordinates RMA workflow against manufacturer policies and supplier documentation.",
+  },
+  {
+    title: "On-site handoff",
+    body: "Optional briefing packs for rack install teams, acceptance checklists, and inventory records.",
+  },
+];
+
+const values = [
+  {
+    title: "Integration-first",
+    body: "We assemble, test, and document before hardware leaves the bench.",
+  },
+  {
+    title: "Authorised flow",
+    body: "We prioritise factory-aligned and authorised routes whenever the stack allows.",
+  },
+  {
+    title: "Human support",
+    body: "Direct thread with integration leads, not a script and not a black box.",
+  },
+];
+---
+
+<BaseLayout
+  title="Seraya Systems Integration | Kuala Lumpur system integrator"
+  description="Seraya Systems Integration is a Kuala Lumpur system integrator for traceable hardware supply, assembly, burn-in, and RFQ-led workstation and server programs."
+  bodyClass="min-h-screen"
+>
+  <NewSiteHeader />
+
+  <main class="overflow-hidden">
+    <section class="relative isolate min-h-[calc(100vh-6.5rem)] px-5 py-16 md:py-24">
+      <div class="absolute inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:44px_44px] [mask-image:radial-gradient(circle_at_45%_30%,black,transparent_72%)]"></div>
+      <div class="absolute left-1/2 top-16 -z-10 h-72 w-[44rem] -translate-x-1/2 rounded-full bg-seraya-accent/10 blur-3xl"></div>
+
+      <div class="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[1.04fr_0.96fr] lg:items-center">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.26em] text-seraya-cyan">Seraya Systems Integration</p>
+          <h1 class="mt-5 max-w-4xl break-words text-4xl font-semibold tracking-tight text-seraya-text md:text-6xl lg:text-7xl">
+            System integration for traceable hardware supply.
+          </h1>
+          <p class="mt-7 max-w-2xl text-lg leading-8 text-seraya-muted">
+            KL's system integrator for startups, studios, custom PC builds, and regional hardware programs. Authorised parts where possible, disciplined assembly, burn-in, and the same bench care for business and personal builds.
+          </p>
+          <div class="mt-9 flex flex-wrap gap-3">
+            <a class="rounded-md bg-seraya-accent px-5 py-3 text-sm font-semibold text-black transition hover:bg-seraya-cyan" href="#contact">
+              Start an RFQ
+            </a>
+            <a class="rounded-md border border-white/15 px-5 py-3 text-sm font-semibold text-seraya-text transition hover:border-seraya-cyan/70" href="#systems">
+              View systems
+            </a>
+          </div>
+          <dl class="mt-10 grid max-w-2xl gap-4 text-sm text-seraya-muted sm:grid-cols-3">
+            <div class="border-l border-seraya-cyan/35 pl-4">
+              <dt class="font-semibold text-seraya-text">RFQ</dt>
+              <dd>One business day response</dd>
+            </div>
+            <div class="border-l border-seraya-cyan/35 pl-4">
+              <dt class="font-semibold text-seraya-text">HQ</dt>
+              <dd>Kuala Lumpur, Malaysia</dd>
+            </div>
+            <div class="border-l border-seraya-cyan/35 pl-4">
+              <dt class="font-semibold text-seraya-text">Flow</dt>
+              <dd>Source, build, test, handoff</dd>
+            </div>
+          </dl>
+        </div>
+
+        <aside class="rounded-lg border border-seraya-accent/25 bg-black/35 p-4 shadow-2xl shadow-seraya-accent/10">
+          <div class="rounded-md border border-white/10 bg-seraya-panel/85 p-5">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <span class="text-xs font-semibold uppercase tracking-[0.22em] text-seraya-muted">Validation bench</span>
+              <span class="rounded-full border border-seraya-cyan/35 px-3 py-1 text-xs text-seraya-cyan">RFQ to handoff</span>
+            </div>
+            <div class="mt-6 grid gap-3">
+              {processSteps.map((item) => (
+                <div class="rounded border border-white/10 bg-white/[0.035] p-4">
+                  <span class="text-xs font-semibold text-seraya-cyan">{item.step}</span>
+                  <strong class="mt-1 block text-seraya-text">{item.title}</strong>
+                  <p class="mt-2 text-sm leading-6 text-seraya-muted">{item.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="systems" class="px-5 py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Featured lines</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-tight text-seraya-text md:text-5xl">
+            Three ways to work with Seraya.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            New builds, supplied parts, or old gear. The model stays the same: source responsibly, integrate carefully, and hand over hardware that is ready to use.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          {featuredLines.map((line) => (
+            <article class="group flex min-h-72 flex-col justify-between rounded-lg border border-white/10 bg-white/[0.035] p-6 transition hover:border-seraya-cyan/50 hover:bg-white/[0.055]">
+              <div>
+                <h3 class="text-xl font-semibold text-seraya-text">{line.title}</h3>
+                <p class="mt-4 leading-7 text-seraya-muted">{line.body}</p>
+              </div>
+              <a class="mt-8 text-sm font-semibold text-seraya-cyan transition group-hover:text-seraya-text" href={line.href}>
+                {line.cta}
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="advantage" class="border-y border-white/10 bg-black/20 px-5 py-20">
+      <div class="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Small shop. Big advantage.</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-tight text-seraya-text md:text-5xl">
+            No layers, no wait-for-approval.
+          </h2>
+          <p class="mt-5 text-lg leading-8 text-seraya-muted">
+            The old site says it plainly: you talk to the same team that sources, assembles, validates, and fixes the hardware.
+          </p>
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          {advantages.map((advantage) => (
+            <article class="rounded-lg border border-white/10 bg-seraya-panel/60 p-5">
+              <h3 class="text-lg font-semibold text-seraya-text">{advantage.title}</h3>
+              <p class="mt-3 text-sm leading-7 text-seraya-muted">{advantage.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="process" class="px-5 py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div class="max-w-3xl">
+            <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">How it works</p>
+            <h2 class="mt-4 text-3xl font-semibold tracking-tight text-seraya-text md:text-5xl">
+              Turn an idea into tested hardware.
+            </h2>
+          </div>
+          <p class="max-w-md text-sm leading-7 text-seraya-muted">
+            No engineering degree required. Send the workload and constraints; Seraya returns a practical build path.
+          </p>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          {processSteps.map((step) => (
+            <article class="rounded-lg border border-white/10 bg-white/[0.035] p-6">
+              <span class="text-sm font-semibold text-seraya-cyan">{step.step}</span>
+              <h3 class="mt-5 text-xl font-semibold text-seraya-text">{step.title}</h3>
+              <p class="mt-4 leading-7 text-seraya-muted">{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="programs" class="border-y border-white/10 bg-seraya-panel/35 px-5 py-20">
+      <div class="mx-auto w-full max-w-7xl">
+        <div class="max-w-3xl">
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Programs and updates</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-tight text-seraya-text md:text-5xl">
+            Structured support for repeat hardware needs.
+          </h2>
+        </div>
+
+        <div class="mt-10 grid gap-4 md:grid-cols-3">
+          {programs.map((program) => (
+            <article class="rounded-lg border border-white/10 bg-black/25 p-6">
+              <h3 class="text-xl font-semibold text-seraya-text">{program.title}</h3>
+              <p class="mt-4 leading-7 text-seraya-muted">{program.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="px-5 py-20">
+      <div class="mx-auto grid w-full max-w-7xl gap-4 md:grid-cols-3">
+        {values.map((value) => (
+          <article class="rounded-lg border border-seraya-accent/20 bg-seraya-accent/[0.06] p-6">
+            <h3 class="text-xl font-semibold text-seraya-text">{value.title}</h3>
+            <p class="mt-4 leading-7 text-seraya-muted">{value.body}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="contact" class="px-5 pb-24">
+      <div class="mx-auto grid w-full max-w-7xl gap-8 rounded-lg border border-white/10 bg-white/[0.04] p-6 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-[0.2em] text-seraya-cyan">Contact</p>
+          <h2 class="mt-4 text-3xl font-semibold tracking-tight text-seraya-text md:text-5xl">
+            Send quantities, targets, and constraints.
+          </h2>
+          <p class="mt-5 max-w-2xl leading-8 text-seraya-muted">
+            No web form for now. Email your RFQ and Seraya replies with availability, lead time, warranty path, and the next practical step.
+          </p>
+          <p class="mt-4 text-sm text-seraya-muted">Kuala Lumpur, Malaysia</p>
+        </div>
+        <a
+          class="inline-flex justify-center rounded-md bg-seraya-accent px-5 py-3 text-sm font-semibold text-black transition hover:bg-seraya-cyan"
+          href="mailto:hello@serayasystem.com"
+        >
+          hello@serayasystem.com
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <NewSiteFooter />
+</BaseLayout>

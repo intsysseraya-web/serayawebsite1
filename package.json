@@ -1,10 +1,17 @@
 {
   "name": "seraya-system-integration-site",
   "private": true,
-  "description": "Static site - use npm run preview to serve locally",
+  "description": "Astro site - use npm run preview to serve locally",
   "scripts": {
-    "preview": "npx --yes http-server . -p 8880 -a 127.0.0.1 -c-1",
-    "preview:serve": "npx --yes serve . -l 8880",
-    "preview:py": "python -m http.server 8880 --bind 127.0.0.1"
+    "dev": "astro dev --host 127.0.0.1 --port 8880",
+    "preview": "astro dev --host 127.0.0.1 --port 8880",
+    "build": "node tools/astro-build.mjs",
+    "preview:dist": "astro preview --host 127.0.0.1 --port 8880"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.0",
+    "astro": "^6.4.6",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.3"
   }
 }

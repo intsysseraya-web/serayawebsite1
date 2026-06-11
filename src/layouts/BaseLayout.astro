@@ -1,0 +1,27 @@
+---
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  bodyClass?: string;
+}
+
+const { title, description, bodyClass = "" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png" />
+  </head>
+  <body class={bodyClass}>
+    <slot />
+  </body>
+</html>
