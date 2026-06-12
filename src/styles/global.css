@@ -43,47 +43,223 @@ a {
 
 .seraya-hero-visual,
 .seraya-hero-picture,
-.seraya-hero-canvas,
-.seraya-hero-scan {
+.seraya-hero-cinema {
   position: absolute;
   inset: 0;
 }
 
 .seraya-hero-visual {
+  --seraya-camera-scale: 1.018;
+  --seraya-camera-x: 0px;
+  --seraya-camera-y: 0px;
+  --seraya-core: 0.7;
+  --seraya-focus: 0.5;
+  --seraya-screen: 0.65;
+  --seraya-scan: 0;
   z-index: -30;
   background: #050708;
+  overflow: hidden;
 }
 
 .seraya-hero-picture {
   display: block;
+  overflow: hidden;
+}
+
+.seraya-hero-picture::after {
+  background:
+    radial-gradient(circle at 72% 50%, rgba(123, 223, 242, calc(0.08 + var(--seraya-core) * 0.08)), transparent 18rem),
+    radial-gradient(circle at 83% 32%, rgba(36, 214, 179, 0.08), transparent 20rem),
+    linear-gradient(90deg, rgba(5, 7, 8, 0.32), rgba(5, 7, 8, 0.08) 52%, rgba(5, 7, 8, 0.02) 100%),
+    linear-gradient(180deg, rgba(5, 7, 8, 0.04), rgba(5, 7, 8, 0.42));
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
 }
 
 .seraya-hero-image {
   display: block;
+  filter: contrast(1.24) saturate(1.08) brightness(1.13);
   height: 100%;
+  opacity: 1;
+  transform: translate3d(var(--seraya-camera-x), var(--seraya-camera-y), 0) scale(var(--seraya-camera-scale));
+  transform-origin: 68% 50%;
   width: 100%;
   object-fit: cover;
   object-position: 61% center;
+  will-change: transform, filter;
 }
 
-.seraya-hero-canvas {
-  height: 100%;
+.seraya-hero-cinema {
   mix-blend-mode: screen;
-  opacity: 0.72;
+  opacity: 0.9;
+  overflow: hidden;
   pointer-events: none;
-  width: 100%;
+}
+
+.seraya-hero-cinema::before {
+  background:
+    radial-gradient(circle at 71% 51%, rgba(123, 223, 242, calc(0.08 + var(--seraya-core) * 0.12)), transparent 19rem),
+    radial-gradient(circle at 82% 31%, rgba(36, 214, 179, 0.06), transparent 16rem);
+  content: "";
+  inset: 0;
+  opacity: 0.7;
+  position: absolute;
+}
+
+.seraya-hero-cinema::after {
+  background:
+    radial-gradient(circle at calc(58% + var(--seraya-scan) * 24%) calc(48% + var(--seraya-scan) * 12%), rgba(123, 223, 242, 0.22), transparent 9rem),
+    linear-gradient(112deg, transparent 38%, rgba(123, 223, 242, 0.11) 48%, transparent 58%);
+  content: "";
+  inset: 0;
+  opacity: calc(0.16 + var(--seraya-focus) * 0.18);
+  position: absolute;
+  transform: translate3d(calc((var(--seraya-scan) - 0.5) * 6rem), 0, 0);
   will-change: opacity, transform;
 }
 
-.seraya-hero-scan {
-  background:
-    linear-gradient(90deg, transparent 0%, rgba(123, 223, 242, 0.13) 50%, transparent 100%),
-    repeating-linear-gradient(0deg, transparent 0 10px, rgba(123, 223, 242, 0.035) 11px 12px);
-  mask-image: linear-gradient(90deg, transparent 0%, black 38%, black 78%, transparent 100%);
-  opacity: 0.18;
+.seraya-hero-cinema__routes {
+  display: block;
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.seraya-guides path {
+  fill: none;
+  opacity: 0;
   pointer-events: none;
-  transform: translateX(-32%);
-  width: 56%;
+  stroke: transparent;
+}
+
+.seraya-core-bloom {
+  opacity: calc(0.2 + var(--seraya-core) * 0.18);
+  transform: scale(calc(0.92 + var(--seraya-core) * 0.1));
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.seraya-cinema-node {
+  fill: #7bdff2;
+  opacity: 0.7;
+  stroke: rgba(255, 255, 255, 0.48);
+  stroke-width: 1;
+  transform: scale(calc(0.88 + var(--seraya-focus) * 0.18));
+  transform-box: fill-box;
+  transform-origin: center;
+  will-change: opacity, transform;
+}
+
+.seraya-cinema-node.is-core {
+  fill: #24d6b3;
+  opacity: calc(0.72 + var(--seraya-core) * 0.24);
+  transform: scale(calc(1 + var(--seraya-core) * 0.32));
+}
+
+.seraya-cinema-node.is-bench,
+.seraya-cinema-node.is-delivery {
+  fill: #f5a524;
+}
+
+.seraya-spark,
+.seraya-scan-spark {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.seraya-spark .is-halo,
+.seraya-scan-spark .is-halo {
+  fill: #7bdff2;
+  opacity: 0.18;
+}
+
+.seraya-spark .is-core,
+.seraya-scan-spark .is-core {
+  fill: #efffff;
+  opacity: 0.92;
+}
+
+.seraya-spark.is-teal .is-halo {
+  fill: #24d6b3;
+  opacity: 0.2;
+}
+
+.seraya-spark.is-amber .is-halo {
+  fill: #f5a524;
+  opacity: 0.22;
+}
+
+.seraya-spark.is-amber .is-core {
+  fill: #ffe2a3;
+}
+
+.seraya-scan-spark .is-halo {
+  fill: #d9ffff;
+  opacity: 0.12;
+}
+
+.seraya-cinema-hotspot {
+  background: radial-gradient(circle at 50% 50%, rgba(123, 223, 242, 0.2), rgba(36, 214, 179, 0.06) 36%, transparent 68%);
+  border: 0;
+  border-radius: 999px;
+  opacity: calc(0.2 + var(--seraya-screen) * 0.22);
+  position: absolute;
+  transform: translate3d(0, 0, 0) scale(calc(0.98 + var(--seraya-focus) * 0.025));
+  will-change: opacity, transform;
+}
+
+.seraya-cinema-hotspot::after {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, calc(0.16 + var(--seraya-screen) * 0.18)), transparent 54%);
+  content: "";
+  inset: 0;
+  opacity: calc(0.2 + var(--seraya-screen) * 0.22);
+  position: absolute;
+  transform: scale(calc(0.82 + var(--seraya-screen) * 0.2));
+  will-change: opacity, transform;
+}
+
+.seraya-cinema-hotspot.is-monitor {
+  height: 11%;
+  left: 63.5%;
+  top: 37%;
+  width: 8%;
+}
+
+.seraya-cinema-hotspot.is-scanner {
+  border-radius: 999px;
+  height: 13%;
+  left: 58%;
+  top: 45%;
+  width: 4.4%;
+}
+
+.seraya-cinema-hotspot.is-batch {
+  height: 10%;
+  left: 77%;
+  top: 63%;
+  width: 11%;
+}
+
+.seraya-cinema-hotspot.is-core {
+  height: 22%;
+  left: 67%;
+  opacity: calc(0.22 + var(--seraya-core) * 0.24);
+  top: 52%;
+  width: 17%;
+}
+
+.seraya-cinema-shutter {
+  background:
+    radial-gradient(circle at calc(58% + var(--seraya-scan) * 26%) calc(48% + var(--seraya-scan) * 10%), rgba(123, 223, 242, 0.12), transparent 8rem),
+    radial-gradient(circle at calc(62% + var(--seraya-scan) * 12%) 62%, rgba(245, 165, 36, 0.08), transparent 7rem);
+  inset: 0;
+  opacity: calc(0.12 + var(--seraya-focus) * 0.1);
+  position: absolute;
+  will-change: opacity, transform;
 }
 
 .seraya-lab-card {
@@ -542,14 +718,11 @@ a {
   .seraya-hero-image {
     object-fit: contain;
     object-position: right center;
+    transform: scale(1);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .seraya-hero-scan {
-    animation: seraya-scan 8s ease-in-out infinite;
-  }
-
   .seraya-core-map__orbit.is-outer {
     animation: seraya-spin 30s linear infinite;
   }
@@ -567,14 +740,11 @@ a {
   }
 }
 
-@media (max-width: 47.9375rem), (prefers-reduced-motion: reduce) {
-  .seraya-hero-canvas,
-  .seraya-hero-scan {
+@media (max-width: 47.9375rem) {
+  .seraya-hero-cinema {
     display: none;
   }
-}
 
-@media (max-width: 47.9375rem) {
   .seraya-core-map {
     aspect-ratio: auto;
     min-height: 34rem;
@@ -623,19 +793,6 @@ a {
     aspect-ratio: auto;
     min-height: 14rem;
     max-width: 100%;
-  }
-}
-
-@keyframes seraya-scan {
-  0%,
-  18% {
-    transform: translateX(-42%);
-  }
-  55% {
-    transform: translateX(128%);
-  }
-  100% {
-    transform: translateX(128%);
   }
 }
 

@@ -1,0 +1,224 @@
+<div class="seraya-hero-visual" data-seraya-hero-visual aria-hidden="true">
+  <picture class="seraya-hero-picture">
+    <source srcset="/assets/hero/seraya-integration-core-global.webp" type="image/webp" />
+    <img
+      src="/assets/hero/seraya-integration-core-global.webp"
+      alt=""
+      width="1672"
+      height="941"
+      decoding="async"
+      fetchpriority="high"
+      class="seraya-hero-image h-full w-full opacity-95"
+    />
+  </picture>
+
+  <div class="seraya-hero-cinema" data-seraya-hero-cinema>
+    <svg class="seraya-hero-cinema__routes" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <filter id="seraya-point-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="6" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="seraya-core-radial" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#7bdff2" stop-opacity="0.86" />
+          <stop offset="46%" stop-color="#24d6b3" stop-opacity="0.24" />
+          <stop offset="100%" stop-color="#24d6b3" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+
+      <g class="seraya-guides">
+        <path data-seraya-route data-tone="cyan" d="M1248 106 C1216 170 1180 238 1128 315 C1090 372 1062 437 1028 526" />
+        <path data-seraya-route data-tone="cyan" d="M1490 264 C1388 278 1302 310 1220 382 C1156 438 1114 488 1030 545" />
+        <path data-seraya-route data-tone="teal" d="M860 160 C906 258 956 345 1008 528" />
+        <path data-seraya-route data-tone="amber" d="M650 725 C752 650 864 586 1018 538" />
+        <path data-seraya-route data-tone="teal" d="M1028 538 C1162 500 1296 448 1460 356" />
+        <path data-seraya-route data-tone="cyan" d="M1028 548 C1150 598 1298 666 1550 702" />
+        <path data-seraya-route data-tone="amber" d="M1022 556 C1075 644 1168 742 1328 816" />
+      </g>
+
+      <g class="seraya-guides">
+        <path data-seraya-scan d="M910 438 C948 480 986 514 1042 544 C1098 574 1168 596 1242 606" />
+        <path data-seraya-scan d="M996 476 C1038 500 1080 522 1135 554 C1186 583 1244 616 1316 664" />
+      </g>
+
+      <circle class="seraya-core-bloom" cx="1028" cy="548" r="154" fill="url(#seraya-core-radial)" />
+      <circle class="seraya-cinema-node is-core" cx="1028" cy="548" r="9" />
+      <circle class="seraya-cinema-node is-source" cx="1248" cy="106" r="5" />
+      <circle class="seraya-cinema-node is-source" cx="1490" cy="264" r="5" />
+      <circle class="seraya-cinema-node is-source" cx="860" cy="160" r="5" />
+      <circle class="seraya-cinema-node is-bench" cx="650" cy="725" r="6" />
+      <circle class="seraya-cinema-node is-delivery" cx="1460" cy="356" r="6" />
+      <circle class="seraya-cinema-node is-delivery" cx="1550" cy="702" r="6" />
+      <circle class="seraya-cinema-node is-delivery" cx="1328" cy="816" r="6" />
+
+      <g class="seraya-sparks" filter="url(#seraya-point-glow)">
+        <g class="seraya-spark is-cyan" data-seraya-spark="0">
+          <circle class="is-halo" r="17" />
+          <circle class="is-core" r="4.5" />
+        </g>
+        <g class="seraya-spark is-cyan" data-seraya-spark="1">
+          <circle class="is-halo" r="14" />
+          <circle class="is-core" r="4" />
+        </g>
+        <g class="seraya-spark is-teal" data-seraya-spark="2">
+          <circle class="is-halo" r="15" />
+          <circle class="is-core" r="4" />
+        </g>
+        <g class="seraya-spark is-amber" data-seraya-spark="3">
+          <circle class="is-halo" r="15" />
+          <circle class="is-core" r="4" />
+        </g>
+        <g class="seraya-spark is-teal" data-seraya-spark="4">
+          <circle class="is-halo" r="16" />
+          <circle class="is-core" r="4.5" />
+        </g>
+        <g class="seraya-spark is-cyan" data-seraya-spark="5">
+          <circle class="is-halo" r="15" />
+          <circle class="is-core" r="4" />
+        </g>
+        <g class="seraya-spark is-amber" data-seraya-spark="6">
+          <circle class="is-halo" r="15" />
+          <circle class="is-core" r="4" />
+        </g>
+        <g class="seraya-scan-spark" data-seraya-scan-spark="0">
+          <circle class="is-halo" r="20" />
+          <circle class="is-core" r="3.8" />
+        </g>
+        <g class="seraya-scan-spark" data-seraya-scan-spark="1">
+          <circle class="is-halo" r="18" />
+          <circle class="is-core" r="3.4" />
+        </g>
+      </g>
+    </svg>
+
+    <div class="seraya-cinema-hotspot is-monitor"></div>
+    <div class="seraya-cinema-hotspot is-scanner"></div>
+    <div class="seraya-cinema-hotspot is-batch"></div>
+    <div class="seraya-cinema-hotspot is-core"></div>
+    <div class="seraya-cinema-shutter"></div>
+  </div>
+</div>
+
+<script>
+  const visual = document.querySelector("[data-seraya-hero-visual]");
+  const motionParam = new URLSearchParams(window.location.search).get("motion");
+  let forceMotion = motionParam === "on";
+
+  try {
+    if (motionParam === "on") {
+      window.localStorage.setItem("seraya-motion", "on");
+    } else if (motionParam === "off") {
+      window.localStorage.removeItem("seraya-motion");
+    }
+
+    forceMotion ||= window.localStorage.getItem("seraya-motion") === "on";
+  } catch {
+    forceMotion = motionParam === "on";
+  }
+
+  if (visual instanceof HTMLElement) {
+    const reduceMotion = !forceMotion && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const smallViewport = window.matchMedia("(max-width: 767px)").matches;
+
+    if (forceMotion) {
+      document.documentElement.dataset.serayaMotion = "on";
+    }
+
+    if (!reduceMotion && !smallViewport) {
+      startCinematicHero(visual);
+    }
+  }
+
+  function startCinematicHero(visual) {
+    const routes = Array.from(visual.querySelectorAll("[data-seraya-route]"));
+    const scans = Array.from(visual.querySelectorAll("[data-seraya-scan]"));
+    const sparks = Array.from(visual.querySelectorAll("[data-seraya-spark]"));
+    const scanSparks = Array.from(visual.querySelectorAll("[data-seraya-scan-spark]"));
+    const startedAt = Date.now();
+    let timerId = 0;
+
+    const routeActors = routes
+      .map((route, index) => {
+        if (!(route instanceof SVGPathElement)) return null;
+
+        const spark = sparks[index];
+
+        return {
+          index,
+          length: route.getTotalLength(),
+          route,
+          spark: spark instanceof SVGGElement ? spark : null,
+        };
+      })
+      .filter(Boolean);
+
+    const scanActors = scans
+      .map((route, index) => {
+        if (!(route instanceof SVGPathElement)) return null;
+
+        const spark = scanSparks[index];
+
+        return {
+          index,
+          length: route.getTotalLength(),
+          route,
+          spark: spark instanceof SVGGElement ? spark : null,
+        };
+      })
+      .filter(Boolean);
+
+    const tick = () => {
+      const elapsed = (Date.now() - startedAt) / 1000;
+      const camera = (Math.sin(elapsed * 0.22) + 1) / 2;
+      const focus = (Math.sin(elapsed * 0.86) + 1) / 2;
+      const scan = (elapsed * 0.18) % 1;
+
+      visual.style.setProperty("--seraya-camera-scale", (1.018 + camera * 0.018).toFixed(4));
+      visual.style.setProperty("--seraya-camera-x", `${(-6 + camera * 10).toFixed(2)}px`);
+      visual.style.setProperty("--seraya-camera-y", `${(-4 + Math.sin(elapsed * 0.18) * 5).toFixed(2)}px`);
+      visual.style.setProperty("--seraya-focus", focus.toFixed(3));
+      visual.style.setProperty("--seraya-scan", scan.toFixed(3));
+      visual.style.setProperty("--seraya-core", (0.62 + Math.sin(elapsed * 1.7) * 0.28).toFixed(3));
+      visual.style.setProperty("--seraya-screen", (0.5 + Math.sin(elapsed * 2.4) * 0.34).toFixed(3));
+
+      routeActors.forEach((actor) => {
+        const speed = 0.15 + actor.index * 0.018;
+        const phase = (elapsed * speed + actor.index * 0.15) % 1;
+        const eased = 0.5 - Math.cos(phase * Math.PI) / 2;
+        const point = actor.route.getPointAtLength(eased * actor.length);
+        const edgeFade = Math.min(1, Math.max(0, Math.sin(phase * Math.PI) * 1.25));
+        const size = 0.88 + Math.sin(elapsed * 3.4 + actor.index) * 0.16;
+
+        if (actor.spark) {
+          actor.spark.setAttribute("transform", `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) scale(${size.toFixed(3)})`);
+          actor.spark.style.opacity = (0.22 + edgeFade * 0.72).toFixed(2);
+        }
+      });
+
+      scanActors.forEach((actor) => {
+        const phase = (elapsed * 0.24 + actor.index * 0.42) % 1;
+        const point = actor.route.getPointAtLength(phase * actor.length);
+        const edgeFade = Math.min(1, Math.max(0, Math.sin(phase * Math.PI) * 1.4));
+
+        if (actor.spark) {
+          actor.spark.setAttribute("transform", `translate(${point.x.toFixed(2)} ${point.y.toFixed(2)}) scale(${(0.8 + edgeFade * 0.28).toFixed(3)})`);
+          actor.spark.style.opacity = (0.12 + edgeFade * 0.44).toFixed(2);
+        }
+      });
+    };
+
+    tick();
+    timerId = window.setInterval(tick, 33);
+
+    window.addEventListener(
+      "pagehide",
+      () => {
+        if (timerId) window.clearInterval(timerId);
+      },
+      { once: true },
+    );
+  }
+</script>
