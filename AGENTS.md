@@ -1,14 +1,44 @@
 # Seraya Website Agent Guide
 
-This repository is a static multi-page website for Seraya System Integration. Keep changes focused, conservative, and consistent with the current HTML/CSS/JavaScript structure.
+This repository is the deployment and operating repository for the Seraya System Integration website. The website frontend is now synchronized from the Lovable/TanStack app in `H:\brep\baytech\seraya`; keep deployment credentials, repo-local scripts, and operational docs in this repository.
 
 ## Project Shape
 
-- Current shape: static HTML/CSS/JavaScript served from the repository root.
-- Before introducing a framework, build system, CSS framework, or new production dependency, explain the trade-offs and get explicit approval.
-- Main pages are `index.html`, `works.html`, `case-study.html`, and `about.html`.
-- Shared styles live in `styles.css`; shared browser behavior lives in `script.js`.
-- Deployment/config files include `_headers`, `wrangler.toml`, `netlify.toml`, and `DEPLOY-SPACESHIP.txt`.
+- Current frontend shape: Lovable/TanStack Start + Vite + React source synchronized into this repo.
+- This phase is frontend/local-run focused. Do not add Cloudflare Workers, full-stack server deployment, or production deployment changes unless the user explicitly asks for that phase.
+- Source Lovable repo: `H:\brep\baytech\seraya`.
+- Target deployment repo: `H:\brep\baytech\serayawebsite1`.
+- Main app source lives in `src/`; public assets live in `public/`.
+- Legacy static-root files such as `index.html`, `works.html`, `case-study.html`, `about.html`, `styles.css`, and `script.js` are retired after sync.
+- Deployment/config files such as `_headers`, `wrangler.toml`, `netlify.toml`, and `DEPLOY-SPACESHIP.txt` are target-owned and should not be overwritten by the Lovable sync script.
+
+## Lovable Sync Workflow
+
+Use the repo-local sync script to bring Lovable frontend source into this repository:
+
+```powershell
+.\tools\sync-lovable.ps1 -DryRun
+.\tools\sync-lovable.ps1 -Apply
+```
+
+The script copies an explicit allowlist from `H:\brep\baytech\seraya`, including `src/`, `public/`, `package.json`, `vite.config.ts`, `tsconfig.json`, `eslint.config.js`, `components.json`, `bun.lock`, `bunfig.toml`, `package-lock.json` when present, and `.lovable/project.json`.
+
+The script intentionally excludes generated or unrelated source material such as `node_modules/`, `dist/`, `.tanstack/`, `.nitro/`, `.wrangler/`, `old_site/`, `.git/`, and `.lovable/plan.md`.
+
+The script must preserve target-owned files and folders, including `AGENTS.md`, `_headers`, `wrangler.toml`, `netlify.toml`, `DEPLOY-SPACESHIP.txt`, `.secret.example.json`, `.secret.json`, and `tools/*`.
+
+Run the sync behavior test after changing the script:
+
+```powershell
+.\tools\test-sync-lovable.ps1
+```
+
+### Future Sync Delivery
+
+- This initial migration can go through a PR and merge into `main`.
+- After the initial migration is merged, routine Lovable sync-only updates do not need the PR workflow.
+- For sync-only updates, run `.\tools\sync-lovable.ps1 -Apply`, verify locally, then commit directly on `main` or fast-forward/merge into `main` using repo-local Git helpers.
+- Create a PR only when the change goes beyond routine sync, such as changing deployment architecture, GitHub credential tooling, production deployment config, or broad content/design direction.
 
 ## Project GitHub PAT
 
@@ -32,10 +62,23 @@ Plain local read-only Git commands such as `git status`, `git diff`, `git log`, 
 
 ## Development Commands
 
-- Local preview: `npm run preview`, which serves `http://127.0.0.1:8880/`.
-- Alternate preview: `py -3 preview-server.py` after confirming the file is UTF-8.
-- There is no current production build step. For site changes, verify with browser preview plus `git diff --check`.
-- For UI/content changes, inspect desktop and mobile layouts when practical.
+After syncing Lovable source, install dependencies and run the app from this repository root:
+
+```powershell
+npm install
+npm run dev
+npm run build
+npm run preview
+```
+
+For sync-script work, verify with:
+
+```powershell
+.\tools\test-sync-lovable.ps1
+git diff --check
+```
+
+For UI/content changes, inspect desktop and mobile layouts when practical.
 
 ## Encoding Rules
 
@@ -54,7 +97,8 @@ Plain local read-only Git commands such as `git status`, `git diff`, `git log`, 
 
 ## Editing Workflow
 
-- Read the relevant HTML file, `styles.css`, and `script.js` before editing.
+- For migration/sync changes, read `tools\sync-lovable.ps1`, `tools\test-sync-lovable.ps1`, and this file before editing.
+- For frontend changes, read the relevant `src/routes/*`, `src/styles.css`, `src/legacy-shim.css`, and relevant `public/` assets before editing.
 - Keep diffs narrow. Do not reformat unrelated large files.
-- Do not commit generated, downloaded, or local preview artifacts unless explicitly requested.
+- Do not commit generated, downloaded, dependency, or local preview artifacts unless explicitly requested.
 - Report verification honestly with the exact commands run and any remaining gaps.
