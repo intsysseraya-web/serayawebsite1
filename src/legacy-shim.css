@@ -1,0 +1,30 @@
+/* Brand overrides for migrated legacy pages. */
+
+/* Render the Seraya logo image inside the existing .logo slot.
+ * Header uses the horizontal lockup (icon + wordmark, ~4.7:1).
+ */
+.logo img {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+}
+
+.site-header .logo img {
+  height: 2rem;
+}
+
+@media (max-width: 640px) {
+  .site-header .logo img {
+    height: 1.6rem;
+  }
+}
+
+.site-footer .logo img {
+  height: 1.75rem;
+  margin-bottom: 0.25rem;
+}
+
+/* Hide the legacy text-fallback span if it slips through. */
+.logo span {
+  display: none;
+}

@@ -1,7 +1,15 @@
 .DS_Store
 Thumbs.db
 *.log
+dev-server*
 node_modules/
+dist/
+dist-ssr/
+.worktrees/
+.tanstack/
+.nitro/
+.wrangler/
+.vinxi/
 .superpowers/
 docs/
 
