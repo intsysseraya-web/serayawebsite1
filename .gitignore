@@ -5,6 +5,7 @@ dev-server*
 node_modules/
 dist/
 dist-ssr/
+.output/
 .worktrees/
 .tanstack/
 .nitro/

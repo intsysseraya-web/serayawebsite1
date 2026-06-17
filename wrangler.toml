@@ -1,6 +1,6 @@
-# Cloudflare Pages reads this file during Git builds. Keep it aligned with the
-# dashboard settings for the static prerendered TanStack output.
+# Cloudflare Pages reads this file during Git builds. TanStack Start emits a
+# Nitro Pages bundle into dist, including _worker.js and _routes.json.
 
 name = "serayawebsite1"
 compatibility_date = "2026-05-05"
-pages_build_output_dir = "dist/client"
+pages_build_output_dir = "dist"
