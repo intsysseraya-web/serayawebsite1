@@ -78,11 +78,11 @@ try {
   Write-TestFile (Join-Path $Source "public\static\logo.svg") "<svg>lovable</svg>"
   Write-TestFile (Join-Path $Source ".lovable\project.json") "{`"template`":`"tanstack`"}"
   Write-TestFile (Join-Path $Source ".lovable\plan.md") "local lovable plan"
-  Write-TestFile (Join-Path $Source "package.json") "{`"scripts`":{`"dev`":`"vite dev`"}}"
+  Write-TestFile (Join-Path $Source "package.json") "{`"scripts`":{`"dev`":`"vite dev`",`"build`":`"vite build`"}}"
   Write-TestFile (Join-Path $Source "package-lock.json") "{`"lockfileVersion`":3}"
   Write-TestFile (Join-Path $Source ".prettierrc") "{`"printWidth`":100}"
   Write-TestFile (Join-Path $Source ".prettierignore") "node_modules`ndist"
-  Write-TestFile (Join-Path $Source "vite.config.ts") "export default {}"
+  Write-TestFile (Join-Path $Source "vite.config.ts") "import { defineConfig } from `"@lovable.dev/vite-tanstack-config`";`n`nexport default defineConfig({`n  tanstackStart: { server: { entry: `"server`" } },`n});"
   Write-TestFile (Join-Path $Source "tsconfig.json") "{`"compilerOptions`":{}}"
   Write-TestFile (Join-Path $Source "eslint.config.js") "export default [{ ignores: [`"dist`", `".output`", `".vinxi`"] }]"
   Write-TestFile (Join-Path $Source "components.json") "{`"$schema`":`"test`"}"
@@ -100,6 +100,7 @@ try {
   Write-TestFile (Join-Path $Target "DEPLOY-SPACESHIP.txt") "target deploy notes"
   Write-TestFile (Join-Path $Target ".secret.example.json") "target secret example"
   Write-TestFile (Join-Path $Target ".secret.json") "target real secret"
+  Write-TestFile (Join-Path $Target "tools\ensure-linux-native-deps.cjs") "target native helper"
   Write-TestFile (Join-Path $Target "tools\keep.ps1") "target helper"
   Write-TestFile (Join-Path $Target "README-local.txt") "unknown target file"
   Write-TestFile (Join-Path $Target "index.html") "old static home"
@@ -124,13 +125,21 @@ try {
   Assert-FileContent (Join-Path $Target "public\legacy\script.js") "lovable legacy script"
   Assert-FileContent (Join-Path $Target "public\static\logo.svg") "<svg>lovable</svg>"
   Assert-FileContent (Join-Path $Target ".lovable\project.json") "{`"template`":`"tanstack`"}"
-  Assert-FileContent (Join-Path $Target "package.json") "{`"scripts`":{`"dev`":`"vite dev`"}}"
+  Assert-PathExists (Join-Path $Target "package.json")
+  $PackageJson = Get-Content -LiteralPath (Join-Path $Target "package.json") -Raw | ConvertFrom-Json
+  Assert-True ($PackageJson.scripts.dev -eq "vite dev") "Expected package.json to keep Lovable dev script"
+  Assert-True ($PackageJson.scripts.build -eq "vite build") "Expected package.json to keep Lovable build script"
+  Assert-True ($PackageJson.scripts.prebuild -eq "node tools/ensure-linux-native-deps.cjs") "Expected package.json to add target prebuild script"
   Assert-FileContent (Join-Path $Target "package-lock.json") "{`"lockfileVersion`":3}"
   Assert-FileContent (Join-Path $Target ".prettierrc") "{`"printWidth`":100}"
   Assert-PathExists (Join-Path $Target ".prettierignore")
   $PrettierIgnore = @(Get-Content -LiteralPath (Join-Path $Target ".prettierignore"))
   Assert-True ($PrettierIgnore -contains ".worktrees") "Expected .prettierignore to ignore .worktrees"
-  Assert-FileContent (Join-Path $Target "vite.config.ts") "export default {}"
+  Assert-True ($PrettierIgnore -contains ".output") "Expected .prettierignore to ignore .output"
+  Assert-PathExists (Join-Path $Target "vite.config.ts")
+  $ViteConfig = Get-Content -LiteralPath (Join-Path $Target "vite.config.ts") -Raw
+  Assert-True ($ViteConfig.Contains('preset: "cloudflare_pages"')) "Expected vite.config.ts to keep target Cloudflare Pages preset"
+  Assert-True ($ViteConfig.Contains('tanstackStart')) "Expected vite.config.ts to keep Lovable TanStack config"
   Assert-FileContent (Join-Path $Target "tsconfig.json") "{`"compilerOptions`":{}}"
   Assert-PathExists (Join-Path $Target "eslint.config.js")
   $EslintConfig = Get-Content -LiteralPath (Join-Path $Target "eslint.config.js") -Raw
@@ -155,6 +164,7 @@ try {
   Assert-FileContent (Join-Path $Target "DEPLOY-SPACESHIP.txt") "target deploy notes"
   Assert-FileContent (Join-Path $Target ".secret.example.json") "target secret example"
   Assert-FileContent (Join-Path $Target ".secret.json") "target real secret"
+  Assert-FileContent (Join-Path $Target "tools\ensure-linux-native-deps.cjs") "target native helper"
   Assert-FileContent (Join-Path $Target "tools\keep.ps1") "target helper"
   Assert-FileContent (Join-Path $Target "README-local.txt") "unknown target file"
 

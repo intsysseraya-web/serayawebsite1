@@ -23,7 +23,17 @@ Use the repo-local sync script to bring Lovable frontend source into this reposi
 .\tools\sync-lovable.ps1 -Apply
 ```
 
+For the routine "take Lovable main, sync it here, and create a local commit" flow, use:
+
+```powershell
+.\tools\sync-lovable-main.ps1
+```
+
+That wrapper requires a clean target repo, stashes dirty Lovable-source work if needed, pulls `origin/main` in `H:\brep\baytech\seraya`, runs the sync script, and creates a local commit in this deployment repo. Verify locally before pushing and deploying.
+
 The script copies an explicit allowlist from `H:\brep\baytech\seraya`, including `src/`, `public/`, `package.json`, `vite.config.ts`, `tsconfig.json`, `eslint.config.js`, `components.json`, `bun.lock`, `bunfig.toml`, `package-lock.json` when present, and `.lovable/project.json`.
+
+After copying, the script reapplies target-local deployment patches, including the Cloudflare Pages Nitro preset in `vite.config.ts`, the Linux native-dependency `prebuild` script in `package.json`, and local generated-directory ignores.
 
 The script intentionally excludes generated or unrelated source material such as `node_modules/`, `dist/`, `.tanstack/`, `.nitro/`, `.wrangler/`, `old_site/`, `.git/`, and `.lovable/plan.md`.
 

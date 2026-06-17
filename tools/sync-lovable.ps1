@@ -167,13 +167,116 @@ function Update-EslintIgnores {
   return "patched local eslint ignores: eslint.config.js"
 }
 
+function Update-PackagePrebuild {
+  param([string]$TargetRoot)
+
+  $PackagePath = Join-NormalizedPath $TargetRoot "package.json"
+  if (-not (Test-Path -LiteralPath $PackagePath -PathType Leaf)) {
+    return "skip local package prebuild patch missing: package.json"
+  }
+
+  $Content = Get-Content -LiteralPath $PackagePath -Raw
+  $Package = $Content | ConvertFrom-Json
+  $PrebuildCommand = "node tools/ensure-linux-native-deps.cjs"
+
+  if (-not $Package.PSObject.Properties["scripts"]) {
+    $Package | Add-Member -NotePropertyName "scripts" -NotePropertyValue ([pscustomobject]@{})
+  }
+
+  $UpdatedScripts = [ordered]@{}
+  $Inserted = $false
+
+  foreach ($Property in $Package.scripts.PSObject.Properties) {
+    if ($Property.Name -eq "prebuild") {
+      $UpdatedScripts["prebuild"] = $PrebuildCommand
+      $Inserted = $true
+      continue
+    }
+
+    if ((-not $Inserted) -and ($Property.Name -eq "build")) {
+      $UpdatedScripts["prebuild"] = $PrebuildCommand
+      $Inserted = $true
+    }
+
+    $UpdatedScripts[$Property.Name] = $Property.Value
+  }
+
+  if (-not $Inserted) {
+    $UpdatedScripts["prebuild"] = $PrebuildCommand
+  }
+
+  $Package.scripts = [pscustomobject]$UpdatedScripts
+  $Package | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $PackagePath -Encoding utf8
+  return "patched local package prebuild: package.json"
+}
+
+function Update-ViteCloudflarePagesPreset {
+  param([string]$TargetRoot)
+
+  $VitePath = Join-NormalizedPath $TargetRoot "vite.config.ts"
+  if (-not (Test-Path -LiteralPath $VitePath -PathType Leaf)) {
+    return "skip local vite cloudflare pages patch missing: vite.config.ts"
+  }
+
+  $Content = Get-Content -LiteralPath $VitePath -Raw
+  $NewLine = if ($Content.Contains("`r`n")) { "`r`n" } else { "`n" }
+  $Updated = $Content -replace "You can pass additional config via defineConfig\(\{ vite: \{ \.\.\. \}, etc\.\.\. \}\) if needed\.", "You can pass additional config via defineConfig({ vite: { ... }, nitro: { ... }, etc... }) if needed."
+
+  if ($Updated -match 'preset\s*:\s*["'']cloudflare_pages["'']') {
+    if ($Updated -ne $Content) {
+      Set-Content -LiteralPath $VitePath -Value $Updated -Encoding utf8
+      return "patched local vite cloudflare pages comment: vite.config.ts"
+    }
+    return "local vite cloudflare pages preset already present: vite.config.ts"
+  }
+
+  $NitroTruePattern = '(?m)^([ \t]*)nitro\s*:\s*true\s*,\s*$'
+  if ($Updated -match $NitroTruePattern) {
+    $Updated = [System.Text.RegularExpressions.Regex]::Replace(
+      $Updated,
+      $NitroTruePattern,
+      {
+        param($Match)
+        $Indent = $Match.Groups[1].Value
+        return "$Indent" + "nitro: {" + $NewLine +
+          "$Indent" + "  preset: `"cloudflare_pages`"," + $NewLine +
+          "$Indent" + "},"
+      },
+      1
+    )
+  } elseif ($Updated -match '(?m)^[ \t]*nitro\s*:') {
+    throw "vite.config.ts already has a nitro config without cloudflare_pages. Update the target-local patch manually."
+  } else {
+    $DefineConfigPattern = 'export\s+default\s+defineConfig\(\s*\{'
+    if ($Updated -notmatch $DefineConfigPattern) {
+      return "skip local vite cloudflare pages patch unsupported shape: vite.config.ts"
+    }
+
+    $Updated = [System.Text.RegularExpressions.Regex]::Replace(
+      $Updated,
+      $DefineConfigPattern,
+      {
+        param($Match)
+        return $Match.Value + $NewLine +
+          "  nitro: {" + $NewLine +
+          "    preset: `"cloudflare_pages`"," + $NewLine +
+          "  },"
+      },
+      1
+    )
+  }
+
+  Set-Content -LiteralPath $VitePath -Value $Updated -Encoding utf8
+  return "patched local vite cloudflare pages preset: vite.config.ts"
+}
+
 function Apply-TargetLocalAdjustments {
   param([string]$TargetRoot)
 
   $Results = New-Object System.Collections.Generic.List[string]
 
   $PrettierIgnorePath = Join-NormalizedPath $TargetRoot ".prettierignore"
-  foreach ($Line in @(".worktrees", ".tanstack", ".nitro", ".wrangler")) {
+  foreach ($Line in @(".output", ".worktrees", ".tanstack", ".nitro", ".wrangler")) {
     Ensure-IgnoreLine -Path $PrettierIgnorePath -Line $Line
   }
   if (Test-Path -LiteralPath $PrettierIgnorePath -PathType Leaf) {
@@ -183,6 +286,8 @@ function Apply-TargetLocalAdjustments {
   }
 
   $Results.Add((Update-EslintIgnores -TargetRoot $TargetRoot))
+  $Results.Add((Update-PackagePrebuild -TargetRoot $TargetRoot))
+  $Results.Add((Update-ViteCloudflarePagesPreset -TargetRoot $TargetRoot))
   return $Results
 }
 
