@@ -1,25 +1,6 @@
-# Workers Static Assets — use when deploy command is: npx wrangler deploy
-# (Cloudflare shows this if the project is a Worker or build uses wrangler deploy.)
-#
-# For Cloudflare Pages only (Connect to Git, no Worker): leave Build command empty,
-# set output to "/", and you may DELETE this file or switch to wrangler pages deploy.
-#
-# https://developers.cloudflare.com/workers/static-assets/
+# Cloudflare Pages reads this file during Git builds. Keep it aligned with the
+# dashboard settings for the static prerendered TanStack output.
 
 name = "serayawebsite1"
 compatibility_date = "2026-05-05"
-
-[assets]
-directory = "."
-
-# --- Main domain (optional): uncomment and set YOURDOMAIN, then `npx wrangler deploy`.
-# Requires an active Cloudflare zone for that domain on this account.
-# https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
-#
-# [[routes]]
-# pattern = "YOURDOMAIN.com"
-# custom_domain = true
-#
-# [[routes]]
-# pattern = "www.YOURDOMAIN.com"
-# custom_domain = true
+pages_build_output_dir = "dist/client"
