@@ -72,7 +72,7 @@ $Target = Join-Path $TempRoot "target-repo"
 try {
   New-Item -ItemType Directory -Force -Path $Source, $Target | Out-Null
 
-  Write-TestFile (Join-Path $Source "src\routes\index.tsx") "lovable home route"
+  Write-TestFile (Join-Path $Source "src\routes\index.tsx") "function LegacyPage() {`n  try {`n    foo();`n  } catch {}`n}"
   Write-TestFile (Join-Path $Source "src\styles.css") "lovable css"
   Write-TestFile (Join-Path $Source "public\legacy\script.js") "lovable legacy script"
   Write-TestFile (Join-Path $Source "public\static\logo.svg") "<svg>lovable</svg>"
@@ -120,7 +120,9 @@ try {
 
   & $SyncScript -SourcePath $Source -TargetPath $Target -Apply | Out-Null
 
-  Assert-FileContent (Join-Path $Target "src\routes\index.tsx") "lovable home route"
+  Assert-PathExists (Join-Path $Target "src\routes\index.tsx")
+  $IndexRoute = Get-Content -LiteralPath (Join-Path $Target "src\routes\index.tsx") -Raw
+  Assert-True ($IndexRoute.Contains("Ignore malformed query strings")) "Expected index route empty catch to be documented"
   Assert-FileContent (Join-Path $Target "src\styles.css") "lovable css"
   Assert-FileContent (Join-Path $Target "public\legacy\script.js") "lovable legacy script"
   Assert-FileContent (Join-Path $Target "public\static\logo.svg") "<svg>lovable</svg>"
@@ -143,6 +145,8 @@ try {
   Assert-FileContent (Join-Path $Target "tsconfig.json") "{`"compilerOptions`":{}}"
   Assert-PathExists (Join-Path $Target "eslint.config.js")
   $EslintConfig = Get-Content -LiteralPath (Join-Path $Target "eslint.config.js") -Raw
+  Assert-True (-not $EslintConfig.Contains("`r")) "Expected eslint.config.js to use LF line endings"
+  Assert-True ($EslintConfig.Contains("ignores: [`n")) "Expected eslint config ignore block to be Prettier-friendly"
   Assert-True ($EslintConfig.Contains('".worktrees"')) "Expected eslint config to ignore .worktrees"
   Assert-True ($EslintConfig.Contains('".tanstack"')) "Expected eslint config to ignore .tanstack"
   Assert-True ($EslintConfig.Contains('".nitro"')) "Expected eslint config to ignore .nitro"

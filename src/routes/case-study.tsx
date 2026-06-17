@@ -279,7 +279,10 @@ export const Route = createFileRoute("/case-study")({
         content:
           "Procurement programs for enterprise compute infrastructure sourcing, BOM alignment, rollouts, lifecycle supply, and RFQ coordination.",
       },
-      { property: "og:title", content: "Enterprise procurement programs | Seraya System Integration" },
+      {
+        property: "og:title",
+        content: "Enterprise procurement programs | Seraya System Integration",
+      },
       {
         property: "og:description",
         content:

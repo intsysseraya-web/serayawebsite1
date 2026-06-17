@@ -18,7 +18,7 @@
   --accent-hover: #ffffff;
   --accent-muted: #d4d4d8;
   --accent-contrast: #050508;
-  --glow: rgba(255, 255, 255, 0.10);
+  --glow: rgba(255, 255, 255, 0.1);
   --header-h: 4rem;
   --announce-h: 2.25rem;
   --container: min(1400px, calc(100% - 2rem));
@@ -344,11 +344,8 @@ a:hover {
   flex-direction: column;
   justify-content: flex-end;
   padding: 2.5rem 1rem 0;
-  background: radial-gradient(
-      120% 85% at 18% -5%,
-      var(--glow),
-      transparent 58%
-    ),
+  background:
+    radial-gradient(120% 85% at 18% -5%, var(--glow), transparent 58%),
     linear-gradient(180deg, #12101c 0%, var(--bg) 100%);
   border-bottom: 1px solid var(--border);
 }
@@ -998,7 +995,6 @@ a:hover {
   background: var(--bg-elevated);
 }
 
-
 .tile h3 {
   margin: 0 0 0.5rem;
   font-size: 0.95rem;
@@ -1045,7 +1041,6 @@ a:hover {
   color: var(--text-muted);
   font-size: 0.9rem;
 }
-
 
 /* ----- Footer (multi-column) ----- */
 .site-footer {
@@ -1162,8 +1157,7 @@ article.prose {
 
 .company-band {
   background:
-    linear-gradient(135deg, rgba(92, 200, 255, 0.08), transparent 34rem),
-    var(--bg-elevated);
+    linear-gradient(135deg, rgba(92, 200, 255, 0.08), transparent 34rem), var(--bg-elevated);
 }
 
 .company-grid,
@@ -1191,7 +1185,6 @@ article.prose {
 .company-card {
   min-height: 11rem;
 }
-
 
 .company-card h3,
 .contact-panel h3,
@@ -1260,8 +1253,7 @@ article.prose {
 .contact-section {
   scroll-margin-top: calc(var(--header-h) + 1rem);
   background:
-    radial-gradient(circle at 20% 0%, rgba(92, 200, 255, 0.08), transparent 26rem),
-    var(--bg);
+    radial-gradient(circle at 20% 0%, rgba(92, 200, 255, 0.08), transparent 26rem), var(--bg);
 }
 
 #regional {
@@ -1470,8 +1462,7 @@ article.prose {
 
 .program-band {
   background:
-    linear-gradient(135deg, rgba(92, 200, 255, 0.07), transparent 36rem),
-    var(--bg-elevated);
+    linear-gradient(135deg, rgba(92, 200, 255, 0.07), transparent 36rem), var(--bg-elevated);
 }
 
 .program-scenarios,
@@ -1513,7 +1504,6 @@ article.prose {
   background: var(--bg-card);
   padding: 1.2rem;
 }
-
 
 .program-type-card h3,
 .program-control-grid h3,
@@ -1592,8 +1582,7 @@ article.prose {
   gap: 1.25rem;
   align-items: center;
   background:
-    radial-gradient(circle at 18% 0%, rgba(92, 200, 255, 0.1), transparent 24rem),
-    var(--bg);
+    radial-gradient(circle at 18% 0%, rgba(92, 200, 255, 0.1), transparent 24rem), var(--bg);
 }
 
 .program-cta > div {
@@ -1723,7 +1712,7 @@ article.prose {
   pointer-events: none;
   /* Fade edges so the network feels embedded, not stamped on */
   -webkit-mask-image: radial-gradient(120% 90% at 50% 45%, #000 55%, transparent 100%);
-          mask-image: radial-gradient(120% 90% at 50% 45%, #000 55%, transparent 100%);
+  mask-image: radial-gradient(120% 90% at 50% 45%, #000 55%, transparent 100%);
 }
 
 /* Soft vignette over the canvas to lift headline contrast */
@@ -1739,18 +1728,30 @@ article.prose {
 }
 
 /* Plain mode: hide canvas + vignette for clean-comparison view */
-.hero[data-hero-style="plain"] .hero-bg-canvas { display: none; }
-.hero[data-hero-style="plain"]::before { display: none; }
+.hero[data-hero-style="plain"] .hero-bg-canvas {
+  display: none;
+}
+.hero[data-hero-style="plain"]::before {
+  display: none;
+}
 
 /* --- Primary CTA: keep monochrome rest state, add cyan glow on hover --- */
 .btn-primary {
-  transition: background 200ms ease, box-shadow 250ms ease, transform 200ms ease;
+  transition:
+    background 200ms ease,
+    box-shadow 250ms ease,
+    transform 200ms ease;
 }
 .btn-primary:hover {
-  box-shadow: 0 0 0 1px var(--accent-cyan-soft), 0 8px 28px var(--accent-cyan-glow);
+  box-shadow:
+    0 0 0 1px var(--accent-cyan-soft),
+    0 8px 28px var(--accent-cyan-glow);
 }
 .btn-ghost {
-  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
 }
 .btn-ghost:hover {
   border-color: var(--accent-cyan-soft);
@@ -1771,7 +1772,7 @@ article.prose {
 .value-card,
 .tile {
   transition:
-    transform 280ms cubic-bezier(.2, .6, .2, 1),
+    transform 280ms cubic-bezier(0.2, 0.6, 0.2, 1),
     border-color 280ms ease,
     box-shadow 280ms ease;
   will-change: transform;
@@ -1791,7 +1792,7 @@ article.prose {
 
 .promo-card .promo-media,
 .product-card-media img {
-  transition: transform 600ms cubic-bezier(.2, .6, .2, 1);
+  transition: transform 600ms cubic-bezier(0.2, 0.6, 0.2, 1);
 }
 .promo-card:hover .promo-media,
 .product-card:hover .product-card-media img {
@@ -1803,8 +1804,8 @@ article.prose {
   opacity: 0;
   transform: translateY(22px);
   transition:
-    opacity 720ms cubic-bezier(.2, .6, .2, 1),
-    transform 720ms cubic-bezier(.2, .6, .2, 1);
+    opacity 720ms cubic-bezier(0.2, 0.6, 0.2, 1),
+    transform 720ms cubic-bezier(0.2, 0.6, 0.2, 1);
   transition-delay: var(--reveal-delay, 0ms);
 }
 .reveal-ready .reveal.is-revealed {
@@ -1822,29 +1823,40 @@ article.prose {
 /* --- Advantage timeline: progressive cyan "lighting" as user scrolls --- */
 .adv-card-root.is-lit {
   border-color: var(--accent-cyan-soft);
-  box-shadow: 0 0 0 1px var(--accent-cyan-faint), 0 0 32px var(--accent-cyan-faint);
-  transition: border-color 500ms ease, box-shadow 500ms ease;
+  box-shadow:
+    0 0 0 1px var(--accent-cyan-faint),
+    0 0 32px var(--accent-cyan-faint);
+  transition:
+    border-color 500ms ease,
+    box-shadow 500ms ease;
 }
 
 .adv-card-root.is-lit::after,
 .adv-tree-branches.is-lit::before {
   background: var(--accent-cyan-soft);
   box-shadow: 0 0 12px var(--accent-cyan-glow);
-  transition: background 600ms ease, box-shadow 600ms ease;
+  transition:
+    background 600ms ease,
+    box-shadow 600ms ease;
 }
 
 .adv-tree-branches .adv-card.is-lit {
   border-color: var(--accent-cyan-soft);
-  box-shadow: 0 0 0 1px var(--accent-cyan-faint), 0 0 28px var(--accent-cyan-faint);
-  transition: border-color 500ms ease, box-shadow 500ms ease;
+  box-shadow:
+    0 0 0 1px var(--accent-cyan-faint),
+    0 0 28px var(--accent-cyan-faint);
+  transition:
+    border-color 500ms ease,
+    box-shadow 500ms ease;
 }
 
 .adv-tree-branches .adv-card.is-lit::before {
   background: var(--accent-cyan-soft);
   box-shadow: 0 0 10px var(--accent-cyan-glow);
-  transition: background 600ms ease, box-shadow 600ms ease;
+  transition:
+    background 600ms ease,
+    box-shadow 600ms ease;
 }
-
 
 /* ===================== Systems catalog (/works) ===================== */
 .catalog-hero .eyebrow {
@@ -1877,7 +1889,10 @@ article.prose {
   background: rgba(92, 200, 255, 0.04);
   color: var(--text);
   text-decoration: none;
-  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
 }
 .cat-chip:hover {
   border-color: var(--accent-cyan, #5cc8ff);

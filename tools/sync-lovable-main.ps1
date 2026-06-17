@@ -1,7 +1,8 @@
 param(
   [string]$SourcePath = "H:\brep\baytech\seraya",
   [string]$TargetPath = (Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..")).Path,
-  [string]$CommitMessage = "Sync Lovable main"
+  [string]$CommitMessage = "Sync Lovable main",
+  [switch]$SkipFormat
 )
 
 $ErrorActionPreference = "Stop"
@@ -106,6 +107,19 @@ if ($PostPullSourceStatus.Count -gt 0) {
 & $SyncScript -SourcePath $SourceRoot -TargetPath $TargetRoot -Apply
 if ($LASTEXITCODE -ne 0) {
   throw "sync-lovable.ps1 failed."
+}
+
+if (-not $SkipFormat) {
+  Write-Host "Formatting synced target files with Prettier..."
+  Push-Location $TargetRoot
+  try {
+    & npm exec -- prettier --write .
+    if ($LASTEXITCODE -ne 0) {
+      throw "prettier failed after sync."
+    }
+  } finally {
+    Pop-Location
+  }
 }
 
 $PostSyncStatus = Get-GitStatusLines -RepoPath $TargetRoot

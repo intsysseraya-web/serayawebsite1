@@ -51,6 +51,18 @@ function Assert-PathWithin {
   }
 }
 
+function Write-Utf8LfFile {
+  param(
+    [string]$Path,
+    [string]$Content
+  )
+
+  $Normalized = $Content -replace "`r`n", "`n"
+  $Normalized = $Normalized -replace "`r", "`n"
+  $Utf8NoBom = New-Object System.Text.UTF8Encoding -ArgumentList $false
+  [System.IO.File]::WriteAllText($Path, $Normalized, $Utf8NoBom)
+}
+
 function Ensure-ParentDirectory {
   param([string]$Path)
 
@@ -142,8 +154,8 @@ function Ensure-IgnoreLine {
     return
   }
 
-  $Updated = @($Existing + $Line)
-  Set-Content -LiteralPath $Path -Value $Updated -Encoding utf8
+  $Updated = (($Existing + $Line) -join "`n") + "`n"
+  Write-Utf8LfFile -Path $Path -Content $Updated
 }
 
 function Update-EslintIgnores {
@@ -155,7 +167,20 @@ function Update-EslintIgnores {
   }
 
   $Content = Get-Content -LiteralPath $EslintPath -Raw
-  $IgnoreConfig = '{ ignores: ["dist", "dist-ssr", ".output", ".vinxi", ".tanstack", ".nitro", ".wrangler", ".worktrees"] }'
+  $IgnoreConfig = @(
+    "{",
+    "    ignores: [",
+    "      `"dist`",",
+    "      `"dist-ssr`",",
+    "      `".output`",",
+    "      `".vinxi`",",
+    "      `".tanstack`",",
+    "      `".nitro`",",
+    "      `".wrangler`",",
+    "      `".worktrees`",",
+    "    ],",
+    "  }"
+  ) -join "`n"
   $Pattern = '\{\s*ignores:\s*\[[^\]]*\]\s*\}'
 
   if ($Content -notmatch $Pattern) {
@@ -163,7 +188,7 @@ function Update-EslintIgnores {
   }
 
   $Updated = [System.Text.RegularExpressions.Regex]::Replace($Content, $Pattern, $IgnoreConfig, 1)
-  Set-Content -LiteralPath $EslintPath -Value $Updated -Encoding utf8
+  Write-Utf8LfFile -Path $EslintPath -Content $Updated
   return "patched local eslint ignores: eslint.config.js"
 }
 
@@ -206,7 +231,8 @@ function Update-PackagePrebuild {
   }
 
   $Package.scripts = [pscustomobject]$UpdatedScripts
-  $Package | ConvertTo-Json -Depth 100 | Set-Content -LiteralPath $PackagePath -Encoding utf8
+  $PackageJson = ($Package | ConvertTo-Json -Depth 100) + "`n"
+  Write-Utf8LfFile -Path $PackagePath -Content $PackageJson
   return "patched local package prebuild: package.json"
 }
 
@@ -224,7 +250,7 @@ function Update-ViteCloudflarePagesPreset {
 
   if ($Updated -match 'preset\s*:\s*["'']cloudflare_pages["'']') {
     if ($Updated -ne $Content) {
-      Set-Content -LiteralPath $VitePath -Value $Updated -Encoding utf8
+      Write-Utf8LfFile -Path $VitePath -Content $Updated
       return "patched local vite cloudflare pages comment: vite.config.ts"
     }
     return "local vite cloudflare pages preset already present: vite.config.ts"
@@ -266,8 +292,90 @@ function Update-ViteCloudflarePagesPreset {
     )
   }
 
-  Set-Content -LiteralPath $VitePath -Value $Updated -Encoding utf8
+  Write-Utf8LfFile -Path $VitePath -Content $Updated
   return "patched local vite cloudflare pages preset: vite.config.ts"
+}
+
+function Update-IndexEmptyCatch {
+  param([string]$TargetRoot)
+
+  $IndexPath = Join-NormalizedPath $TargetRoot "src\routes\index.tsx"
+  if (-not (Test-Path -LiteralPath $IndexPath -PathType Leaf)) {
+    return "skip local index empty catch patch missing: src/routes/index.tsx"
+  }
+
+  $Content = Get-Content -LiteralPath $IndexPath -Raw
+  $Pattern = '(?m)^([ \t]*)\}\s*catch\s*\{\s*\}'
+  if ($Content -notmatch $Pattern) {
+    return "local index empty catch patch not needed: src/routes/index.tsx"
+  }
+
+  $Updated = [System.Text.RegularExpressions.Regex]::Replace(
+    $Content,
+    $Pattern,
+    {
+      param($Match)
+      $Indent = $Match.Groups[1].Value
+      return "$Indent" + "} catch {" + "`n" +
+        "$Indent" + "  // Ignore malformed query strings and keep the default animated hero." + "`n" +
+        "$Indent" + "}"
+    },
+    1
+  )
+
+  Write-Utf8LfFile -Path $IndexPath -Content $Updated
+  return "patched local index empty catch: src/routes/index.tsx"
+}
+
+function Normalize-TargetTextLineEndings {
+  param([string]$TargetRoot)
+
+  $SkipDirNames = @(
+    ".git",
+    "node_modules",
+    "dist",
+    "dist-ssr",
+    ".output",
+    ".vinxi",
+    ".tanstack",
+    ".nitro",
+    ".wrangler",
+    ".worktrees"
+  )
+  $TextExtensions = @(".html", ".css", ".js", ".cjs", ".json", ".md", ".ts", ".tsx", ".toml")
+  $TextFileNames = @(".gitignore", ".gitattributes", ".npmrc", ".prettierignore", ".prettierrc")
+  $RootFull = (Resolve-Path -LiteralPath $TargetRoot).Path.TrimEnd("\", "/")
+  $ChangedCount = 0
+
+  foreach ($File in (Get-ChildItem -LiteralPath $RootFull -Recurse -Force -File)) {
+    $Relative = $File.FullName.Substring($RootFull.Length).TrimStart("\", "/")
+    $Parts = $Relative -split '[\\/]'
+    $ShouldSkip = $false
+
+    foreach ($Part in $Parts) {
+      if ($SkipDirNames -contains $Part) {
+        $ShouldSkip = $true
+        break
+      }
+    }
+
+    if ($ShouldSkip) {
+      continue
+    }
+
+    $Extension = $File.Extension.ToLowerInvariant()
+    if ((-not ($TextExtensions -contains $Extension)) -and (-not ($TextFileNames -contains $File.Name))) {
+      continue
+    }
+
+    $Content = [System.IO.File]::ReadAllText($File.FullName)
+    if ($Content.Contains("`r")) {
+      Write-Utf8LfFile -Path $File.FullName -Content $Content
+      $ChangedCount += 1
+    }
+  }
+
+  return "normalized local text line endings: $ChangedCount file(s)"
 }
 
 function Apply-TargetLocalAdjustments {
@@ -288,6 +396,8 @@ function Apply-TargetLocalAdjustments {
   $Results.Add((Update-EslintIgnores -TargetRoot $TargetRoot))
   $Results.Add((Update-PackagePrebuild -TargetRoot $TargetRoot))
   $Results.Add((Update-ViteCloudflarePagesPreset -TargetRoot $TargetRoot))
+  $Results.Add((Update-IndexEmptyCatch -TargetRoot $TargetRoot))
+  $Results.Add((Normalize-TargetTextLineEndings -TargetRoot $TargetRoot))
   return $Results
 }
 

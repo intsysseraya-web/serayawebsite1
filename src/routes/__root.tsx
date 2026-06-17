@@ -78,7 +78,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Seraya Systems Integration" },
-      { name: "description", content: "Seraya Systems Integration — Kuala Lumpur system integrator for GPU compute, servers, and workstation programs." },
+      {
+        name: "description",
+        content:
+          "Seraya Systems Integration — Kuala Lumpur system integrator for GPU compute, servers, and workstation programs.",
+      },
       { name: "author", content: "Seraya Systems Integration" },
       { property: "og:site_name", content: "Seraya Systems Integration" },
       { property: "og:type", content: "website" },
@@ -92,7 +96,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/svg+xml", href: "/brand/seraya-favicon.svg" },
       { rel: "icon", type: "image/x-icon", href: "/static/seraya-favicon.ico" },
       // iOS home-screen icon requires PNG
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/static/seraya-icon-square-white-512.png" },
+      {
+        rel: "apple-touch-icon",
+        sizes: "180x180",
+        href: "/static/seraya-icon-square-white-512.png",
+      },
     ],
   }),
   shellComponent: RootShell,

@@ -47,9 +47,34 @@ const SECTIONS: Section[] = [
     title: "Compute",
     blurb: "General-purpose rack nodes for virtualization, databases and mixed workloads.",
     skus: [
-      { code: "SR-C220", tagline: "Dual-socket rack node", cpu: "2× Xeon Silver 4410Y (12C)", ram: "256 GB DDR5 ECC", storage: "2× 1.92 TB NVMe", lead: "3 weeks", img: IMG.c220 },
-      { code: "SR-C450", tagline: "Virtualization host", cpu: "2× EPYC 9354 (32C)", ram: "768 GB DDR5 ECC", storage: "4× 3.84 TB NVMe", lead: "4 weeks", badge: "Popular", img: IMG.c450 },
-      { code: "SR-C880", tagline: "High-density HPC node", cpu: "2× EPYC 9654 (96C)", ram: "1.5 TB DDR5 ECC", storage: "8× 7.68 TB NVMe", lead: "6 weeks", img: IMG.c880 },
+      {
+        code: "SR-C220",
+        tagline: "Dual-socket rack node",
+        cpu: "2× Xeon Silver 4410Y (12C)",
+        ram: "256 GB DDR5 ECC",
+        storage: "2× 1.92 TB NVMe",
+        lead: "3 weeks",
+        img: IMG.c220,
+      },
+      {
+        code: "SR-C450",
+        tagline: "Virtualization host",
+        cpu: "2× EPYC 9354 (32C)",
+        ram: "768 GB DDR5 ECC",
+        storage: "4× 3.84 TB NVMe",
+        lead: "4 weeks",
+        badge: "Popular",
+        img: IMG.c450,
+      },
+      {
+        code: "SR-C880",
+        tagline: "High-density HPC node",
+        cpu: "2× EPYC 9654 (96C)",
+        ram: "1.5 TB DDR5 ECC",
+        storage: "8× 7.68 TB NVMe",
+        lead: "6 weeks",
+        img: IMG.c880,
+      },
     ],
   },
   {
@@ -57,9 +82,39 @@ const SECTIONS: Section[] = [
     title: "GPU / AI",
     blurb: "Inference, fine-tuning and large-model training, single-node to 8-way NVLink.",
     skus: [
-      { code: "SR-G410", tagline: "Inference & fine-tune entry", cpu: "1× Xeon Gold 6448Y", gpu: "2× L40S 48 GB", ram: "256 GB DDR5", storage: "2× 3.84 TB NVMe", lead: "4 weeks", badge: "Quick ship", img: IMG.g410 },
-      { code: "SR-G780", tagline: "Multi-GPU training tower", cpu: "2× EPYC 9474F", gpu: "4× H100 NVL 94 GB", ram: "1 TB DDR5 ECC", storage: "4× 7.68 TB NVMe", lead: "6 weeks", badge: "Popular", img: IMG.g780 },
-      { code: "SR-G990", tagline: "Large-model training node", cpu: "2× EPYC 9654", gpu: "8× H200 SXM (NVLink)", ram: "2 TB DDR5 ECC", storage: "8× 7.68 TB NVMe + IB HDR", lead: "10 weeks", badge: "Flagship", img: IMG.g990 },
+      {
+        code: "SR-G410",
+        tagline: "Inference & fine-tune entry",
+        cpu: "1× Xeon Gold 6448Y",
+        gpu: "2× L40S 48 GB",
+        ram: "256 GB DDR5",
+        storage: "2× 3.84 TB NVMe",
+        lead: "4 weeks",
+        badge: "Quick ship",
+        img: IMG.g410,
+      },
+      {
+        code: "SR-G780",
+        tagline: "Multi-GPU training tower",
+        cpu: "2× EPYC 9474F",
+        gpu: "4× H100 NVL 94 GB",
+        ram: "1 TB DDR5 ECC",
+        storage: "4× 7.68 TB NVMe",
+        lead: "6 weeks",
+        badge: "Popular",
+        img: IMG.g780,
+      },
+      {
+        code: "SR-G990",
+        tagline: "Large-model training node",
+        cpu: "2× EPYC 9654",
+        gpu: "8× H200 SXM (NVLink)",
+        ram: "2 TB DDR5 ECC",
+        storage: "8× 7.68 TB NVMe + IB HDR",
+        lead: "10 weeks",
+        badge: "Flagship",
+        img: IMG.g990,
+      },
     ],
   },
   {
@@ -67,9 +122,34 @@ const SECTIONS: Section[] = [
     title: "Storage",
     blurb: "All-flash pools, capacity tiers and backup targets, NVMe through SATA.",
     skus: [
-      { code: "SR-S240", tagline: "NVMe shared pool", cpu: "1× Xeon Silver 4410Y", ram: "128 GB", storage: "24× 7.68 TB NVMe (~184 TB)", lead: "4 weeks", img: IMG.s240 },
-      { code: "SR-S560", tagline: "All-flash archive + replica", cpu: "2× EPYC 9334", ram: "512 GB", storage: "36× 15.36 TB NVMe (~550 TB)", lead: "6 weeks", img: IMG.s560 },
-      { code: "SR-S980", tagline: "High-density object / backup", cpu: "2× Xeon Gold 6438N", ram: "256 GB", storage: "60× 22 TB SATA (~1.3 PB)", lead: "8 weeks", badge: "Capacity", img: IMG.s980 },
+      {
+        code: "SR-S240",
+        tagline: "NVMe shared pool",
+        cpu: "1× Xeon Silver 4410Y",
+        ram: "128 GB",
+        storage: "24× 7.68 TB NVMe (~184 TB)",
+        lead: "4 weeks",
+        img: IMG.s240,
+      },
+      {
+        code: "SR-S560",
+        tagline: "All-flash archive + replica",
+        cpu: "2× EPYC 9334",
+        ram: "512 GB",
+        storage: "36× 15.36 TB NVMe (~550 TB)",
+        lead: "6 weeks",
+        img: IMG.s560,
+      },
+      {
+        code: "SR-S980",
+        tagline: "High-density object / backup",
+        cpu: "2× Xeon Gold 6438N",
+        ram: "256 GB",
+        storage: "60× 22 TB SATA (~1.3 PB)",
+        lead: "8 weeks",
+        badge: "Capacity",
+        img: IMG.s980,
+      },
     ],
   },
   {
@@ -77,9 +157,31 @@ const SECTIONS: Section[] = [
     title: "Networking",
     blurb: "25 / 100 / 400 GbE switching and InfiniBand fabric for AI clusters.",
     skus: [
-      { code: "SR-N100", tagline: "25/100 G top-of-rack", ports: "32× 100 GbE QSFP28", fabric: "Cut-through, 6.4 Tb/s", lead: "3 weeks", img: IMG.n100 },
-      { code: "SR-N400", tagline: "400 G spine switch", ports: "32× 400 GbE QSFP-DD", fabric: "25.6 Tb/s non-blocking", lead: "5 weeks", img: IMG.n400 },
-      { code: "SR-N-IB", tagline: "InfiniBand HDR / NDR fabric", ports: "40× NDR 400 Gb/s", fabric: "SHARP in-network compute", lead: "6 weeks", badge: "AI fabric", img: IMG.nib },
+      {
+        code: "SR-N100",
+        tagline: "25/100 G top-of-rack",
+        ports: "32× 100 GbE QSFP28",
+        fabric: "Cut-through, 6.4 Tb/s",
+        lead: "3 weeks",
+        img: IMG.n100,
+      },
+      {
+        code: "SR-N400",
+        tagline: "400 G spine switch",
+        ports: "32× 400 GbE QSFP-DD",
+        fabric: "25.6 Tb/s non-blocking",
+        lead: "5 weeks",
+        img: IMG.n400,
+      },
+      {
+        code: "SR-N-IB",
+        tagline: "InfiniBand HDR / NDR fabric",
+        ports: "40× NDR 400 Gb/s",
+        fabric: "SHARP in-network compute",
+        lead: "6 weeks",
+        badge: "AI fabric",
+        img: IMG.nib,
+      },
     ],
   },
   {
@@ -87,13 +189,41 @@ const SECTIONS: Section[] = [
     title: "Workstation",
     blurb: "Engineering and content workstations, quiet enough for the office.",
     skus: [
-      { code: "SR-W310", tagline: "Engineering workstation", cpu: "Threadripper 7960X (24C)", gpu: "RTX 5000 Ada 32 GB", ram: "128 GB DDR5", storage: "2× 2 TB NVMe", lead: "2 weeks", badge: "Quick ship", img: IMG.w310 },
-      { code: "SR-W620", tagline: "Creation & simulation flagship", cpu: "Threadripper Pro 7995WX (96C)", gpu: "2× RTX 6000 Ada 48 GB", ram: "512 GB DDR5 ECC", storage: "4× 4 TB NVMe", lead: "3 weeks", img: IMG.w620 },
-      { code: "SR-W180-EDGE", tagline: "Silent edge node", cpu: "Ryzen 9 7950X", gpu: "RTX 4000 SFF Ada 20 GB", ram: "64 GB DDR5", storage: "1× 4 TB NVMe", lead: "2 weeks", badge: "Edge", img: IMG.w180 },
+      {
+        code: "SR-W310",
+        tagline: "Engineering workstation",
+        cpu: "Threadripper 7960X (24C)",
+        gpu: "RTX 5000 Ada 32 GB",
+        ram: "128 GB DDR5",
+        storage: "2× 2 TB NVMe",
+        lead: "2 weeks",
+        badge: "Quick ship",
+        img: IMG.w310,
+      },
+      {
+        code: "SR-W620",
+        tagline: "Creation & simulation flagship",
+        cpu: "Threadripper Pro 7995WX (96C)",
+        gpu: "2× RTX 6000 Ada 48 GB",
+        ram: "512 GB DDR5 ECC",
+        storage: "4× 4 TB NVMe",
+        lead: "3 weeks",
+        img: IMG.w620,
+      },
+      {
+        code: "SR-W180-EDGE",
+        tagline: "Silent edge node",
+        cpu: "Ryzen 9 7950X",
+        gpu: "RTX 4000 SFF Ada 20 GB",
+        ram: "64 GB DDR5",
+        storage: "1× 4 TB NVMe",
+        lead: "2 weeks",
+        badge: "Edge",
+        img: IMG.w180,
+      },
     ],
   },
 ];
-
 
 function specRows(s: Sku): Array<[string, string]> {
   const rows: Array<[string, string]> = [];
@@ -113,8 +243,7 @@ function escapeHtml(s: string) {
 function renderCard(s: Sku) {
   const rows = specRows(s)
     .map(
-      ([k, v]) =>
-        `<div class="spec-row"><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`,
+      ([k, v]) => `<div class="spec-row"><dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd></div>`,
     )
     .join("");
   return `

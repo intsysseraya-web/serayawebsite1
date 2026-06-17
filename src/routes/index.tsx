@@ -457,7 +457,10 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Seraya Systems Integration | Kuala Lumpur system integrator" },
       { name: "description", content: "" },
-      { property: "og:title", content: "Seraya Systems Integration | Kuala Lumpur system integrator" },
+      {
+        property: "og:title",
+        content: "Seraya Systems Integration | Kuala Lumpur system integrator",
+      },
       { property: "og:description", content: "" },
     ],
     links: [
@@ -477,7 +480,9 @@ function LegacyPage() {
       const style = params.get("hero") === "plain" ? "plain" : "animated";
       const hero = document.querySelector(".hero");
       if (hero) hero.setAttribute("data-hero-style", style);
-    } catch {}
+    } catch {
+      // Ignore malformed query strings and keep the default animated hero.
+    }
 
     const s = document.createElement("script");
     s.src = "/legacy/script.js";
@@ -489,7 +494,10 @@ function LegacyPage() {
     bg.async = false;
     document.body.appendChild(bg);
 
-    return () => { s.remove(); bg.remove(); };
+    return () => {
+      s.remove();
+      bg.remove();
+    };
   }, []);
 
   return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
