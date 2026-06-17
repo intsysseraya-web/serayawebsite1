@@ -8,6 +8,8 @@ This repository is the deployment and operating repository for the Seraya System
 - This phase is frontend/local-run focused. Do not add Cloudflare Workers, full-stack server deployment, or production deployment changes unless the user explicitly asks for that phase.
 - Source Lovable repo: `H:\brep\baytech\seraya`.
 - Target deployment repo: `H:\brep\baytech\serayawebsite1`.
+- Treat the Lovable source repo as a read-only upstream for this workspace. Do not commit, amend, branch, push, open PRs, or otherwise manage Git state in `H:\brep\baytech\seraya` unless the user explicitly asks for Lovable-source repo maintenance in this thread.
+- Lovable-source repo changes are handled in separate conversations. In this repository, all Git delivery work belongs to `H:\brep\baytech\serayawebsite1`.
 - Main app source lives in `src/`; public assets live in `public/`.
 - Legacy static-root files such as `index.html`, `works.html`, `case-study.html`, `about.html`, `styles.css`, and `script.js` are retired after sync.
 - Deployment/config files such as `_headers`, `wrangler.toml`, `netlify.toml`, and `DEPLOY-SPACESHIP.txt` are target-owned and should not be overwritten by the Lovable sync script.
@@ -26,6 +28,8 @@ The script copies an explicit allowlist from `H:\brep\baytech\seraya`, including
 The script intentionally excludes generated or unrelated source material such as `node_modules/`, `dist/`, `.tanstack/`, `.nitro/`, `.wrangler/`, `old_site/`, `.git/`, and `.lovable/plan.md`.
 
 The script must preserve target-owned files and folders, including `AGENTS.md`, `_headers`, `wrangler.toml`, `netlify.toml`, `DEPLOY-SPACESHIP.txt`, `.secret.example.json`, `.secret.json`, and `tools/*`.
+
+The sync workflow may read files from the Lovable source repo, but it must not write, format, lint-fix, commit, or push anything in that source repo.
 
 Run the sync behavior test after changing the script:
 
