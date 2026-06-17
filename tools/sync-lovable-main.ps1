@@ -93,6 +93,16 @@ if ($SourceStatus.Count -gt 0) {
 
 Invoke-Git -RepoPath $SourceRoot -GitArgs @("pull", "--ff-only", "origin", "main")
 
+$PostPullSourceStatus = Get-GitStatusLines -RepoPath $SourceRoot -UntrackedMode "all"
+if ($PostPullSourceStatus.Count -gt 0) {
+  Write-Host "Source repo is dirty after pull; stashing before sync:" -ForegroundColor Yellow
+  $PostPullSourceStatus | ForEach-Object { Write-Host $_ }
+
+  $Stamp = Get-Date -Format "yyyyMMdd-HHmmss"
+  Invoke-Git -RepoPath $SourceRoot -GitArgs @("stash", "push", "-u", "-m", "codex sync-lovable-main post-pull $Stamp")
+  $StashedSource = $true
+}
+
 & $SyncScript -SourcePath $SourceRoot -TargetPath $TargetRoot -Apply
 if ($LASTEXITCODE -ne 0) {
   throw "sync-lovable.ps1 failed."
