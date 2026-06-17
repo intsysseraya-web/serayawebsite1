@@ -51,24 +51,40 @@ const BODY_HTML = `
     <div class="page-hero program-hero">
       <div class="program-hero-layout">
         <div class="program-hero-copy">
-          <p class="muted" style="margin: 0 0 0.5rem">Programs</p>
-          <h1>Enterprise procurement programs</h1>
-          <p class="muted">Seraya coordinates multi-site rollouts, BOM alignment, sourcing options, validation, delivery, and warranty paths for enterprise compute infrastructure.</p>
+          <p class="muted eyebrow" style="margin: 0 0 0.5rem">Programs</p>
+          <h1>Send the BOM. Get a structured program back in one business day.</h1>
+          <p class="muted">Seraya turns enterprise compute RFQs into traceable programs &mdash; sourcing options, substitution notes, lead-time risk, and a warranty path, all on one thread from intake to RMA.</p>
           <div class="btn-row">
             <a class="btn btn-primary" href="/about#contact">Request an RFQ</a>
-            <a class="btn btn-ghost" href="/works">View reference systems</a>
+            <a class="btn btn-ghost" href="#program-flow-title">See how a program runs &darr;</a>
           </div>
+          <ul class="program-fact-strip" aria-label="Program facts">
+            <li><strong>1 business day</strong><span>RFQ response</span></li>
+            <li><strong>Kuala Lumpur</strong><span>SEA coverage</span></li>
+            <li><strong>RFQ &rarr; RMA</strong><span>One thread</span></li>
+          </ul>
         </div>
-        <div class="program-map" aria-label="Procurement program coordination map">
-          <div class="program-map-grid" aria-hidden="true"></div>
-          <div class="program-map-core">Seraya</div>
-          <span class="program-node program-node-demand">Demand sites</span>
-          <span class="program-node program-node-bom">BOM options</span>
-          <span class="program-node program-node-source">Sourcing routes</span>
-          <span class="program-node program-node-validate">Validation</span>
-          <span class="program-node program-node-deliver">Delivery</span>
-          <span class="program-node program-node-warranty">Warranty path</span>
-        </div>
+        <aside class="program-brief" aria-label="Sample program brief">
+          <header class="program-brief-head">
+            <span class="program-brief-tag">Program brief</span>
+            <span class="program-brief-status"><span class="dot" aria-hidden="true"></span>Draft &middot; responds in 1 business day</span>
+          </header>
+          <div class="program-brief-id">
+            <span>SRY-PRG-2026-0142</span>
+            <span class="muted">Multi-site GPU rollout</span>
+          </div>
+          <dl class="program-brief-rows">
+            <div><dt>Requirement</dt><dd>24&times; GPU workstation, matched config</dd></div>
+            <div><dt>Destinations</dt><dd>KL HQ &middot; Penang &middot; Singapore</dd></div>
+            <div><dt>Target lead time</dt><dd>6 weeks, staged in 3 waves</dd></div>
+            <div><dt>Substitutions</dt><dd>GPU tier locked &middot; chassis flexible</dd></div>
+            <div><dt>Warranty path</dt><dd>3-yr on-site, RMA via Seraya</dd></div>
+            <div><dt>Acceptance</dt><dd>Burn-in report + serial manifest</dd></div>
+          </dl>
+          <footer class="program-brief-foot">
+            <span class="muted">Drafted from your RFQ &middot; reviewed before quote</span>
+          </footer>
+        </aside>
       </div>
     </div>
 
@@ -79,12 +95,12 @@ const BODY_HTML = `
           <p>Some requests need more than a product quote. Seraya structures procurement work when requirements, timing, substitutions, and ownership need to stay visible.</p>
         </div>
         <div class="program-scenarios" aria-label="Program-fit situations">
-          <span>Multi-site rollout</span>
-          <span>Existing BOM review</span>
-          <span>Urgent availability check</span>
-          <span>Lifecycle supply</span>
-          <span>Warranty path</span>
-          <span>Validation handoff</span>
+          <span>Rolling out to 3+ sites?</span>
+          <span>Existing BOM needs a sanity check?</span>
+          <span>GPU availability uncertain?</span>
+          <span>Planning a refresh or EOL replacement?</span>
+          <span>Need a clear warranty + RMA path?</span>
+          <span>Procurement, IT, engineering all in the thread?</span>
         </div>
       </section>
 
@@ -263,10 +279,7 @@ export const Route = createFileRoute("/case-study")({
         content:
           "Procurement programs for enterprise compute infrastructure sourcing, BOM alignment, rollouts, lifecycle supply, and RFQ coordination.",
       },
-      {
-        property: "og:title",
-        content: "Enterprise procurement programs | Seraya System Integration",
-      },
+      { property: "og:title", content: "Enterprise procurement programs | Seraya System Integration" },
       {
         property: "og:description",
         content:

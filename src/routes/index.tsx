@@ -2,18 +2,462 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import legacyCss from "../legacy-shim.css?url";
 
-const BODY_HTML =
-  '\n    <a class="skip-link" href="#main">Skip to content</a>\n\n    <div class="announcement-bar" aria-label="Promotions">\n      <div class="announcement-inner">\n        <a href="/about#contact">RFQ response within one business day</a>\n        <span class="muted" aria-hidden="true">|</span>\n        <a href="/works">View configured systems</a>\n        <span class="muted" aria-hidden="true">|</span>\n        <a href="/about">Kuala Lumpur HQ</a>\n      </div>\n    </div>\n\n    <header class="site-header">\n      <div class="header-inner">\n        <a class="logo" href="/"><img src="/brand/seraya-lockup-compact.svg" alt="Seraya Systems Integration" /></a>\n        <nav class="main-nav" aria-label="Primary">\n          <a href="/" aria-current="page">Home</a>\n          <a href="/works">Systems</a>\n          <a href="/case-study">Programs</a>\n          <a href="/about">Company</a>\n          <a href="/about#contact">Contact</a>\n        </nav>\n        <div class="header-actions">\n          <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">\n            Search\n          </button>\n          <button type="button" class="icon-btn" id="btnCart" aria-label="Open quote request">\n            Quote\n          </button>\n          <button\n            type="button"\n            class="icon-btn mobile-menu-btn"\n            id="btnMenu"\n            aria-expanded="false"\n            aria-controls="mobileDrawer"\n          >\n            Menu\n          </button>\n        </div>\n      </div>\n    </header>\n\n    <div\n      class="mobile-drawer"\n      id="mobileDrawer"\n      hidden\n      role="dialog"\n      aria-modal="true"\n      aria-label="Mobile menu"\n    >\n      <div class="mobile-drawer-panel">\n        <div class="overlay-head">\n          <strong>Navigate</strong>\n          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">\n            X\n          </button>\n        </div>\n        <nav class="mobile-nav">\n          <a href="/">Home</a>\n          <a href="/works">Systems</a>\n          <a href="/case-study">Programs</a>\n          <a href="/about">Company</a>\n          <a href="/about#contact">Contact</a>\n        </nav>\n      </div>\n    </div>\n\n    <div class="overlay-panel" id="searchPanel" hidden role="dialog" aria-modal="true" aria-label="Search">\n      <div class="overlay-sheet search-sheet">\n        <div class="overlay-head">\n          <strong>Search</strong>\n          <button type="button" class="icon-btn" id="btnCloseSearch" aria-label="Close search">\n            X\n          </button>\n        </div>\n        <label class="muted" for="q">Keyword</label>\n        <input class="search-input" id="q" type="search" placeholder="SKU, GPU, chassis..." autocomplete="off" />\n        <p class="muted" style="margin-top: 0.75rem">Tip: browse Systems for full lists.</p>\n      </div>\n    </div>\n\n    <div class="overlay-panel" id="cartPanel" hidden role="dialog" aria-modal="true" aria-label="Quote">\n      <div class="overlay-sheet cart-sheet">\n        <div class="overlay-head">\n          <strong>Quote request</strong>\n          <button type="button" class="icon-btn" id="btnCloseCart" aria-label="Close quote panel">\n            X\n          </button>\n        </div>\n        <p class="muted">No items yet. Email your RFQ and we reply with availability and lead time.</p>\n        <p style="margin-top: 1rem">\n          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>\n        </p>\n      </div>\n    </div>\n\n    <main id="main">\n      <section class="hero" aria-labelledby="hero-title hero-subtitle">\n        \n        <div class="hero-inner">\n          <p class="hero-kicker">Seraya Systems Integration</p>\n          <h1 id="hero-title">KL&apos;s friendly neighborhood system integrator</h1>\n          <p id="hero-subtitle" class="hero-subtitle">\n            \u2014 for startups, studios, and that one friend who always asks &ldquo;can you build my PC?&rdquo;\n          </p>\n          <p>One workstation, one server room, doesn&apos;t matter.</p>\n          <p>\n            We get the good parts, put them together, burn them in, and hand you a machine\n            that just works. Business or personal \u2014 same bench, same care.\n          </p>\n          <div class="btn-row">\n            <a class="btn btn-primary" href="/works">For Business \u2192</a>\n            <a class="btn btn-ghost" href="/about#contact">For Individuals \u2192</a>\n          </div>\n        </div>\n\n        <div class="hero-marquee-wrap" aria-hidden="true">\n          <div class="hero-marquee">\n            <div class="hero-marquee-track">\n              <ul class="hero-marquee-list">\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/intel.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/amd.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nvidia.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/asus.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/msi.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Gigabyte</span>\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/corsair.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/kingstontechnology.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/samsung.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/westerndigital.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/seagate.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/coolermaster.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nzxt.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Lian Li</span>\n                </li>\n              </ul>\n              <ul class="hero-marquee-list">\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/intel.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/amd.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nvidia.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/asus.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/msi.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Gigabyte</span>\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/corsair.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/kingstontechnology.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/samsung.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/westerndigital.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/seagate.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/coolermaster.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nzxt.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Lian Li</span>\n                </li>\n              </ul>\n              <ul class="hero-marquee-list" aria-hidden="true">\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/intel.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/amd.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nvidia.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/asus.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/msi.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Gigabyte</span>\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/corsair.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/kingstontechnology.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/samsung.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/westerndigital.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/seagate.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/coolermaster.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <img\n                    class="hero-marquee-logo"\n                    src="/static/nzxt.svg"\n                    alt=""\n                    width="96"\n                    height="24"\n                    decoding="async"\n                  />\n                </li>\n                <li>\n                  <span class="hero-marquee-word">Lian Li</span>\n                </li>\n              </ul>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      <section class="section" aria-labelledby="promo-title">\n        <div class="section-head">\n          <h2 id="promo-title">Featured lines</h2>\n          <p>Three ways to work with us &#8212; new builds, BYO parts, or trade&#8209;ins. No secret handshake required.</p>\n        </div>\n        <div class="promo-grid">\n          <article class="promo-card">\n            <div class="promo-card-media-wrap">\n              <img\n                class="promo-media"\n                src="/static/photo-1591488320449-011701bb6704-w1200.jpg"\n                alt="Open PC case showing GPU and custom cooling inside a tower build"\n                loading="lazy"\n                decoding="async"\n              />\n            </div>\n            <div class="promo-card-body">\n              <h3>Quick&#8209;config towers</h3>\n              <p>For when you just want a GPU node that works &#8211; no PhD in compatibility.</p>\n              <p>\n                Pick from our pre&#8209;tested parts lists (Corsair, Gigabyte, etc.). We match batches, flash the same\n                BIOS, and ship ready to run.\n              </p>\n              <p>Predictable lead time. Boring stability.</p>\n              <div class="promo-card-cta-push" aria-hidden="true"></div>\n              <a class="btn btn-primary" href="/works">View SKUs \u2192</a>\n            </div>\n          </article>\n          <article class="promo-card">\n            <div class="promo-card-media-wrap">\n              <img\n                class="promo-media"\n                src="/static/photo-1558494949-ef010cbdcc31-w1200.jpg"\n                alt="Rack-mounted servers and cabling in a data centre row"\n                loading="lazy"\n                decoding="async"\n              />\n            </div>\n            <div class="promo-card-body">\n              <h3>BYO parts? No problem.</h3>\n              <p>Send us your RAM, SSDs, or that GPU you got on sale.</p>\n              <p>\n                We&apos;ll integrate them into our assembly &amp; burn&#8209;in process. You get a single warranty and a\n                single throat to choke &#8211; even if the parts came from different boxes.\n              </p>\n              <div class="promo-card-cta-push" aria-hidden="true"></div>\n              <a class="btn btn-primary" href="/about">How it works \u2192</a>\n            </div>\n          </article>\n          <article class="promo-card">\n            <div class="promo-card-media-wrap">\n              <img\n                class="promo-media"\n                src="/static/photo-1558618666-fcd25c85cd64-w1200.jpg"\n                alt="Stacked used laptops and small electronics ready for processing"\n                loading="lazy"\n                decoding="async"\n              />\n            </div>\n            <div class="promo-card-body">\n              <h3>Old gear? We&apos;ll take it.</h3>\n              <p>\n                Don&apos;t let that GPU gather dust &#8212; or worse, end up in a landfill.\n              </p>\n              <p>\n                Trade in your used PC, server, or even a box of DDR3. We wipe the data, test what&#8217;s salvageable,\n                and recycle the rest properly.\n              </p>\n              <p>You get cash / store credit. Mother Earth gets a break.</p>\n              <div class="promo-card-cta-push" aria-hidden="true"></div>\n              <a class="btn btn-primary" href="/about#contact">Get a quote</a>\n            </div>\n          </article>\n        </div>\n      </section>\n\n      <section class="section" aria-labelledby="split-title">\n        <div class="adv-tree">\n          <article class="adv-card adv-card-root">\n            <h2 id="split-title">Small shop. Big advantage.</h2>\n            <p>No layers, no wait-for-approval, no "let me ask my manager."</p>\n          </article>\n\n          <div class="adv-tree-branches">\n            <div class="adv-col adv-col-left">\n              <article class="adv-card">\n                <h3>Same-day response from a real person.</h3>\n                <p>\n                  You won\'t get a bot or a ticket number. When you reach out - WhatsApp, email, phone - you\'ll speak to\n                  the actual person who builds or sources your hardware. We reply within hours, not days.\n                </p>\n              </article>\n              <article class="adv-card">\n                <h3>One accountable contact - from start to finish.</h3>\n                <p>\n                  If a part arrives dead, firmware mismatches, or shipping damages something - you don\'t get passed between\n                  OEM, and the courier. You come back to us. We take responsibility, we coordinate the fix, and\n                  you only talk to one team.\n                </p>\n              </article>\n            </div>\n            <div class="adv-col adv-col-right">\n              <article class="adv-card">\n                <h3>Build exactly what you need.</h3>\n                <p>\n                  Mixing components from different brands? Need an unusual port layout? Want a quiet server that doesn\'t\n                  sound like a vacuum cleaner? We don\'t say "not in our catalog." We say yes, then figure out how to make\n                  it work.\n                </p>\n              </article>\n              <article class="adv-card">\n                <h3>Batch-matched with no minimum order ego.</h3>\n                <p>\n                  Whether you need one workstation or fifty server nodes: we match components from the same batch, test\n                  them the same way, and provide the same build manifest. We never tell you "your order is too small to\n                  care about."\n                </p>\n              </article>\n            </div>\n          </div>\n        </div>\n      </section>\n\n      <section class="section product-section" aria-labelledby="grid-title">\n        <div class="section-head">\n          <h2 id="grid-title">How we turn your idea into hardware</h2>\n          <p>No engineering degree required.</p>\n        </div>\n        <div class="tile-grid">\n          <article class="tile">\n            <h3>Tell us what you need</h3>\n            <p>\n              Gaming? AI training? A quiet office PC? A 50-node render farm? Just say it in plain English.\n            </p>\n          </article>\n          <article class="tile">\n            <h3>We recommend &amp; quote</h3>\n            <p>\n              We pick the right parts (new or refurbished), draft a manifest, and send you a clear price - no hidden\n              fees.\n            </p>\n          </article>\n          <article class="tile">\n            <h3>We build, test, ship</h3>\n            <p>\n              Assembly, burn-in, photos, manifests. You get a machine that just works.\n            </p>\n          </article>\n        </div>\n      </section>\n\n      <section class="section" aria-labelledby="tiles-title">\n        <div class="section-head">\n          <h2 id="tiles-title">Programs and updates</h2>\n          <p>Three-up editorial tiles similar to homepage promos and bundle callouts.</p>\n        </div>\n        <div class="tile-grid">\n          <article class="tile">\n            <h3>Tranche scheduling</h3>\n            <p>Rollout waves for distributed teams that need matched firmware and cooler revisions.</p>\n          </article>\n          <article class="tile">\n            <h3>Warranty path</h3>\n            <p>One accountable counterparty for RMA coordination with manufacturer policies.</p>\n          </article>\n          <article class="tile">\n            <h3>On-site handoff</h3>\n            <p>Optional briefing packs for rack install teams and acceptance checklists.</p>\n          </article>\n        </div>\n      </section>\n\n      <section class="section values" aria-labelledby="values-title">\n        <div class="section-head">\n          <h2 id="values-title">Why teams work with Seraya</h2>\n          <p>Three-column value strip modeled after builder trust sections.</p>\n        </div>\n        <div class="value-grid">\n          <div class="value-card">\n            <h3>Integration-first</h3>\n            <p>We assemble, test, and document before hardware leaves the bench.</p>\n          </div>\n          <div class="value-card">\n            <h3>Authorised flow</h3>\n            <p>We prioritise factory-aligned and authorised routes whenever the stack allows.</p>\n          </div>\n          <div class="value-card">\n            <h3>Human support</h3>\n            <p>Direct thread with integration leads - not a script, not a black box.</p>\n          </div>\n        </div>\n      </section>\n    </main>\n\n    <footer class="site-footer">\n      <div class="footer-grid">\n        <div>\n          <div class="logo" style="margin-bottom: 0.75rem"><img src="/brand/seraya-lockup-compact.svg" alt="Seraya Systems Integration" /></div>\n          <p class="muted" style="max-width: 28rem">\n            Trading-led technology partner for GPU compute, servers, and workstation programs. Kuala Lumpur.\n          </p>\n        </div>\n        <div class="footer-col">\n          <h4>Shop</h4>\n          <ul class="footer-links">\n            <li><a href="/works">Systems</a></li>\n            <li><a href="/case-study">Programs</a></li>\n            <li><a href="/about#contact">RFQ</a></li>\n          </ul>\n        </div>\n        <div class="footer-col">\n          <h4>Company</h4>\n          <ul class="footer-links">\n            <li><a href="/about">About</a></li>\n            <li><a href="mailto:hello@serayasystem.com">Email</a></li>\n          </ul>\n        </div>\n        <div class="footer-col">\n          <h4>Legal</h4>\n          <ul class="footer-links">\n            <li><a href="#">Terms (placeholder)</a></li>\n            <li><a href="#">Privacy (placeholder)</a></li>\n          </ul>\n        </div>\n      </div>\n      <div class="footer-bottom">\n        <span>English</span>\n        <span>Copyright Seraya System Integration. All rights reserved.</span>\n      </div>\n    </footer>\n';
+const BODY_HTML = `
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <div class="announcement-bar" aria-label="Promotions">
+      <div class="announcement-inner">
+        <a href="/about#contact">RFQ response within one business day</a>
+        <span class="muted" aria-hidden="true">|</span>
+        <a href="/works">View configured systems</a>
+        <span class="muted" aria-hidden="true">|</span>
+        <a href="/about">Kuala Lumpur HQ</a>
+      </div>
+    </div>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="logo" href="/"><img src="/brand/seraya-lockup-compact.svg" alt="Seraya Systems Integration" /></a>
+        <nav class="main-nav" aria-label="Primary">
+          <a href="/" aria-current="page">Home</a>
+          <a href="/works">Systems</a>
+          <a href="/case-study">Programs</a>
+          <a href="/about">Company</a>
+          <a href="/about#contact">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">Search</button>
+          <a class="icon-btn header-rfq-link" href="/about#contact" aria-label="Start an RFQ">RFQ</a>
+          <button type="button" class="icon-btn mobile-menu-btn" id="btnMenu" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="mobile-drawer" id="mobileDrawer" hidden role="dialog" aria-modal="true" aria-label="Mobile menu">
+      <div class="mobile-drawer-panel">
+        <div class="overlay-head">
+          <strong>Navigate</strong>
+          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">X</button>
+        </div>
+        <nav class="mobile-nav">
+          <a href="/">Home</a>
+          <a href="/works">Systems</a>
+          <a href="/case-study">Programs</a>
+          <a href="/about">Company</a>
+          <a href="/about#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="searchPanel" hidden role="dialog" aria-modal="true" aria-label="Search">
+      <div class="overlay-sheet search-sheet">
+        <div class="overlay-head">
+          <strong>Search</strong>
+          <button type="button" class="icon-btn" id="btnCloseSearch" aria-label="Close search">X</button>
+        </div>
+        <label class="muted" for="q">Keyword</label>
+        <input class="search-input" id="q" type="search" placeholder="SKU, GPU, chassis..." autocomplete="off" />
+        <p class="muted" style="margin-top: 0.75rem">Tip: browse Systems for full lists.</p>
+      </div>
+    </div>
+
+    <div class="overlay-panel" id="cartPanel" hidden role="dialog" aria-modal="true" aria-label="Quote">
+      <div class="overlay-sheet cart-sheet">
+        <div class="overlay-head">
+          <strong>Quote request</strong>
+          <button type="button" class="icon-btn" id="btnCloseCart" aria-label="Close quote panel">X</button>
+        </div>
+        <p class="muted">No items yet. Email your RFQ and we reply with availability and lead time.</p>
+        <p style="margin-top: 1rem">
+          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>
+        </p>
+      </div>
+    </div>
+
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title hero-subtitle">
+        
+        <div class="hero-inner">
+          <p class="hero-kicker">Seraya Systems Integration</p>
+          <h1 id="hero-title">KL's friendly neighborhood system integrator</h1>
+          <p id="hero-subtitle" class="hero-subtitle">
+            — for startups, studios, and that one friend who always asks &ldquo;can you build my PC?&rdquo;
+          </p>
+          <p>One workstation, one server room, doesn't matter.</p>
+          <p>
+            We get the good parts, put them together, burn them in, and hand you a machine
+            that just works. Business or personal — same bench, same care.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="/works">For Business →</a>
+            <a class="btn btn-ghost" href="/about#contact">For Individuals →</a>
+          </div>
+        </div>
+
+        <div class="hero-marquee-wrap" aria-hidden="true">
+          <div class="hero-marquee">
+            <div class="hero-marquee-track">
+              <ul class="hero-marquee-list">
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/intel.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/amd.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/nvidia.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/asus.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/msi.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Gigabyte</span>
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/corsair.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/kingstontechnology.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/samsung.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/westerndigital.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/seagate.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/coolermaster.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/nzxt.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Lian Li</span>
+                </li>
+              </ul>
+              <ul class="hero-marquee-list">
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/intel.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/amd.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/nvidia.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/asus.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/msi.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Gigabyte</span>
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/corsair.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/kingstontechnology.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/samsung.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/westerndigital.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/seagate.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/coolermaster.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <img
+                    class="hero-marquee-logo"
+                    src="/static/nzxt.svg"
+                    alt=""
+                    width="96"
+                    height="24"
+                    decoding="async"
+                  />
+                </li>
+                <li>
+                  <span class="hero-marquee-word">Lian Li</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="features-title">
+        <div class="section-head">
+          <h2 id="features-title">Featured lines</h2>
+          <p class="muted">Three ways to work with us &mdash; new builds, BYO parts, or trade&#8209;ins. No secret handshake required.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-card-media">
+              <img src="/static/photo-1591488320449-011701bb6704-w1200.jpg" alt="" loading="lazy" />
+            </div>
+            <h3>Quick&#8209;config towers</h3>
+            <p>For when you just want a GPU node that works &ndash; no PhD in compatibility. Pick from our pre&#8209;tested parts lists. We match batches, flash the same BIOS, and ship ready to run.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card-media">
+              <img src="/static/photo-1558494949-ef010cbdcc31-w1200.jpg" alt="" loading="lazy" />
+            </div>
+            <h3>BYO parts? No problem.</h3>
+            <p>Send us your RAM, SSDs, or that GPU you got on sale. We&apos;ll integrate them into our assembly &amp; burn&#8209;in process. You get a single warranty and a single throat to choke.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-card-media">
+              <img src="/static/photo-1558618666-fcd25c85cd64-w1200.jpg" alt="" loading="lazy" />
+            </div>
+            <h3>Old gear? We&apos;ll take it.</h3>
+            <p>Trade in your used PC, server, or even a box of DDR3. We wipe the data, test what&rsquo;s salvageable, and recycle the rest properly. You get cash / store credit.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section product-section" aria-labelledby="built-title">
+        <div class="section-head">
+          <h2 id="built-title">How we turn your idea into hardware</h2>
+          <p class="muted">No engineering degree required.</p>
+        </div>
+        <div class="tile-grid">
+          <article class="tile">
+            <h3>Tell us what you need</h3>
+            <p>Gaming? AI training? A quiet office PC? A 50-node render farm? Just say it in plain English.</p>
+          </article>
+          <article class="tile">
+            <h3>We recommend &amp; quote</h3>
+            <p>We pick the right parts (new or refurbished), draft a manifest, and send you a clear price &mdash; no hidden fees.</p>
+          </article>
+          <article class="tile">
+            <h3>We build, test, ship</h3>
+            <p>Assembly, burn-in, photos, manifests. You get a machine that just works.</p>
+          </article>
+        </div>
+      </section>
+
+
+      <section class="section values" aria-labelledby="values-title">
+        <div class="section-head">
+          <h2 id="values-title">Why teams work with Seraya</h2>
+          <p>Three-column value strip modeled after builder trust sections.</p>
+        </div>
+        <div class="value-grid">
+          <div class="value-card">
+            <h3>Integration-first</h3>
+            <p>We assemble, test, and document before hardware leaves the bench.</p>
+          </div>
+          <div class="value-card">
+            <h3>Authorised flow</h3>
+            <p>We prioritise factory-aligned and authorised routes whenever the stack allows.</p>
+          </div>
+          <div class="value-card">
+            <h3>Human support</h3>
+            <p>Direct thread with integration leads &mdash; not a script, not a black box.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="cta-title">
+        <div class="section-head">
+          <h2 id="cta-title">Ready to start an RFQ?</h2>
+          <p>Email the BOM, workload, and target lead time &mdash; we respond with sourcing assumptions and next steps.</p>
+        </div>
+        <p style="text-align: center; margin-top: 1.5rem">
+          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>
+        </p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-bottom" style="border-top: none; margin-top: 0; padding-top: 0">
+        <a class="muted" href="/works">Systems</a>
+        <a class="muted" href="/case-study">Programs</a>
+        <a class="muted" href="/about#contact">Contact</a>
+        <span class="muted">Seraya System Integration</span>
+      </div>
+    </footer>
+  `;
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Seraya Systems Integration | Kuala Lumpur system integrator" },
       { name: "description", content: "" },
-      {
-        property: "og:title",
-        content: "Seraya Systems Integration | Kuala Lumpur system integrator",
-      },
+      { property: "og:title", content: "Seraya Systems Integration | Kuala Lumpur system integrator" },
       { property: "og:description", content: "" },
     ],
     links: [
@@ -33,9 +477,7 @@ function LegacyPage() {
       const style = params.get("hero") === "plain" ? "plain" : "animated";
       const hero = document.querySelector(".hero");
       if (hero) hero.setAttribute("data-hero-style", style);
-    } catch {
-      // Ignore malformed query strings and keep the default animated hero.
-    }
+    } catch {}
 
     const s = document.createElement("script");
     s.src = "/legacy/script.js";
@@ -47,10 +489,7 @@ function LegacyPage() {
     bg.async = false;
     document.body.appendChild(bg);
 
-    return () => {
-      s.remove();
-      bg.remove();
-    };
+    return () => { s.remove(); bg.remove(); };
   }, []);
 
   return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;

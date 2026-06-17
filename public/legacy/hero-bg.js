@@ -18,8 +18,7 @@
     if (!ctx) return;
 
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    var width = 0,
-      height = 0;
+    var width = 0, height = 0;
     var nodes = [];
     var mouse = { x: -9999, y: -9999, active: false };
     var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -155,15 +154,12 @@
 
     // Pause when hero scrolled fully out of view
     if (typeof IntersectionObserver !== "undefined") {
-      var io = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (en) {
-            if (en.isIntersecting) start();
-            else stop();
-          });
-        },
-        { threshold: 0 },
-      );
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) start();
+          else stop();
+        });
+      }, { threshold: 0 });
       io.observe(hero);
     }
   }

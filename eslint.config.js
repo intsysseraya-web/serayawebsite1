@@ -6,18 +6,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  {
-    ignores: [
-      "dist",
-      "dist-ssr",
-      ".output",
-      ".vinxi",
-      ".tanstack",
-      ".nitro",
-      ".wrangler",
-      ".worktrees",
-    ],
-  },
+  { ignores: ["dist", "dist-ssr", ".output", ".vinxi", ".tanstack", ".nitro", ".wrangler", ".worktrees"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -49,3 +38,4 @@ export default tseslint.config(
   },
   eslintPluginPrettier,
 );
+

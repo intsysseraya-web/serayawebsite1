@@ -74,10 +74,7 @@
       closeDrawer();
       openOverlay(searchPanel, btnSearch);
       var q = qs("q");
-      if (q)
-        setTimeout(function () {
-          q.focus();
-        }, 50);
+      if (q) setTimeout(function () { q.focus(); }, 50);
     });
   }
   if (btnCloseSearch) {
@@ -117,8 +114,7 @@
   document.addEventListener("keydown", function (e) {
     if (e.key !== "Escape") return;
     if (drawer && drawer.classList.contains("is-open")) closeDrawer();
-    if (searchPanel && searchPanel.classList.contains("is-open"))
-      closeOverlay(searchPanel, btnSearch);
+    if (searchPanel && searchPanel.classList.contains("is-open")) closeOverlay(searchPanel, btnSearch);
     if (cartPanel && cartPanel.classList.contains("is-open")) closeOverlay(cartPanel, btnCart);
   });
 
@@ -140,13 +136,11 @@
       ".product-card",
       ".prose > *",
       ".split-visual",
-      ".page-hero-inner",
+      ".page-hero-inner"
     ];
 
     var nodes = document.querySelectorAll(revealSelectors.join(","));
-    nodes.forEach(function (n) {
-      n.classList.add("reveal");
-    });
+    nodes.forEach(function (n) { n.classList.add("reveal"); });
 
     // Stagger siblings within the same parent for a tasteful cascade.
     var parentCounts = new Map();
@@ -158,20 +152,15 @@
       if (delay) n.style.setProperty("--reveal-delay", delay + "ms");
     });
 
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-revealed");
-          io.unobserve(entry.target);
-        });
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
 
-    nodes.forEach(function (n) {
-      io.observe(n);
-    });
+    nodes.forEach(function (n) { io.observe(n); });
 
     // Safety net: ensure nothing stays invisible if IO misses (e.g. headless
     // full-page screenshots, prefers-reduced-motion edge cases, or fast scrolls).
@@ -190,22 +179,17 @@
     var cards = document.querySelectorAll(".adv-tree-branches .adv-card");
     if (!root && !branches && !cards.length) return;
 
-    var io = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-lit");
-          io.unobserve(entry.target);
-        });
-      },
-      { rootMargin: "0px 0px -15% 0px", threshold: 0.35 },
-    );
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-lit");
+        io.unobserve(entry.target);
+      });
+    }, { rootMargin: "0px 0px -15% 0px", threshold: 0.35 });
 
     if (root) io.observe(root);
     if (branches) io.observe(branches);
-    cards.forEach(function (c) {
-      io.observe(c);
-    });
+    cards.forEach(function (c) { io.observe(c); });
   }
 
   if (document.readyState === "loading") {
