@@ -69,7 +69,7 @@ const BODY_HTML = `
         </div>
         <p class="muted">No items yet. Email your RFQ and we reply with availability and lead time.</p>
         <p style="margin-top: 1rem">
-          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>
+          <a class="btn btn-primary" href="mailto:hello@seraya.systems">Email RFQ</a>
         </p>
       </div>
     </div>
@@ -437,7 +437,7 @@ const BODY_HTML = `
           <p>Email the BOM, workload, and target lead time &mdash; we respond with sourcing assumptions and next steps.</p>
         </div>
         <p style="text-align: center; margin-top: 1.5rem">
-          <a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a>
+          <a class="btn btn-primary" href="mailto:hello@seraya.systems">Email RFQ</a>
         </p>
       </section>
     </main>

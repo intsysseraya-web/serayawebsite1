@@ -173,7 +173,7 @@ const BODY_HTML = `
             <dl>
               <div>
                 <dt>Email</dt>
-                <dd><a href="mailto:hello@serayasystem.com?subject=Enterprise%20RFQ%20request">hello@serayasystem.com</a></dd>
+                <dd><a href="mailto:hello@seraya.systems?subject=Enterprise%20RFQ%20request">hello@seraya.systems</a></dd>
               </div>
               <div>
                 <dt>Location</dt>
@@ -184,7 +184,7 @@ const BODY_HTML = `
                 <dd>Enterprise RFQs are reviewed within one business day.</dd>
               </div>
             </dl>
-            <a class="btn btn-primary" href="mailto:hello@serayasystem.com?subject=Enterprise%20RFQ%20request">Email RFQ</a>
+            <a class="btn btn-primary" href="mailto:hello@seraya.systems?subject=Enterprise%20RFQ%20request">Email RFQ</a>
           </aside>
 
           <div class="contact-panel">

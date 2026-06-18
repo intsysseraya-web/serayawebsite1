@@ -347,7 +347,7 @@ const BODY_HTML = `
           <button type="button" class="icon-btn" id="btnCloseCart" aria-label="Close quote panel">X</button>
         </div>
         <p class="muted">All systems are quoted per program. Email your BOM, target lead time and destination &mdash; we respond within one business day.</p>
-        <p style="margin-top: 1rem"><a class="btn btn-primary" href="mailto:hello@serayasystem.com">Email RFQ</a></p>
+        <p style="margin-top: 1rem"><a class="btn btn-primary" href="mailto:hello@seraya.systems">Email RFQ</a></p>
       </div>
     </div>
 
