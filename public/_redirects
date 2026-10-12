@@ -1,0 +1,11 @@
+# Cloudflare Pages 301 迁移（《SERAYA 网站改版方案 v1.0》§2 URL 迁移表）
+# 旧 → 新，保留既有外链权重。
+#
+# 注意：301 看不到 URL fragment —— `/works#gpu` 会变成 `/systems#gpu`，
+# 幸运的是新页保留了同名锚点（#compute #gpu #storage #networking #workstation），所以仍能跳转。
+# 但 `/about#contact` 会变成 `/company#contact`：联系区块已迁到独立页 `/contact`，
+# 故 `/company` 上保留了 `id="contact"` 作为承接锚点（见 company.tsx）。
+
+/works      /systems   301
+/case-study /programs  301
+/about      /company   301

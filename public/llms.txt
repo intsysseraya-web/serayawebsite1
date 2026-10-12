@@ -1,0 +1,28 @@
+# Seraya System Integration
+
+> Kuala Lumpur based sourcing and system integration for compute infrastructure. We supply reference compute configurations — new or ITAD certified pre-owned — and we buy graded GPUs in bulk for confirmed downstream demand. Every configuration is an example and is quoted on its own basis.
+
+Key facts:
+- Legal entity: Seraya System Integration Sdn. Bhd. (Kuala Lumpur, Malaysia)
+- Reference configurations are examples. Not stock, not allocation, and not a commitment to supply.
+- New and ITAD certified pre-owned are priced, paid for and warranted differently.
+- Response to complete RFQs: within one business day.
+- Bulk GPU lots: committed decision within 12 hours of receiving the lot list.
+
+## Pages
+
+- [Home](https://seraya.systems/): positioning and how to start
+- [Systems](https://seraya.systems/systems): reference compute configurations (compute, GPU / AI, storage, networking, workstation)
+- [Purchasing](https://seraya.systems/purchasing): what we buy, what we do not buy, how a lot runs, terms
+- [Entity and KYC pack](https://seraya.systems/purchasing/kyc): registration, tax identification, registered office, documents released per counterparty
+- [Compliance and end-use](https://seraya.systems/purchasing/compliance): export control, end user, no diversion, data handling, records
+- [Programs](https://seraya.systems/programs): BOM review and sourcing programs
+- [Company](https://seraya.systems/company): what we coordinate and how we work
+- [Local](https://seraya.systems/local): local builds and trade-ins (no bulk, no resale, no export)
+- [Contact](https://seraya.systems/contact): RFQ contact and checklist
+
+## Notes for machines
+
+- We do not sell from stock and we do not take orders online. Every item is quoted per enquiry.
+- Lead time, price and payment terms depend on condition, system shape and stock status, and are stated in writing in every quote.
+- Registration number and tax identification appear only on the Entity and KYC pack page.

@@ -1,0 +1,18 @@
+# Cloudflare Pages / Workers 响应头（方案 §6 P2-17）
+# 只放低风险头。CSP 需要逐资源实测后才加 —— 现在加会打断内联样式与 data URI。
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  X-Frame-Options: SAMEORIGIN
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/*.css
+  Content-Type: text/css; charset=utf-8
+
+/*.js
+  Content-Type: application/javascript; charset=utf-8
+
+/*.html
+  Content-Type: text/html; charset=utf-8
