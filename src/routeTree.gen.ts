@@ -9,24 +9,44 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorksRouteImport } from './routes/works'
-import { Route as CaseStudyRouteImport } from './routes/case-study'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as SystemsRouteImport } from './routes/systems'
+import { Route as PurchasingRouteImport } from './routes/purchasing'
+import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as LocalRouteImport } from './routes/local'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CompanyRouteImport } from './routes/company'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PurchasingKycRouteImport } from './routes/purchasing_.kyc'
+import { Route as PurchasingComplianceRouteImport } from './routes/purchasing_.compliance'
 
-const WorksRoute = WorksRouteImport.update({
-  id: '/works',
-  path: '/works',
+const SystemsRoute = SystemsRouteImport.update({
+  id: '/systems',
+  path: '/systems',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CaseStudyRoute = CaseStudyRouteImport.update({
-  id: '/case-study',
-  path: '/case-study',
+const PurchasingRoute = PurchasingRouteImport.update({
+  id: '/purchasing',
+  path: '/purchasing',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const ProgramsRoute = ProgramsRouteImport.update({
+  id: '/programs',
+  path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocalRoute = LocalRouteImport.update({
+  id: '/local',
+  path: '/local',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompanyRoute = CompanyRouteImport.update({
+  id: '/company',
+  path: '/company',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,62 +54,141 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PurchasingKycRoute = PurchasingKycRouteImport.update({
+  id: '/purchasing_/kyc',
+  path: '/purchasing/kyc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PurchasingComplianceRoute = PurchasingComplianceRouteImport.update({
+  id: '/purchasing_/compliance',
+  path: '/purchasing/compliance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-study': typeof CaseStudyRoute
-  '/works': typeof WorksRoute
+  '/company': typeof CompanyRoute
+  '/contact': typeof ContactRoute
+  '/local': typeof LocalRoute
+  '/programs': typeof ProgramsRoute
+  '/purchasing': typeof PurchasingRoute
+  '/systems': typeof SystemsRoute
+  '/purchasing/compliance': typeof PurchasingComplianceRoute
+  '/purchasing/kyc': typeof PurchasingKycRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-study': typeof CaseStudyRoute
-  '/works': typeof WorksRoute
+  '/company': typeof CompanyRoute
+  '/contact': typeof ContactRoute
+  '/local': typeof LocalRoute
+  '/programs': typeof ProgramsRoute
+  '/purchasing': typeof PurchasingRoute
+  '/systems': typeof SystemsRoute
+  '/purchasing/compliance': typeof PurchasingComplianceRoute
+  '/purchasing/kyc': typeof PurchasingKycRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/case-study': typeof CaseStudyRoute
-  '/works': typeof WorksRoute
+  '/company': typeof CompanyRoute
+  '/contact': typeof ContactRoute
+  '/local': typeof LocalRoute
+  '/programs': typeof ProgramsRoute
+  '/purchasing': typeof PurchasingRoute
+  '/systems': typeof SystemsRoute
+  '/purchasing_/compliance': typeof PurchasingComplianceRoute
+  '/purchasing_/kyc': typeof PurchasingKycRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/case-study' | '/works'
+  fullPaths:
+    | '/'
+    | '/company'
+    | '/contact'
+    | '/local'
+    | '/programs'
+    | '/purchasing'
+    | '/systems'
+    | '/purchasing/compliance'
+    | '/purchasing/kyc'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/case-study' | '/works'
-  id: '__root__' | '/' | '/about' | '/case-study' | '/works'
+  to:
+    | '/'
+    | '/company'
+    | '/contact'
+    | '/local'
+    | '/programs'
+    | '/purchasing'
+    | '/systems'
+    | '/purchasing/compliance'
+    | '/purchasing/kyc'
+  id:
+    | '__root__'
+    | '/'
+    | '/company'
+    | '/contact'
+    | '/local'
+    | '/programs'
+    | '/purchasing'
+    | '/systems'
+    | '/purchasing_/compliance'
+    | '/purchasing_/kyc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  CaseStudyRoute: typeof CaseStudyRoute
-  WorksRoute: typeof WorksRoute
+  CompanyRoute: typeof CompanyRoute
+  ContactRoute: typeof ContactRoute
+  LocalRoute: typeof LocalRoute
+  ProgramsRoute: typeof ProgramsRoute
+  PurchasingRoute: typeof PurchasingRoute
+  SystemsRoute: typeof SystemsRoute
+  PurchasingComplianceRoute: typeof PurchasingComplianceRoute
+  PurchasingKycRoute: typeof PurchasingKycRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/works': {
-      id: '/works'
-      path: '/works'
-      fullPath: '/works'
-      preLoaderRoute: typeof WorksRouteImport
+    '/systems': {
+      id: '/systems'
+      path: '/systems'
+      fullPath: '/systems'
+      preLoaderRoute: typeof SystemsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/case-study': {
-      id: '/case-study'
-      path: '/case-study'
-      fullPath: '/case-study'
-      preLoaderRoute: typeof CaseStudyRouteImport
+    '/purchasing': {
+      id: '/purchasing'
+      path: '/purchasing'
+      fullPath: '/purchasing'
+      preLoaderRoute: typeof PurchasingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/programs': {
+      id: '/programs'
+      path: '/programs'
+      fullPath: '/programs'
+      preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/local': {
+      id: '/local'
+      path: '/local'
+      fullPath: '/local'
+      preLoaderRoute: typeof LocalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/company': {
+      id: '/company'
+      path: '/company'
+      fullPath: '/company'
+      preLoaderRoute: typeof CompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -99,14 +198,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/purchasing_/kyc': {
+      id: '/purchasing_/kyc'
+      path: '/purchasing/kyc'
+      fullPath: '/purchasing/kyc'
+      preLoaderRoute: typeof PurchasingKycRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/purchasing_/compliance': {
+      id: '/purchasing_/compliance'
+      path: '/purchasing/compliance'
+      fullPath: '/purchasing/compliance'
+      preLoaderRoute: typeof PurchasingComplianceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  CaseStudyRoute: CaseStudyRoute,
-  WorksRoute: WorksRoute,
+  CompanyRoute: CompanyRoute,
+  ContactRoute: ContactRoute,
+  LocalRoute: LocalRoute,
+  ProgramsRoute: ProgramsRoute,
+  PurchasingRoute: PurchasingRoute,
+  SystemsRoute: SystemsRoute,
+  PurchasingComplianceRoute: PurchasingComplianceRoute,
+  PurchasingKycRoute: PurchasingKycRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
