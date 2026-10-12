@@ -43,7 +43,7 @@ body {
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
@@ -342,8 +342,8 @@ a:hover {
   min-height: clamp(22rem, 62vh, 38rem);
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  padding: 2.5rem 1rem 0;
+  justify-content: center;
+  padding: 2.5rem 1rem;
   background:
     radial-gradient(120% 85% at 18% -5%, var(--glow), transparent 58%),
     linear-gradient(180deg, #12101c 0%, var(--bg) 100%);
@@ -873,20 +873,14 @@ a:hover {
 }
 
 .product-grid {
-  max-width: var(--container);
   margin: 0 auto;
   display: grid;
-  gap: 1rem;
+  gap: 16px;
   grid-template-columns: 1fr;
 }
 
-@media (min-width: 640px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1100px) {
+/* DOCX §5：3 列 × 384px、gap 16px；§7：≤900px 降为单列 */
+@media (min-width: 900px) {
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -1621,13 +1615,10 @@ article.prose {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .program-cta {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .program-cta .btn-row {
-    justify-content: flex-end;
-  }
+  /* CY 2026-10-12：结尾 CTA 不再做「文字左 / 按钮右」两列。
+   * 原规则让按钮贴右、文字与上方区块左边界不一致；现改为单列堆叠，
+   * 按钮置于文字下方，并与上方区块共用同一个居中容器（.program-cta > div）。
+   */
 }
 
 @media (max-width: 620px) {
@@ -1767,36 +1758,34 @@ article.prose {
 }
 
 /* --- Promo / product / value / tile cards: subtle lift + cyan edge on hover --- */
+/* --- Promo / product / value / tile cards ---
+ * 品牌规范 §2.3：卡片 hover 只转 --line-strong，不做阴影抖动。
+ * 品牌规范 §2.4：不加位移动画。
+ * 原实现为 translateY(-4px) + 青色描边 + 三层 glow，两项都违反，故移除。
+ */
 .promo-card,
 .product-card,
 .value-card,
 .tile {
-  transition:
-    transform 280ms cubic-bezier(0.2, 0.6, 0.2, 1),
-    border-color 280ms ease,
-    box-shadow 280ms ease;
-  will-change: transform;
+  transition: border-color 200ms ease;
 }
 
 .promo-card:hover,
 .product-card:hover,
 .value-card:hover,
 .tile:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-cyan-soft);
-  box-shadow:
-    0 18px 40px rgba(0, 0, 0, 0.45),
-    0 0 0 1px var(--accent-cyan-faint),
-    0 0 32px var(--accent-cyan-faint);
+  border-color: var(--border-strong);
 }
 
 .promo-card .promo-media,
-.product-card-media img {
-  transition: transform 600ms cubic-bezier(0.2, 0.6, 0.2, 1);
+.product-card-media img,
+.feature-card-media img {
+  transition: none;
 }
 .promo-card:hover .promo-media,
-.product-card:hover .product-card-media img {
-  transform: scale(1.04);
+.product-card:hover .product-card-media img,
+.feature-card:hover .feature-card-media img {
+  transform: none;
 }
 
 /* --- Scroll reveal: hidden until JS adds .is-revealed --- */
@@ -1894,17 +1883,24 @@ article.prose {
     background 0.15s ease,
     color 0.15s ease;
 }
-.cat-chip:hover {
+.cat-chip:hover,
+.cat-chip:focus-visible {
   border-color: var(--accent-cyan, #5cc8ff);
   background: rgba(92, 200, 255, 0.1);
   color: var(--accent-cyan, #5cc8ff);
+  /* 全站 a:hover 会加下划线，且权重高于 .cat-chip 的 text-decoration: none，
+   * 所以必须在此重新声明，否则悬停/键盘聚焦时分类按钮会出现下划线。 */
+  text-decoration: none;
 }
 
+/* DOCX §5 实测：容器 1184px = min(1184px, calc(100% - 3rem))。
+ * 只收窄商品区，不改全局 --container（它被 22 处共用，改它会牵连所有页面）。
+ */
 .catalog-main {
-  max-width: var(--container);
+  max-width: min(1184px, calc(100% - 3rem));
   margin: 0 auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding-left: 0;
+  padding-right: 0;
 }
 .catalog-section {
   scroll-margin-top: 96px;
@@ -1959,24 +1955,35 @@ article.prose {
   }
 }
 
-/* Card refinements */
+/* Card refinements
+ * 口径依据：《Seraya 产品页（/works）改版方案 v1.0》§5 实测表。
+ * 下列数值必须与线上原版一致，否则卡高（2 行 419 / 3 行 444 / 4 行 469）不满足验收。
+ */
 .sku-card .product-card-media {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 9; /* DOCX §5：图片 382 × 214.9（16:9） */
 }
+/* 2026-10-12：DOCX 要求「example 免责全页只在 hero lede 出现一次」，故卡片不再叠说明性渐变。
+ * 另：品牌规范 §2.2 亦禁止大面积用青。改为不含色相的中性暗角。
+ */
 .sku-card .media-tint {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(180deg, rgba(5, 5, 8, 0) 35%, rgba(5, 5, 8, 0.55) 100%),
-    linear-gradient(135deg, rgba(92, 200, 255, 0.18) 0%, rgba(92, 200, 255, 0) 55%);
+  background: linear-gradient(180deg, rgba(5, 5, 8, 0) 40%, rgba(5, 5, 8, 0.5) 100%);
   pointer-events: none;
 }
+/* 标题区两行，总高 49.5px：编码行 ＋ 名称行，间隔 2.4px（= 0.15rem） */
 .sku-head {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
   margin-bottom: 0.35rem;
 }
+/* 编码行：等宽 15.2px（0.95rem）、青色 #5cc8ff（DOCX §5 实测值）
+ *
+ * 这是对品牌规范 §2.1（字号阶梯）与 §2.2（青不得作标题色）的**商品层豁免**。
+ * 依据：DOCX §5「改版必须沿用，否则卡高会与原版不一致」＋ CY 2026-10-12 裁决
+ * 「几何与字号都回到原版实测」。属有意偏离，非遗漏。
+ */
 .sku-code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.95rem;
@@ -1984,6 +1991,7 @@ article.prose {
   letter-spacing: 0.02em;
   color: var(--accent-cyan, #5cc8ff);
 }
+/* 名称行：15.2px / 600（DOCX §5 实测值） */
 .sku-tagline {
   font-size: 0.95rem;
   font-weight: 600;
@@ -2007,6 +2015,7 @@ article.prose {
   align-items: baseline;
   margin: 0;
 }
+/* DOCX §5 实测：dt 11.2px、大写、字母间距 1.12px（= 0.1em） */
 .spec-row dt {
   color: var(--text-muted);
   font-size: 0.7rem;
@@ -2018,6 +2027,10 @@ article.prose {
   margin: 0;
   color: var(--text);
 }
+/* DOCX §5 实测：脚部高 36.3px、上边框 + 13.6px 内距、字号 13.12px（= 0.82rem）
+ * 左：条件标签 New / ITAD（替换原 Lead time 位置）；右：RFQ 链接。
+ * 必须保持一行 —— 折行会改变卡高。
+ */
 .sku-foot {
   margin-top: auto;
   padding-top: 0.85rem;
@@ -2028,16 +2041,343 @@ article.prose {
   gap: 0.75rem;
   font-size: 0.82rem;
 }
-.sku-foot strong {
-  color: var(--text);
-  font-weight: 700;
+.sku-quote {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
 }
-.rfq-link {
-  color: var(--accent-cyan, #5cc8ff);
-  text-decoration: none;
+.cond-tag {
+  flex: none;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+  white-space: nowrap;
+}
+.quote-note {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+/* 品牌规范 §2.2：青专用于「链接悬停」；静止态用文字色 */
+.rfq-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
   letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 .rfq-link:hover {
+  color: var(--accent-cyan, #5cc8ff);
   text-decoration: underline;
+}
+
+/* ===================== 新增两段（DOCX §4） ===================== */
+.catalog-lede {
+  max-width: 46rem;
+}
+.quote-section {
+  border-top: 1px solid var(--border);
+}
+.quote-block {
+  max-width: 62rem;
+  margin: 0 auto;
+}
+.quote-block h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+.route-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8125rem;
+}
+.route-table th,
+.route-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.7rem 0.85rem;
+  border-top: 1px solid var(--border);
+}
+.route-table thead th {
+  border-top: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.route-table tbody th {
+  width: 11rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.route-table td {
+  color: var(--text);
+}
+.quote-drivers {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+}
+.quote-drivers li {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1rem 1.1rem;
+}
+.quote-drivers h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.quote-drivers p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.quote-note-end {
+  margin: 1.25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (min-width: 800px) {
+  .quote-drivers {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Private deployment 段的结尾说明（Programs 文案整改方案 §5 closing line） */
+.program-deploy-note {
+  max-width: var(--container);
+  margin: 1.25rem auto 0;
+}
+
+/* 新增页面的主视觉微标签与事实面板（Purchasing / KYC / Compliance / Contact / Local 复用） */
+.page-hero .eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-cyan, #5cc8ff);
+  margin-bottom: 0.6rem;
+}
+.page-facts {
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+/* 证据条 —— 替换原第三方商标墙（方案 §3 第 4 行）。
+ * 品牌规范 §2.3：证据条 = 左侧 2px 青标线 + 粗体结论 + 灰色一句解释。
+ */
+.evidence-strip {
+  max-width: var(--container);
+  margin: 2.5rem auto 0;
+}
+.evidence-strip ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+.evidence-strip li {
+  border-left: 2px solid var(--accent-cyan-soft);
+  padding-left: 0.9rem;
+}
+.evidence-strip strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+.evidence-strip span {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+@media (min-width: 900px) {
+  .evidence-strip ul {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+/* 分流区卡片内的按钮间距（首页 §3 第 2 行） */
+.company-card .btn {
+  margin-top: 1rem;
+  align-self: flex-start;
+}
+.company-card .rfq-checklist {
+  margin: 0.75rem 0 0;
+}
+
+/* 四步流程时间轴：一条横线 + 四个点，标签在点下方（CY 2026-10-12 指示） */
+.flow-line {
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  max-width: var(--container);
+  display: grid;
+  /* 步数由 --flow-count 推导：4 步与 5 步共用同一套规则 */
+  --flow-count: 4;
+  grid-template-columns: repeat(var(--flow-count), minmax(0, 1fr));
+  position: relative;
+}
+/* 贯穿的横线，高度对齐到点的中心 */
+.flow-line::before {
+  content: "";
+  position: absolute;
+  /* 线的两端各留半格，正好落在首尾两点的中心 */
+  left: calc(50% / var(--flow-count));
+  right: calc(50% / var(--flow-count));
+  top: 0.875rem;
+  height: 1px;
+  background: var(--border-strong);
+}
+.flow-line li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0 0.5rem;
+  text-align: center;
+}
+.flow-dot {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent-cyan, #5cc8ff);
+  border: 1px solid rgba(92, 200, 255, 0.45);
+  /* 底色用于把贯穿的横线遮住，让圆圈读起来是「点在线」 */
+  background: var(--bg);
+  box-shadow: 0 0 10px var(--accent-cyan-glow);
+  position: relative;
+  z-index: 1;
+}
+.flow-label {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+@media (max-width: 720px) {
+  .flow-line {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+  .flow-line::before {
+    display: none;
+  }
+  .flow-line li {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 0;
+    text-align: left;
+  }
+}
+/* 结尾两张入口卡：本地线 ＋ RFQ，合成一个 section（CY 2026-10-12 指示） */
+.start-grid {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 800px) {
+  .start-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.start-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1.5rem;
+}
+.start-card h3 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.start-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+/* 按钮沉底，两张卡即使一张没有正文也能对齐 */
+.start-card .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+/* 「我们买什么 / 不买什么」合并为一个 section，左右两栏（CY 2026-10-12 指示）
+ * 合并同时修掉一处布局不一致：原来 h2 在 .section-head（有 max-width 且居中），
+ * 而 ul 直接挂在 .section 下（无 max-width），导致标题与列表左边界不对齐。
+ */
+.buy-grid {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 800px) {
+  .buy-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+.buy-col h2 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+/* 5 步变体（/purchasing「How a lot runs」） */
+.flow-line--5 {
+  --flow-count: 5;
+}
+/* .section-head 自带居中容器（max-width: var(--container); margin: 0 auto），
+ * 但紧随其后的兄弟元素没有 —— 于是标题内缩、内容贴左，左边界不一致。
+ * 已踩过两处：/company 的 CTA 按钮、/purchasing 的清单。
+ * 这里统一让紧随 .section-head 的块级内容落到同一容器。
+ * 对本身已带同款 max-width 的元素无影响（值相同）。
+ */
+.section-head + * {
+  max-width: var(--container);
+  margin-left: auto;
+  margin-right: auto;
+}
+/* 主视觉里说明段落与按钮组之间的间距。
+ * Tailwind preflight 把 p 的外边距归零，所以两者之间只剩 .btn-row 自带的 1.25rem，
+ * 读起来贴在一起。这里只对 .page-hero 内的按钮组加大，不影响其它位置的 .btn-row。
+ */
+.page-hero .btn-row {
+  margin-top: 2rem;
 }
