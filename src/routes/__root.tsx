@@ -147,6 +147,16 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        {/*
+          Legacy 全站脚本，只在这里注入一次。
+
+          为什么必须放根布局：这些脚本用 addEventListener 绑定全局监听，
+          原先写在每个路由组件的 useEffect 里，客户端跳转一次就执行一次，
+          监听器被重复绑定 —— 点一次 Menu 会开一次又关一次，等于没反应。
+          放在 RootShell 还让它随 SSR 直出，不依赖 React hydration 成功。
+        */}
+        <script src="/legacy/script.js" defer />
+        <script src="/legacy/hero-bg.js" defer />
         <Scripts />
       </body>
     </html>

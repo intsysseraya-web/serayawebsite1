@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
 import legacyCss from "../legacy-shim.css?url";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 
@@ -113,36 +112,5 @@ export const Route = createFileRoute("/")({
 });
 
 function LegacyPage() {
-  useEffect(() => {
-    // Hero style toggle: /?hero=plain disables the animated background
-    // and restores the original whitespace-only hero for A/B comparison.
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const style = params.get("hero") === "plain" ? "plain" : "animated";
-      const hero = document.querySelector(".hero");
-      if (hero) hero.setAttribute("data-hero-style", style);
-    } catch {
-      // Ignore malformed query strings and keep the default animated hero.
-    }
-
-    const s = document.createElement("script");
-    s.src = "/legacy/script.js";
-    s.async = false;
-    document.body.appendChild(s);
-
-    // Hero 动效粒子网络（原本的装饰）。CY 2026-10-12 指示「只换回背景装饰」，
-    // 故恢复本注入；静态网格装饰 .hero::after 已移除。
-    // 该脚本自身处理 prefers-reduced-motion（只画单帧）与离屏/切 tab 暂停。
-    const bg = document.createElement("script");
-    bg.src = "/legacy/hero-bg.js";
-    bg.async = false;
-    document.body.appendChild(bg);
-
-    return () => {
-      s.remove();
-      bg.remove();
-    };
-  }, []);
-
   return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
 }

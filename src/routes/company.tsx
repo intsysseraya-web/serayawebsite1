@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
 import legacyCss from "../legacy-shim.css?url";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 
@@ -158,15 +157,5 @@ export const Route = createFileRoute("/company")({
 });
 
 function LegacyPage() {
-  useEffect(() => {
-    const s = document.createElement("script");
-    s.src = "/legacy/script.js";
-    s.async = false;
-    document.body.appendChild(s);
-    return () => {
-      s.remove();
-    };
-  }, []);
-
   return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
 }
