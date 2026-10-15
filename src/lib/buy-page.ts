@@ -60,6 +60,14 @@ const PRICING_LABELS = [
 const PRICING_TERMS = BUYER_TERMS.filter((t) => PRICING_LABELS.includes(t.label));
 const FULFILMENT_TERMS = BUYER_TERMS.filter((t) => !PRICING_LABELS.includes(t.label));
 
+/**
+ * 供 /systems 复用：只输出分类区块与型号卡，不含整页骨架。
+ * §13.1.4 要求三页共用单一来源，/systems 也从这里取，不另维护一份型号。
+ */
+export function renderGpuCatalog(categories: GpuCategory[], ctaLabel: string): string {
+  return categories.map((c) => categoryBlock(c, ctaLabel, true)).join("\n");
+}
+
 export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
   overview: {
     key: "overview",
@@ -130,6 +138,17 @@ function gpuCard(p: GpuProduct, ctaLabel: string): string {
   return `
           <article class="gpu-card">
 ${media}            <h3>${esc(p.modelName)}</h3>
+            ${
+              // §6.2：只渲染已核实的规格；无数据则不输出该区块
+              p.specs && p.specs.length
+                ? `<dl class="gpu-specs">${p.specs
+                    .map(
+                      (s) =>
+                        `<div class="gpu-specs-row"><dt>${esc(s.label)}</dt><dd>${esc(s.value)}</dd></div>`,
+                    )
+                    .join("")}</dl>`
+                : ""
+            }
             <dl class="gpu-meta">
               <div class="gpu-meta-row"><dt>Availability</dt><dd>${availabilityText(p)}</dd></div>
               <div class="gpu-meta-row"><dt>Minimum order</dt><dd>${moqText(p)}</dd></div>
