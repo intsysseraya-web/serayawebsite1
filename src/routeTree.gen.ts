@@ -15,9 +15,12 @@ import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as LocalRouteImport } from './routes/local'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompanyRouteImport } from './routes/company'
+import { Route as BuyRouteImport } from './routes/buy'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PurchasingKycRouteImport } from './routes/purchasing_.kyc'
 import { Route as PurchasingComplianceRouteImport } from './routes/purchasing_.compliance'
+import { Route as BuyGamingGpusRouteImport } from './routes/buy_.gaming-gpus'
+import { Route as BuyAiGpusRouteImport } from './routes/buy_.ai-gpus'
 
 const SystemsRoute = SystemsRouteImport.update({
   id: '/systems',
@@ -49,6 +52,11 @@ const CompanyRoute = CompanyRouteImport.update({
   path: '/company',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuyRoute = BuyRouteImport.update({
+  id: '/buy',
+  path: '/buy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -64,38 +72,57 @@ const PurchasingComplianceRoute = PurchasingComplianceRouteImport.update({
   path: '/purchasing/compliance',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BuyGamingGpusRoute = BuyGamingGpusRouteImport.update({
+  id: '/buy_/gaming-gpus',
+  path: '/buy/gaming-gpus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuyAiGpusRoute = BuyAiGpusRouteImport.update({
+  id: '/buy_/ai-gpus',
+  path: '/buy/ai-gpus',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
+  '/buy/ai-gpus': typeof BuyAiGpusRoute
+  '/buy/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing/compliance': typeof PurchasingComplianceRoute
   '/purchasing/kyc': typeof PurchasingKycRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
+  '/buy/ai-gpus': typeof BuyAiGpusRoute
+  '/buy/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing/compliance': typeof PurchasingComplianceRoute
   '/purchasing/kyc': typeof PurchasingKycRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
+  '/buy_/ai-gpus': typeof BuyAiGpusRoute
+  '/buy_/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing_/compliance': typeof PurchasingComplianceRoute
   '/purchasing_/kyc': typeof PurchasingKycRoute
 }
@@ -103,46 +130,58 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/buy'
     | '/company'
     | '/contact'
     | '/local'
     | '/programs'
     | '/purchasing'
     | '/systems'
+    | '/buy/ai-gpus'
+    | '/buy/gaming-gpus'
     | '/purchasing/compliance'
     | '/purchasing/kyc'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/buy'
     | '/company'
     | '/contact'
     | '/local'
     | '/programs'
     | '/purchasing'
     | '/systems'
+    | '/buy/ai-gpus'
+    | '/buy/gaming-gpus'
     | '/purchasing/compliance'
     | '/purchasing/kyc'
   id:
     | '__root__'
     | '/'
+    | '/buy'
     | '/company'
     | '/contact'
     | '/local'
     | '/programs'
     | '/purchasing'
     | '/systems'
+    | '/buy_/ai-gpus'
+    | '/buy_/gaming-gpus'
     | '/purchasing_/compliance'
     | '/purchasing_/kyc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BuyRoute: typeof BuyRoute
   CompanyRoute: typeof CompanyRoute
   ContactRoute: typeof ContactRoute
   LocalRoute: typeof LocalRoute
   ProgramsRoute: typeof ProgramsRoute
   PurchasingRoute: typeof PurchasingRoute
   SystemsRoute: typeof SystemsRoute
+  BuyAiGpusRoute: typeof BuyAiGpusRoute
+  BuyGamingGpusRoute: typeof BuyGamingGpusRoute
   PurchasingComplianceRoute: typeof PurchasingComplianceRoute
   PurchasingKycRoute: typeof PurchasingKycRoute
 }
@@ -191,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buy': {
+      id: '/buy'
+      path: '/buy'
+      fullPath: '/buy'
+      preLoaderRoute: typeof BuyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -212,17 +258,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PurchasingComplianceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/buy_/gaming-gpus': {
+      id: '/buy_/gaming-gpus'
+      path: '/buy/gaming-gpus'
+      fullPath: '/buy/gaming-gpus'
+      preLoaderRoute: typeof BuyGamingGpusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/buy_/ai-gpus': {
+      id: '/buy_/ai-gpus'
+      path: '/buy/ai-gpus'
+      fullPath: '/buy/ai-gpus'
+      preLoaderRoute: typeof BuyAiGpusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BuyRoute: BuyRoute,
   CompanyRoute: CompanyRoute,
   ContactRoute: ContactRoute,
   LocalRoute: LocalRoute,
   ProgramsRoute: ProgramsRoute,
   PurchasingRoute: PurchasingRoute,
   SystemsRoute: SystemsRoute,
+  BuyAiGpusRoute: BuyAiGpusRoute,
+  BuyGamingGpusRoute: BuyGamingGpusRoute,
   PurchasingComplianceRoute: PurchasingComplianceRoute,
   PurchasingKycRoute: PurchasingKycRoute,
 }
