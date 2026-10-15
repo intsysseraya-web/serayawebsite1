@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
-import { renderGpuCatalog } from "../lib/buy-page";
+import { GPU_PRODUCTS } from "../data/gpu-catalog";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 import {
   ALL_PRODUCTS,
@@ -68,9 +68,19 @@ function renderCategory(c: Category) {
             <h2>${escapeHtml(c.title)}</h2>
             <p class="muted">${escapeHtml(c.blurb)}</p>
           </header>
-          <div class="product-grid">${c.products.map(renderCard).join("")}</div>
+          <div class="product-grid">${(c.id === "gpu" ? [...c.products, ...GPU_AS_CARDS] : c.products).map(renderCard).join("")}</div>
         </section>`;
 }
+
+// 50 系与数据中心 GPU 并入「GPU / AI」分类，使用与整机相同的卡片模板。
+// 型号数据来自 src/data/gpu-catalog.ts 单一来源（§13.1.4），本页不另维护一份。
+const GPU_AS_CARDS = GPU_PRODUCTS.map((g) => ({
+  code: g.code,
+  name: g.modelName,
+  // systems.ts 的 specs 是 [label, value] 元组；gpu-catalog 用的是 {label,value} 对象，须转换
+  specs: (g.specs ?? []).map((s) => [s.label, s.value]),
+  img: g.image ?? "",
+}));
 
 const CATALOG_HTML = CATEGORIES.map(renderCategory).join("\n");
 
@@ -109,11 +119,6 @@ const DRIVERS = QUOTE_DRIVERS.items
   )
   .join("\n");
 
-// 与 /buy 共用同一份 GPU 目录数据与卡片渲染器（§13.1.4 单一来源）。
-const GPU_CATALOG_HTML = renderGpuCatalog(
-  ["gaming", "professional", "datacenter"],
-  "Request bulk quote",
-);
 
 const BODY_HTML = `
     ${skipLink()}
@@ -150,17 +155,6 @@ ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-
           </div>
         </div>
       </section>
-
-      <section class="catalog-section" aria-labelledby="gpu-models-title">
-        <div class="catalog-section-head">
-          <h2 id="gpu-models-title">GPU models</h2>
-          <p class="muted">
-            Supply status is held per model, not as one site-wide stock label. Where a lot is
-            confirmed we show the check date; otherwise availability is confirmed on enquiry.
-          </p>
-        </div>
-      </section>
-${GPU_CATALOG_HTML}
 
 ${CATALOG_HTML}
 
