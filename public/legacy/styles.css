@@ -2587,3 +2587,26 @@ article.prose {
   outline: 2px solid var(--accent-cyan, #5cc8ff);
   outline-offset: 2px;
 }
+/* GPU 卡上的已核实规格（§6.2；无数据时不渲染） */
+.gpu-specs {
+  margin: 0;
+  display: grid;
+  gap: 0.25rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+}
+.gpu-specs-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.gpu-specs-row dt {
+  color: var(--text-muted);
+}
+.gpu-specs-row dd {
+  margin: 0;
+  color: var(--text);
+  font-weight: 600;
+  text-align: right;
+}
