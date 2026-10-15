@@ -79,7 +79,7 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: "/static/sku/sr-5090-16x9.jpg",
+    image: "/static/sku/sr-5090-16x9.jpg?v=3",
     imageType: "reference",
   },
   {
@@ -127,7 +127,7 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: "/static/sku/sr-5060-ti-16x9.jpg",
+    image: "/static/sku/sr-5060-ti-16x9.jpg?v=3",
     imageType: "reference",
   },
   {
@@ -161,7 +161,7 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: "/static/sku/sr-rtxpro6000-16x9.jpg",
+    image: "/static/sku/sr-rtxpro6000-16x9.jpg?v=3",
     imageType: "reference",
   },
 
@@ -179,7 +179,7 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: "/static/sku/sr-h100-16x9.jpg",
+    image: "/static/sku/sr-h100-16x9.jpg?v=3",
     imageType: "reference",
   },
   {
@@ -195,7 +195,7 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: "/static/sku/sr-a100-16x9.jpg",
+    image: "/static/sku/sr-a100-16x9.jpg?v=3",
     imageType: "reference",
   },
 ];
