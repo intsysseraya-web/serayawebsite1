@@ -2363,13 +2363,19 @@ article.prose {
 .flow-line--5 {
   --flow-count: 5;
 }
-/* .section-head 自带居中容器（max-width: var(--container); margin: 0 auto），
- * 但紧随其后的兄弟元素没有 —— 于是标题内缩、内容贴左，左边界不一致。
- * 已踩过两处：/company 的 CTA 按钮、/purchasing 的清单。
- * 这里统一让紧随 .section-head 的块级内容落到同一容器。
- * 对本身已带同款 max-width 的元素无影响（值相同）。
+/* .section 的全部直接子元素统一落到同一个居中容器。
+ *
+ * 为什么不能只约束「紧邻 .section-head 的第一个兄弟」：那只修第一个，
+ * 第三个子元素照样贴左。实测踩过：/buy/ai-gpus 的「Professional GPUs」对齐了，
+ * 而「Data center GPUs」贴在 x=16，同一页两个分类区块左边界不一致；
+ * 另外 /company 的 CTA 按钮、/purchasing 的清单也踩过同一类问题。
+ *
+ * 为什么这样写是安全的：max-width 只封顶，不会放大。
+ * 例如 `.catalog-main`（本身是 .section，容器 1184px）的子元素虽然被设为
+ * max-width: var(--container)（1400px），但受父级 1184px 限制，实际仍是 1184px，
+ * 因此 /systems 目录宽度不变。本身已带同款 max-width 的元素值相同，也无影响。
  */
-.section-head + * {
+.section > * {
   max-width: var(--container);
   margin-left: auto;
   margin-right: auto;
@@ -2380,4 +2386,204 @@ article.prose {
  */
 .page-hero .btn-row {
   margin-top: 2rem;
+}
+/* ==== v3.0 采购入口页（/buy 系列）新增组件 ==== */
+.gpu-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 800px) {
+  .gpu-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.gpu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1.25rem;
+}
+.gpu-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+}
+.gpu-card-media {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: rgba(92, 200, 255, 0.04);
+  aspect-ratio: 16 / 9;
+}
+.gpu-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.gpu-media-note {
+  position: absolute;
+  left: 0.5rem;
+  bottom: 0.5rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.62);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+}
+.gpu-meta {
+  margin: 0;
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.82rem;
+}
+.gpu-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.gpu-meta-row dt {
+  color: var(--text-muted);
+}
+.gpu-meta-row dd {
+  margin: 0;
+  color: var(--text);
+  text-align: right;
+}
+.gpu-card .rfq-link {
+  margin-top: auto;
+}
+.catalog-note {
+  max-width: var(--container);
+  margin: 1.25rem auto 0;
+  font-size: 0.85rem;
+}
+.rfq-entry {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1.5rem;
+}
+.rfq-alternative {
+  display: grid;
+  gap: 0.4rem;
+}
+.rfq-alternative p {
+  margin: 0;
+}
+.rfq-alternative code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--accent-cyan, #5cc8ff);
+}
+.terms-list {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+}
+.terms-row {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--border);
+}
+.terms-row:first-child {
+  border-top: none;
+}
+.terms-row dt {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.terms-row dd {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+@media (min-width: 800px) {
+  .terms-row {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+.faq-list {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 0.5rem;
+}
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 0.9rem 1.1rem;
+}
+.faq-item summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+.faq-item p {
+  margin: 0.6rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+/* /systems 上的单卡 GPU 批发入口（v3.0，混合方案：入口 + 独立落地页） */
+.gpu-entry-inner {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  justify-items: start;
+}
+/* ==== v3.0 §11.1 / §11.2：采购页视觉与移动端 ==== */
+.gpu-card-cta {
+  margin-top: auto;
+  align-self: flex-start;
+}
+/* 粘性底栏只在窄屏出现；给 .buy-main 留高度，避免遮住内容（§11.2） */
+.mobile-cta-bar {
+  display: none;
+}
+@media (max-width: 720px) {
+  .mobile-cta-bar {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom));
+    background: rgba(8, 8, 12, 0.94);
+    border-top: 1px solid var(--border);
+  }
+  .mobile-cta-bar .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .buy-main {
+    padding-bottom: 4.75rem;
+  }
+}
+/* §11.2：键盘可达的焦点提示（按钮、FAQ 折叠、入口链接） */
+.gpu-card-cta:focus-visible,
+.mobile-cta-bar .btn:focus-visible,
+.faq-item summary:focus-visible,
+.rfq-entry a:focus-visible,
+.cat-chip:focus-visible {
+  outline: 2px solid var(--accent-cyan, #5cc8ff);
+  outline-offset: 2px;
 }
