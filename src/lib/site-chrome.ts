@@ -15,6 +15,7 @@ export const BRAND = "Seraya System Integration";
 
 export type NavKey =
   | "home"
+  | "buy"
   | "purchasing"
   | "systems"
   | "programs"
@@ -25,9 +26,11 @@ export type NavKey =
 
 /** 主导航：标签与 URL 必须一一对应（§2） */
 const NAV: { key: NavKey; label: string; href: string }[] = [
-  { key: "purchasing", label: "Purchasing", href: "/purchasing" },
+  // v3.0 §3.2 推荐主导航：Buy GPUs / Sell GPU Lots / Systems / Company / Contact。
+  // Programs 退出主导航但仍在页脚；第一期 Sell GPU Lots 指向现有 /purchasing（§3.2）。
+  { key: "buy", label: "Buy GPUs", href: "/buy" },
+  { key: "purchasing", label: "Sell GPU Lots", href: "/purchasing" },
   { key: "systems", label: "Systems", href: "/systems" },
-  { key: "programs", label: "Programs", href: "/programs" },
   { key: "company", label: "Company", href: "/company" },
   { key: "contact", label: "Contact", href: "/contact" },
 ];
@@ -39,7 +42,7 @@ export function announcementBar(): string {
       <div class="announcement-inner">
         <a href="/contact">Response to complete RFQs within one business day</a>
         <span class="muted" aria-hidden="true">|</span>
-        <a href="/purchasing">Committed lot decisions within 12 hours</a>
+        <a href="/buy">Wholesale GPU supply &mdash; request a bulk quote</a>
       </div>
     </div>`;
 }
@@ -61,7 +64,7 @@ ${navLinks(current, "main-nav")}
         </nav>
         <div class="header-actions">
           <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">Search</button>
-          <a class="icon-btn header-rfq-link" href="/contact" aria-label="Start an RFQ">RFQ</a>
+          <a class="icon-btn header-rfq-link" href="/buy" aria-label="Request a bulk quote">RFQ</a>
           <button type="button" class="icon-btn mobile-menu-btn" id="btnMenu" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
         </div>
       </div>
@@ -104,6 +107,7 @@ export function siteFooter(): string {
             <li><a href="/company">Kuala Lumpur, Malaysia</a></li>
             <li><a href="/contact">Contact</a></li>
             <li><a href="/local">Local builds &amp; trade-in</a></li>
+            <li><a href="/buy">Buy GPUs</a></li>
           </ul>
         </div>
         <div class="footer-col">
