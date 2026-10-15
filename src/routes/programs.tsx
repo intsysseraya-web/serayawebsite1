@@ -4,50 +4,8 @@ import legacyCss from "../legacy-shim.css?url";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 
 const BODY_HTML = `
-    <a class="skip-link" href="#main">Skip to content</a>
-
-    <div class="announcement-bar" aria-label="Promotions">
-      <div class="announcement-inner">
-        <a href="/contact">Response to complete RFQs within one business day</a>
-        <span class="muted" aria-hidden="true">|</span>
-        <a href="/purchasing">Committed lot decisions within 12 hours</a>
-      </div>
-    </div>
-
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="logo" href="/"><img src="/brand/seraya-lockup-compact.svg" alt="Seraya System Integration" /></a>
-        <nav class="main-nav" aria-label="Primary">
-          <a href="/purchasing">Purchasing</a>
-          <a href="/systems">Systems</a>
-          <a href="/programs" aria-current="page">Programs</a>
-          <a href="/company">Company</a>
-          <a href="/contact">Contact</a>
-        </nav>
-        <div class="header-actions">
-          <a class="icon-btn header-rfq-link" href="/contact" aria-label="Start an RFQ">RFQ</a>
-          <button type="button" class="icon-btn mobile-menu-btn" id="btnMenu" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
-        </div>
-      </div>
-    </header>
-
-    <div class="mobile-drawer" id="mobileDrawer" hidden role="dialog" aria-modal="true" aria-label="Mobile menu">
-      <div class="mobile-drawer-panel">
-        <div class="overlay-head">
-          <strong>Navigate</strong>
-          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">X</button>
-        </div>
-        <nav class="mobile-nav">
-          <a href="/purchasing">Purchasing</a>
-          <a href="/systems">Systems</a>
-          <a href="/programs">Programs</a>
-          <a href="/company">Company</a>
-          <a href="/contact">Contact</a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="page-hero program-hero">
+    ${skipLink()}
+${siteChrome("programs", "BOM, program, destinations...")}<div class="page-hero program-hero">
       <div class="program-hero-layout">
         <div class="program-hero-copy">
           <p class="muted eyebrow" style="margin: 0 0 0.5rem">Programs</p>

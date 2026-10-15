@@ -8,47 +8,44 @@ const BODY_HTML = `
 ${siteChrome("home", "H100, BOM, storage...")}<main id="main">
       <section class="hero" aria-labelledby="hero-title hero-subtitle">
         
-                <div class="hero-inner">
-          <p class="hero-kicker">Kuala Lumpur &middot; Enterprise compute sourcing</p>
-          <h1 id="hero-title">We source, validate and deliver compute &mdash; and we buy GPUs in bulk.</h1>
+                        <div class="hero-inner">
+          <p class="hero-kicker">GPU wholesale &middot; Kuala Lumpur</p>
+          <h1 id="hero-title">Wholesale GPU Supply for Southeast Asian Buyers</h1>
           <p id="hero-subtitle" class="hero-subtitle">
-            Two ways to work with us. Enterprise teams send a BOM; suppliers send a lot list.
+            Malaysia-based GPU trading for resellers, system builders and business buyers. Request a bulk quote for your required model, quantity and destination.
           </p>
-          <p>Both get documented assumptions, a named owner, and a date we hold to.</p>
           <div class="btn-row">
-            <a class="btn btn-primary" href="/contact">Start an enterprise RFQ</a>
-            <a class="btn btn-ghost" href="/purchasing">Offer us a GPU lot</a>
+            <a class="btn btn-primary" href="/buy">Request bulk quote</a>
+            <a class="btn btn-ghost" href="/purchasing">Sell a GPU lot</a>
           </div>
-        </div>
+        </div></section>
 
-                </section>
-
-      <section class="section" aria-labelledby="routes-title">
+            <section class="section" aria-labelledby="routes-title">
         <div class="section-head">
-          <h2 id="routes-title">Two ways to work with us</h2>
+          <h2 id="routes-title">Buy GPUs in bulk</h2>
+          <p class="muted">Single-card GPU wholesale. Tell us the model, quantity and delivery destination.</p>
         </div>
         <div class="company-grid">
           <article class="company-card">
-            <p class="program-card-kicker">Enterprise procurement</p>
-            <h3>Send the BOM. Get a structured program back.</h3>
-            <ul class="rfq-checklist">
-              <li>Servers, GPU nodes, storage, networking, workstations</li>
-              <li>Availability, substitutions and lead-time risk made explicit</li>
-              <li>Acceptance notes and a warranty / RMA path tied to the program</li>
-            </ul>
-            <a class="btn btn-primary" href="/contact">Start an enterprise RFQ</a>
+            <p class="program-card-kicker">Wholesale GPUs</p>
+            <h3>Wholesale GPUs for Business Buyers</h3>
+            <p class="muted">Malaysia-based GPU trading for bulk procurement.</p>
+            <a class="btn btn-ghost" href="/buy">View GPU models</a>
           </article>
           <article class="company-card">
-            <p class="program-card-kicker">Bulk GPU purchasing</p>
-            <h3>Send your lot list. Get a committed decision.</h3>
-            <ul class="rfq-checklist">
-              <li>Graded, fully tested units &mdash; 20+ per lot, no maximum</li>
-              <li>Datacenter and professional accelerators, plus gaming tiers</li>
-              <li>Decision within 12 hours; we do not renegotiate after commitment</li>
-            </ul>
-            <a class="btn btn-primary" href="/purchasing">Offer us a GPU lot</a>
+            <p class="program-card-kicker">Gaming GPUs</p>
+            <h3>GeForce RTX GPUs for Bulk Procurement</h3>
+            <p class="muted">Compare listed models and configurations.</p>
+            <a class="btn btn-ghost" href="/buy/gaming-gpus">Gaming GPUs</a>
+          </article>
+          <article class="company-card">
+            <p class="program-card-kicker">Professional &amp; data center</p>
+            <h3>Professional &amp; Data Center GPUs for Bulk Procurement</h3>
+            <p class="muted">Specify the exact model, version and quantity.</p>
+            <a class="btn btn-ghost" href="/buy/ai-gpus">Professional &amp; data center</a>
           </article>
         </div>
+        <p class="muted catalog-note">Selling instead? <a href="/purchasing">Sell a GPU lot</a>.</p>
       </section>
 
       <section class="section product-section" aria-labelledby="built-title">
@@ -99,8 +96,8 @@ ${siteChrome("home", "H100, BOM, storage...")}<main id="main">
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Seraya System Integration | Kuala Lumpur system integrator" },
-      { name: "description", content: "Kuala Lumpur sourcing and system integration for compute infrastructure. We supply reference compute configurations and buy graded GPUs in bulk for confirmed demand." },
+      { title: "Wholesale GPU Supply for Southeast Asian Buyers | Seraya" },
+      { name: "description", content: "Malaysia-based GPU trading for resellers, system builders and business buyers. Request a bulk quote for your required model, quantity and destination." },
       {
         property: "og:title",
         content: "Seraya System Integration | Kuala Lumpur system integrator",

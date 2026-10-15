@@ -110,62 +110,8 @@ const DRIVERS = QUOTE_DRIVERS.items
   .join("\n");
 
 const BODY_HTML = `
-    <a class="skip-link" href="#main">Skip to content</a>
-
-    <div class="announcement-bar" aria-label="Promotions">
-      <div class="announcement-inner">
-        <a href="/contact">Response to complete RFQs within one business day</a>
-        <span class="muted" aria-hidden="true">|</span>
-        <a href="/purchasing">Committed lot decisions within 12 hours</a>
-      </div>
-    </div>
-
-    <header class="site-header">
-      <div class="header-inner">
-        <a class="logo" href="/"><img src="/brand/seraya-lockup-compact.svg" alt="Seraya System Integration" /></a>
-        <nav class="main-nav" aria-label="Primary">
-          <a href="/purchasing">Purchasing</a>
-          <a href="/systems" aria-current="page">Systems</a>
-          <a href="/programs">Programs</a>
-          <a href="/company">Company</a>
-          <a href="/contact">Contact</a>
-        </nav>
-        <div class="header-actions">
-          <button type="button" class="icon-btn" id="btnSearch" aria-label="Open search">Search</button>
-          <a class="icon-btn header-rfq-link" href="/contact" aria-label="Start an RFQ">RFQ</a>
-          <button type="button" class="icon-btn mobile-menu-btn" id="btnMenu" aria-expanded="false" aria-controls="mobileDrawer">Menu</button>
-        </div>
-      </div>
-    </header>
-
-    <div class="mobile-drawer" id="mobileDrawer" hidden role="dialog" aria-modal="true" aria-label="Mobile menu">
-      <div class="mobile-drawer-panel">
-        <div class="overlay-head">
-          <strong>Navigate</strong>
-          <button type="button" class="icon-btn" id="btnCloseMenu" aria-label="Close menu">X</button>
-        </div>
-        <nav class="mobile-nav">
-          <a href="/purchasing">Purchasing</a>
-          <a href="/systems">Systems</a>
-          <a href="/programs">Programs</a>
-          <a href="/company">Company</a>
-          <a href="/contact">Contact</a>
-        </nav>
-      </div>
-    </div>
-
-    <div class="overlay-panel" id="searchPanel" hidden role="dialog" aria-modal="true" aria-label="Search">
-      <div class="overlay-sheet search-sheet">
-        <div class="overlay-head">
-          <strong>Search</strong>
-          <button type="button" class="icon-btn" id="btnCloseSearch" aria-label="Close search">X</button>
-        </div>
-        <label class="muted" for="q">Keyword</label>
-        <input class="search-input" id="q" type="search" placeholder="SR-G780, H100, 400 GbE..." autocomplete="off" />
-      </div>
-    </div>
-
-    <div class="page-hero catalog-hero">
+    ${skipLink()}
+${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-hero">
       <div class="page-hero-inner">
         <span class="eyebrow">Reference systems &middot; Kuala Lumpur</span>
         <h1>New or ITAD. Same workload &mdash; different price, performance and terms.</h1>
@@ -182,6 +128,22 @@ const BODY_HTML = `
     </div>
 
     <main id="main" class="section product-section catalog-main">
+      <section class="catalog-section gpu-entry" aria-labelledby="gpu-entry-title">
+        <div class="gpu-entry-inner">
+          <div>
+            <h2 id="gpu-entry-title">Buying single GPUs in bulk?</h2>
+            <p class="muted">
+              Single-card GPU wholesale is quoted separately from the reference configurations on
+              this page.
+            </p>
+          </div>
+          <div class="btn-row">
+            <a class="btn btn-primary" href="/buy">Wholesale GPU overview</a>
+            <a class="btn btn-ghost" href="/buy/gaming-gpus">Gaming GPUs</a>
+            <a class="btn btn-ghost" href="/buy/ai-gpus">Professional &amp; data center</a>
+          </div>
+        </div>
+      </section>
 ${CATALOG_HTML}
 
       <section id="how-we-quote" class="catalog-section quote-section">
