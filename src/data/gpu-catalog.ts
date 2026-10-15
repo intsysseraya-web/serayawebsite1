@@ -41,6 +41,8 @@ export const AVAILABILITY_LABEL = {
 export type AvailabilityStatus = keyof typeof AVAILABILITY_LABEL;
 
 export type GpuProduct = {
+  /** 目录卡片显示的商品编号（与整机目录同一套 SR- 前缀） */
+  code: string;
   /** §6.2 稳定产品标识，用于询盘关联 */
   productId: string;
   category: GpuCategory;
@@ -74,6 +76,7 @@ const PRODUCTS: GpuProduct[] = [
   // --- Gaming（§4.4：RTX 5090 / 5080 / 5070 / 5060 与 Ti 版本按准确商品资料建立记录）---
   {
     productId: "gpu-rtx-5090",
+    code: "SR-5090",
     specs: [{ label: "Memory", value: "32 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
     category: "gaming",
     modelName: "GeForce RTX 5090",
@@ -91,6 +94,7 @@ const PRODUCTS: GpuProduct[] = [
   },
   {
     productId: "gpu-rtx-5080",
+    code: "SR-5080",
     specs: [{ label: "Memory", value: "16 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
     category: "gaming",
     modelName: "GeForce RTX 5080",
@@ -108,6 +112,7 @@ const PRODUCTS: GpuProduct[] = [
   },
   {
     productId: "gpu-rtx-5070",
+    code: "SR-5070",
     specs: [{ label: "Memory", value: "12 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
     category: "gaming",
     modelName: "GeForce RTX 5070",
@@ -125,6 +130,7 @@ const PRODUCTS: GpuProduct[] = [
   },
   {
     productId: "gpu-rtx-5060-ti",
+    code: "SR-5060TI",
     specs: [{ label: "Memory", value: "8 GB / 16 GB GDDR7" }],   // 该芯片有 8GB 与 16GB 两个版本，故并列，不单选
     category: "gaming",
     modelName: "GeForce RTX 5060 Ti",
@@ -142,6 +148,7 @@ const PRODUCTS: GpuProduct[] = [
   },
   {
     productId: "gpu-rtx-5060",
+    code: "SR-5060",
     specs: [{ label: "Memory", value: "8 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
     category: "gaming",
     modelName: "GeForce RTX 5060",
@@ -161,6 +168,7 @@ const PRODUCTS: GpuProduct[] = [
   // --- Professional（§4.4：避免把不同代际的 RTX 6000 类产品合并）---
   {
     productId: "gpu-rtx-pro-6000-blackwell",
+    code: "SR-PRO6000",
     specs: [{ label: "Memory", value: "96 GB GDDR7" }],   // 与仓库 /purchasing 收购口径「RTX PRO 6000 (Blackwell 96GB)」一致
     category: "professional",
     modelName: "NVIDIA RTX PRO 6000 Blackwell",
@@ -180,6 +188,7 @@ const PRODUCTS: GpuProduct[] = [
   // --- Data center（§6.2：数据中心产品说明供货形态；形态未知故留空）---
   {
     productId: "gpu-h100",
+    code: "SR-H100",
     specs: [{ label: "Memory", value: "80 GB / 94 GB HBM" }],   // 80GB(PCIe/SXM) 与 94GB(NVL) 两种形态；NVL 94GB 见整机目录
     category: "datacenter",
     modelName: "NVIDIA H100",
@@ -197,6 +206,7 @@ const PRODUCTS: GpuProduct[] = [
   },
   {
     productId: "gpu-a100",
+    code: "SR-A100",
     specs: [{ label: "Memory", value: "80 GB HBM2e" }],   // 与仓库 /purchasing 收购口径「A100 (80GB)」一致
     category: "datacenter",
     modelName: "NVIDIA A100",

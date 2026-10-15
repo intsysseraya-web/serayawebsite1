@@ -118,24 +118,6 @@ export const CATEGORIES: Category[] = [
       // 后果：这 3 张卡的规格表为空 → 卡高低于「2 行 419」基准，
       //       DOCX §7「卡片尺寸与原版差 < 1.5px」对这 3 张不成立，需 CY 补规格后复核。
       // 另：图片为 1254×1254 正方形，容器 16:9，object-fit:cover 会纵向裁掉 43.75%。
-      {
-        code: "SR-5060",
-        name: "RTX 5060",
-        specs: [],
-        img: "/static/sku/sr-5060-16x9.jpg?v=2",
-      },
-      {
-        code: "SR-5070",
-        name: "RTX 5070",
-        specs: [],
-        img: "/static/sku/sr-5070-16x9.jpg?v=2",
-      },
-      {
-        code: "SR-5080",
-        name: "RTX 5080",
-        specs: [],
-        img: "/static/sku/sr-5080-16x9.jpg?v=2",
-      },
     ],
   },
   {
