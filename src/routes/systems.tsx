@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
+import { renderGpuCatalog } from "../lib/buy-page";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 import {
   ALL_PRODUCTS,
@@ -108,6 +109,12 @@ const DRIVERS = QUOTE_DRIVERS.items
   )
   .join("\n");
 
+// 与 /buy 共用同一份 GPU 目录数据与卡片渲染器（§13.1.4 单一来源）。
+const GPU_CATALOG_HTML = renderGpuCatalog(
+  ["gaming", "professional", "datacenter"],
+  "Request bulk quote",
+);
+
 const BODY_HTML = `
     ${skipLink()}
 ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-hero">
@@ -143,6 +150,18 @@ ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-
           </div>
         </div>
       </section>
+
+      <section class="catalog-section" aria-labelledby="gpu-models-title">
+        <div class="catalog-section-head">
+          <h2 id="gpu-models-title">GPU models</h2>
+          <p class="muted">
+            Supply status is held per model, not as one site-wide stock label. Where a lot is
+            confirmed we show the check date; otherwise availability is confirmed on enquiry.
+          </p>
+        </div>
+      </section>
+${GPU_CATALOG_HTML}
+
 ${CATALOG_HTML}
 
       <section id="how-we-quote" class="catalog-section quote-section">
