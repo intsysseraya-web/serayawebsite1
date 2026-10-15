@@ -11,6 +11,9 @@ Key facts:
 
 ## Pages
 
+- [Buy GPUs](https://seraya.systems/buy): wholesale GPU supply for business buyers
+- [Gaming GPUs](https://seraya.systems/buy/gaming-gpus): GeForce RTX bulk procurement
+- [Professional & Data Center GPUs](https://seraya.systems/buy/ai-gpus): professional and data center GPU supply
 - [Home](https://seraya.systems/): positioning and how to start
 - [Systems](https://seraya.systems/systems): reference compute configurations (compute, GPU / AI, storage, networking, workstation)
 - [Purchasing](https://seraya.systems/purchasing): what we buy, what we do not buy, how a lot runs, terms
