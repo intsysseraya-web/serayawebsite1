@@ -79,8 +79,8 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: null,
-    imageType: null,
+    image: "/static/sku/sr-5090-16x9.jpg",
+    imageType: "reference",
   },
   {
     productId: "gpu-rtx-5080",
@@ -127,8 +127,8 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: null,
-    imageType: null,
+    image: "/static/sku/sr-5060-ti-16x9.jpg",
+    imageType: "reference",
   },
   {
     productId: "gpu-rtx-5060",
@@ -161,8 +161,8 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: null,
-    imageType: null,
+    image: "/static/sku/sr-rtxpro6000-16x9.jpg",
+    imageType: "reference",
   },
 
   // --- Data center（§6.2：数据中心产品说明供货形态；形态未知故留空）---
@@ -179,8 +179,8 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: null,
-    imageType: null,
+    image: "/static/sku/sr-h100-16x9.jpg",
+    imageType: "reference",
   },
   {
     productId: "gpu-a100",
@@ -195,8 +195,8 @@ const PRODUCTS: GpuProduct[] = [
     price: null,
     currency: "USD",
     verifiedAt: null,
-    image: null,
-    imageType: null,
+    image: "/static/sku/sr-a100-16x9.jpg",
+    imageType: "reference",
   },
 ];
 
