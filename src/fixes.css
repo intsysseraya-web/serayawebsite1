@@ -1,0 +1,1569 @@
+/* ==========================================================================
+   Seraya — 2026-11 线上检查修复层
+   ==========================================================================
+
+   这一层只放**本轮新增**的规则，作为最后一张样式表加载，用来修正第三层
+   （legacy/styles.css）与第二层（legacy-shim.css）里已经固化的行为。
+
+   为什么不再往 legacy/styles.css 末尾追加：
+   那份文件已经 2,700+ 行、内部有 3 段互相覆盖的补充块（靠顺序取胜）。
+   继续在末尾堆补丁会让「哪条规则最终生效」无法从单处读出。本层是显式的
+   修复层：每条规则都写明它修的是哪一项、依赖哪个 token。
+
+   依赖的 token 全部来自 legacy/styles.css 的 :root（--bg / --text / --container
+   / --header-h / --radius / --accent-cyan …）。
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   A. 导航（线检项 A 与 5）
+   主导航从「Products 下拉」改为顶层五项，因此这里删除了所有下拉浮层样式，
+   只保留主按钮、点击区域与焦点可见性。
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  /* 导航项变多（5 项）后需要略高的头部，也让锚点偏移公式更稳定 */
+  --header-h: 4.25rem;
+  height: var(--header-h);
+}
+
+/* 主导航靠右，紧贴右侧的操作区（Search / Get a quote / Menu）。
+ *
+ * `.header-inner` 是 `justify-content: space-between`，三块（logo、导航、操作区）
+ * 会被均匀推开，导航停在中间。加 `margin-left: auto` 把导航推到最右，
+ * 于是右侧形成「导航 + 操作区」一组，左侧只剩 logo —— 视觉重心与操作入口一致。
+ * 移动端 `.main-nav` 本身 `display: none`，不受影响。 */
+.main-nav {
+  gap: 1.25rem;
+  margin-left: auto;
+}
+
+.main-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* 线检项 7：点击区域 ≥ 44px */
+  padding: 0 0.15rem;
+}
+
+.header-cta {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+/* 头部图标按钮（Menu / Search）：默认 2.5rem = 40px，低于 44px 的最小点击区域 */
+.header-actions .icon-btn {
+  min-height: 44px;
+  height: 44px;
+}
+
+.sku-foot {
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.rfq-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px; /* 线检项 7：移动端点击区域 */
+  padding: 0.25rem 0.15rem;
+}
+
+/* 分类锚点按钮：默认内距只有 35px 高，手机上点不准 */
+.cat-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 0.9rem;
+  line-height: 1.2;
+}
+
+/* 旧的下拉浮层样式已不再被 markup 引用，这里显式关闭，避免残留规则被误用 */
+.nav-dropdown,
+.nav-dropdown-menu {
+  display: none !important;
+}
+
+/* 移动抽屉：单列、每项独立成行、点击区域 ≥ 44px */
+.mobile-drawer-panel {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.mobile-nav {
+  gap: 0;
+  margin-top: 1.25rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  font-size: 1rem;
+}
+
+.mobile-nav a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.mobile-nav a[aria-current="page"] {
+  color: var(--accent-cyan);
+}
+
+.mobile-nav-extra {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mobile-nav-extra .btn {
+  min-height: 44px;
+  justify-content: center;
+}
+
+.mobile-nav-secondary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.mobile-nav-secondary a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--text-muted);
+}
+
+/* 统一的键盘焦点：与既有 :focus-visible 一致，另加内部偏移避免被裁切 */
+.main-nav a:focus-visible,
+.mobile-nav a:focus-visible,
+.mobile-nav-secondary a:focus-visible,
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.global-footer a:focus-visible,
+.cat-chip:focus-visible,
+.rfq-input:focus-visible {
+  outline: 2px solid var(--accent-cyan, #5cc8ff);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   B. 固定导航遮挡锚点（线检项 B）
+   --------------------------------------------------------------------------
+   这里有两层原因，必须都处理，否则「点 View GPU models 跳过去被导航压住」会复现：
+
+   1. CSS 侧：只对 :target 声明 scroll-margin-top 不够。:target 只在当前 URL 的
+      fragment 命中该元素时成立，客户端跳转等情况下不生效。因此对**所有可能的
+      跳转目标**声明偏移。
+
+   2. JS 侧（真实缺陷，2026-11 用无头 Chrome 实测抓到）：这些页面由 React 以
+      dangerouslySetInnerHTML 渲染，浏览器在解析阶段做的 fragment 滚动会被
+      hydration 替换 innerHTML 时丢掉，结果是**点击页内锚点后完全没有滚动**。
+      CSS 再正确也无效。修复在 public/legacy/script.js 的 initHashScroll()：
+      hydration 之后重新滚动一次。
+   -------------------------------------------------------------------------- */
+
+/* 吸顶元素只有头部本身（.announcement-bar 随页面滚走），所以偏移 = 头部高度 + 余量 */
+:root {
+  --anchor-offset: calc(var(--header-h, 4.25rem) + 0.75rem);
+}
+
+html {
+  scroll-padding-top: var(--anchor-offset);
+}
+
+[id] {
+  scroll-margin-top: var(--anchor-offset);
+}
+
+section[id] > .section-head,
+.catalog-section[id] > .catalog-section-head,
+section[id] > h1,
+section[id] > h2,
+section[id] > h3 {
+  scroll-margin-top: var(--anchor-offset);
+}
+
+/* 手机上头部高度不同，同一变量跟着变即可 */
+@media (max-width: 960px) {
+  :root {
+    --header-h: 3.75rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   C. 文字与可读性（线检项 7）
+   -------------------------------------------------------------------------- */
+
+body {
+  font-size: 1rem; /* 正文基准 16px */
+  line-height: 1.6;
+}
+
+.section-head p,
+.catalog-lede,
+.muted {
+  line-height: 1.6;
+}
+
+/* 长型号名 / 规格值不得撑破容器 */
+.product-card,
+.gpu-card,
+.line-model,
+.catalog-section,
+.section {
+  min-width: 0;
+}
+
+.sku-head,
+.line-model-head {
+  min-width: 0;
+}
+
+.sku-code,
+.sku-tagline,
+.gpu-card h3,
+.line-model-head h3,
+.gpu-specs dd,
+.gpu-specs dt,
+.spec-row dd,
+.spec-row dt {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* 宽表格只在自己容器内横向滚动（线检项 7） */
+.route-table-wrap,
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.route-table {
+  min-width: 34rem;
+}
+
+/* --------------------------------------------------------------------------
+   D. 商品卡片：统一结构、按需展开详细参数、少量产品不独占一排（线检项 6）
+   -------------------------------------------------------------------------- */
+
+/* 自动适配列数：条目少时不会一张卡独占一整排留下大片空白 */
+.gpu-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  align-items: start;
+}
+
+.gpu-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.gpu-card-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - 2px);
+  background: #0a0a10;
+}
+
+.gpu-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gpu-media-note {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(5, 5, 8, 0.82);
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.gpu-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.gpu-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+.gpu-sku-code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--accent-cyan, #5cc8ff);
+}
+
+.gpu-form-summary {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* 交易口径在卡片上只出现一次（可用性 / 报价），不再重复三行说明 */
+.gpu-meta {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.gpu-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.gpu-meta-row dt {
+  color: var(--text-muted);
+}
+
+.gpu-meta-row dd {
+  margin: 0;
+  text-align: right;
+}
+
+/* 详细技术参数按需展开 */
+.gpu-card details {
+  margin: 0;
+}
+
+.gpu-card summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+.gpu-card summary:hover {
+  color: var(--text);
+}
+
+.gpu-specs {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.84rem;
+}
+
+.gpu-specs-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(0, 1.4fr);
+  gap: 0.75rem;
+}
+
+.gpu-specs dt {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.gpu-specs dd {
+  margin: 0;
+}
+
+.gpu-card-cta {
+  margin-top: auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 每张卡片的邮件备用入口：主按钮仍是站内询价，邮件保留原有的预填型号行为 */
+.gpu-card-email {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.gpu-card-email a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+.gpu-unverified {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #fca5a5;
+}
+
+.gpu-spec-unverified dd {
+  color: #fca5a5;
+}
+
+.gpu-variants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.78rem;
+}
+
+.gpu-variants li {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   E. 术语与询价表单（线检项 5、7）
+   -------------------------------------------------------------------------- */
+
+/* 缩写表：与页面上其它网格收敛到同一条内容栏，
+   否则宽屏下它会比标题下方的区块宽出去、两边对不齐。 */
+.glossary {
+  display: grid;
+  gap: 0.5rem 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  width: 100%;
+  max-width: var(--fix-content-width);
+  margin: 1rem auto 0;
+  padding: 1rem 0 0;
+  border-top: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+
+/* 侧栏里的缩写块不需要这条内容栏宽度（它本来就在窄列里） */
+.rfq-side .glossary {
+  max-width: none;
+  margin-top: 0;
+  padding-top: 0.5rem;
+  border-top: none;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Contact 需求入口卡与缩写表：卡片本身收在同一条内容栏，标题也跟进，
+   所以这两类区块用「共用内容栏」的方式对齐即可（它们没有超出该栏的侧栏）。 */
+.section:has(.contact-routes) > .section-head,
+.section:has(.glossary) > .section-head {
+  max-width: var(--fix-content-width);
+  margin-inline: auto;
+}
+
+/* 表单区块：只把**标题**移到与表单卡片同一条左边线，卡片位置完全不动。
+ *
+ * 量出来的事实（tools/_probe-chain.mjs，1440px）：
+ *     .rfq-wrap    left=32  width=1376  marL=16px  maxW=min(1400px, 100% - 32px)
+ *     .section-head left=16 width=1376  marL=auto  maxW=1400px
+ * 两者宽度相同、但 max-width 与 margin 不同 → 居中结果差 16px。
+ * 视口再窄一点时 `.rfq-wrap` 会先于标题收窄，偏移量还会继续变
+ * （tools/_probe-heading-align.mjs: 1440px 差 -112px，1160px 差 +16px）。
+ *
+ * 修法：让标题采用**与卡片逐字相同**的宽度与居中，两条左边线就必然重合。
+ * 不要用负 margin 去「挪」标题 —— 试过 `margin-inline: -1rem`，结果标题被推到
+ * 视口最左边（left=0），比卡片更靠外，方向反了。 */
+.section:has(> .rfq-wrap) > .section-head {
+  max-width: min(1400px, 100% - 32px);
+  margin-inline: auto;
+  /* 阻断子元素外边距与父元素合并，保证 h2 的左边界等于上一行的左边界 */
+  display: flow-root;
+}
+
+/* --------------------------------------------------------------------------
+   四卡区块用 2×2，不用 auto-fit
+
+   `.company-grid` 是 auto-fit(minmax(17rem,1fr))，宽屏下的列数由容器宽度决定：
+   1440px 会排成 3 列，第四张卡单独掉一行留白（Systems hub、详情页「相关系统」、
+   GPU 页「可验证资料」都是 4 张卡，都会遇到）。
+   这四个一组的区块改用固定 2 列 → 正好 2×2；窄屏退回单列。
+
+   为什么做成修饰类而不是直接改 .company-grid：Company 页的同一类网格有 4 张卡但
+   文案更长，硬压成 2 列会让行长失控。只改明确要 2×2 的区块，避免牵连别处。
+   -------------------------------------------------------------------------- */
+.company-grid--pair {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: var(--fix-content-width);
+  margin-inline: auto;
+}
+
+@media (min-width: 760px) {
+  .company-grid--pair {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 详情页首屏：正文与按钮行贴在一起，补上间距（`.btn-row` 本身没有 margin-top） */
+.detail-hero-copy .btn-row {
+  margin-top: 1.75rem;
+}
+
+.glossary-item {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.glossary-item dt {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.glossary-item dd {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.rfq-wrap {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  /* 卡片位置保持不动：只有表单区块的标题左移到与卡片对齐（见下方 .section-head 规则）。
+     曾在这里加 max-width 把卡片一起收窄，那是改错了对象。 */
+}
+
+@media (min-width: 1000px) {
+  .rfq-wrap {
+    grid-template-columns: minmax(0, 1.6fr) minmax(16rem, 0.9fr);
+  }
+}
+
+.rfq-form {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1.25rem;
+}
+
+.rfq-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+  .rfq-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .rfq-field-full {
+    grid-column: 1 / -1;
+  }
+}
+
+.rfq-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.rfq-field > label {
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.rfq-optional {
+  font-weight: 400;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rfq-required {
+  color: #f87171;
+}
+
+.rfq-input {
+  width: 100%;
+  min-height: 44px; /* 线检项 7：移动端点击区域 */
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.18));
+  border-radius: var(--radius);
+  background: var(--bg-elevated, #0c0c12);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.rfq-textarea {
+  min-height: 7rem;
+  resize: vertical;
+}
+
+.rfq-select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) 50%,
+    calc(100% - 0.8rem) 50%;
+  background-size:
+    0.35rem 0.35rem,
+    0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  padding-right: 2rem;
+}
+
+.rfq-input[readonly] {
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.rfq-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.rfq-error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #fca5a5;
+}
+
+.rfq-field.has-error .rfq-input {
+  border-color: #f87171;
+}
+
+.rfq-errors,
+.rfq-error-panel {
+  margin: 0 0 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #f87171;
+  border-radius: var(--radius);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.rfq-errors h3,
+.rfq-error-panel h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.rfq-errors ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+}
+
+.rfq-honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.rfq-submit-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.rfq-form .btn {
+  min-height: 44px;
+}
+
+.rfq-submit-note,
+.rfq-alt {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.rfq-submit-note {
+  order: 2;
+}
+
+.rfq-status {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
+}
+
+.rfq-status.is-pending {
+  color: var(--text-muted);
+}
+
+.rfq-status.is-error {
+  color: #fca5a5;
+}
+
+.rfq-success {
+  margin: 0 0 1rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--accent-cyan-soft, rgba(92, 200, 255, 0.55));
+  border-radius: var(--radius);
+  background: rgba(92, 200, 255, 0.08);
+}
+
+.rfq-success h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+}
+
+.rfq-side {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+}
+
+.rfq-side .rfq-alt-email {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  background: var(--bg-card);
+}
+
+/* --------------------------------------------------------------------------
+   统一内容栏（2026-11 追加）
+
+   问题：`.section-head` 用 `max-width: var(--container)` + `margin: 0 auto` 居中，
+   而各类网格（需求入口卡、家族卡、缩写表）在宽屏下会拉到更宽、或者被单独限宽居中，
+   于是「标题的左边线」和「卡片网格的左边线」对不上 —— 同一块内容出现两条对齐线。
+
+   做法：给这些网格和所在区块的 `.section-head` 定义**同一个内容栏宽度**并同样居中。
+   这样标题与它下面的网格共用左右两条边，任何视口下都对齐。
+   只在有网格的区块内生效（通过 `:has()`），不影响其它页面的标题节奏。
+   -------------------------------------------------------------------------- */
+:root {
+  --fix-content-width: 72rem;
+}
+
+/* 需求入口卡：断点固定列数，不用 auto-fit。
+ * 卡片共 6 张（5 个需求类型 + 主体核验），auto-fit 在宽屏下会排到 5 列，
+ * 第 6 张单独掉一行留下大片空白。固定列数才能保证「排满、不留孤卡」。 */
+.contact-routes {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: var(--fix-content-width);
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .contact-routes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1000px) {
+  .contact-routes {
+    /* 3 列 × 2 行，六张卡排满，不留孤卡 */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.contact-routes li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  min-width: 0;
+}
+
+.contact-routes h3 {
+  margin: 0;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+/* 卡片等高：三列时「动作链接」的基线才会对齐 */
+.contact-routes li > a {
+  margin-top: auto;
+}
+
+.contact-routes p {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+.contact-routes a {
+  margin-top: auto;
+  font-size: 0.88rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* 未提供的资料明确标注，不用占位内容假装存在 */
+.pending-doc {
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px dashed var(--border-strong, rgba(255, 255, 255, 0.18));
+  border-radius: var(--radius);
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   F. 首页（线检项 6）
+   首屏缩短标题，纯文字、不放产品图；GPU 两类作为同级入口，总目录为辅助入口。
+   首屏图片已按 CY 指示移除（2026-11）：图片归产品卡片，首屏保持文字。
+   因此 `.hero-split` / `.hero-visual*` 的规则一并删除，不留死代码。
+   -------------------------------------------------------------------------- */
+
+.hero-title {
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.75rem;
+  max-width: 22ch;
+}
+
+/* 首屏去掉右栏后，正文行宽统一收在可读区间，不因空间变宽而拉成长行 */
+.hero-inner .hero-subtitle {
+  max-width: min(46rem, 100%);
+}
+
+/* 同级入口：Gaming 与 Professional / Data center 视觉等权 */
+.entry-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.entry-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0.01));
+}
+
+.entry-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.entry-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+.entry-card .btn {
+  margin-top: auto;
+  align-self: flex-start;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.entry-card-secondary {
+  border-style: dashed;
+}
+
+/* --------------------------------------------------------------------------
+   G. Systems / 存储网络（线检项 3、4）
+   -------------------------------------------------------------------------- */
+
+.count-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: baseline;
+  font-size: 0.86rem;
+  color: var(--text-muted);
+}
+
+/* 存储与网络条目的规格行更多，放宽标签列宽并允许长值换行 */
+.cat-storage .spec-row dt,
+.cat-networking .spec-row dt,
+.line-model .gpu-specs-row dt {
+  white-space: normal;
+}
+
+.line-model-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
+  align-items: start;
+}
+
+.line-model {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.line-model .btn {
+  margin-top: auto;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 参考配置的示例标识 */
+.reference-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.18));
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   H. 动效与指针（线检项 7）
+   淡入缩短；系统偏好减少动态效果时全部关闭；发光鼠标效果弱化，保持正常指针。
+   --------------------------------------------------------------------------
+   注意：legacy/styles.css:1792 用的是 `.reveal-ready .reveal`（权重 0,2,0），
+   时长 720ms。这里必须用同等或更高权重才真的压得过它 —— 只写 `.reveal`
+   会静默失效，是「补丁看起来改了但实际没改」的典型。
+   -------------------------------------------------------------------------- */
+
+.reveal-ready .reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-ready .reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* 兜底不在 CSS 里做动画，而在脚本的 500ms 兜底里做：
+   任何 `.reveal` 只要没拿到 `.is-revealed` 就会被强制显示。
+   这样如果脚本没跑，`.reveal-ready` 根本不会挂上，内容本来就没被隐藏。 */
+.no-js .reveal,
+html:not(.js) .reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready .reveal,
+  .reveal-ready .reveal.is-revealed {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .feature-card,
+  .program-type-card,
+  .program-control-grid article,
+  .company-card,
+  .contact-panel,
+  .route-list article,
+  .product-card,
+  .gpu-card,
+  .entry-card,
+  .project-card {
+    transition: none !important;
+    transform: none !important;
+  }
+
+  .feature-card:hover,
+  .program-type-card:hover,
+  .program-control-grid article:hover,
+  .company-card:hover,
+  .contact-panel:hover,
+  .route-list article:hover,
+  .gpu-card:hover,
+  .entry-card:hover {
+    transform: none !important;
+  }
+
+  .feature-card:hover .feature-card-media img {
+    transform: none !important;
+  }
+
+  .mobile-drawer,
+  .overlay-panel,
+  .mobile-drawer-panel {
+    transition: none !important;
+  }
+}
+
+/* 发光指针：默认指针始终可见，鼠标跟随光斑压到内容之下且不拦截事件 */
+.cursor-glow,
+.glow-cursor,
+.hero-glow {
+  pointer-events: none !important;
+  z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   I. 页脚链接与长内容（线检项 7）
+   -------------------------------------------------------------------------- */
+
+.footer-links a,
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+}
+
+.section-head h2,
+.catalog-section-head h2 {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .catalog-main {
+    max-width: calc(100% - 1.5rem);
+  }
+
+  .glossary-item {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+  }
+}
+
+/* ==========================================================================
+   J. 型号家族目录 + 版本选择 + 产品详情页（2026-11 改版）
+   ==========================================================================
+
+   三层页面各自只做一件事，样式也按这个分工组织：
+     · .family-card      目录：帮客户选型号
+     · .version-*        详情：解释版本差异
+     · .rfq-*            询价：收集需求（见 E 段）
+   ========================================================================== */
+
+/* ---- 目录：家族卡片网格 ---- */
+
+.family-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr));
+  /*
+   * 卡片各自按内容决定高度（align-items: start）。
+   *
+   * 这里曾经用 `grid-auto-rows: 1fr` + `align-items: stretch` 让同一行等高，
+   * 但那会导致：展开一张卡的 `<details>` 版本规格时，同行其他卡片被一起拉长
+   * （网格行为整行**最高**的那张卡买单）。客户只是想看一个型号的参数，
+   * 旁边的卡却跟着变形 —— 真实可用性问题，不只是观感。
+   *
+   * 现在改为各卡独立高度；静止状态下的等高感由 `.family-card-foot { margin-top: auto }`
+   * 保证（动作按钮仍对齐在卡片底部）。
+   */
+  align-items: start;
+}
+
+/* 少量卡片时不独占整排：auto-fit 已把空轨道折叠，这里限制单张卡的最大宽度，
+   避免只有 1 个型号的分类（如 Professional）把图拉到整屏宽。 */
+@media (min-width: 900px) {
+  .family-grid > .family-card:only-child {
+    max-width: 34rem;
+  }
+}
+
+.family-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1rem 1.15rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  min-width: 0;
+}
+
+.family-card-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: calc(var(--radius) - 2px);
+  background: #0a0a10;
+}
+
+.family-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.family-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.family-card-head h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.version-count {
+  flex: none;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.18));
+  border-radius: 999px;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.family-card-tagline {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.family-card-versions-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.version-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.version-chips li {
+  min-width: 0;
+}
+
+.version-chips a,
+.version-chips li:not(:has(a)) {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.82rem;
+  color: var(--text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.version-chips a:hover {
+  border-color: var(--accent-cyan-soft, rgba(92, 200, 255, 0.55));
+  text-decoration: none;
+}
+
+.family-card-foot {
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.family-card-cta {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* 无详情页的家族：就地展开版本规格，不必跳去别处才能比版本 */
+.family-versions-inline {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.version-detail {
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  padding: 0.5rem 0.7rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.version-detail > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-height: 32px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.version-detail > summary::-webkit-details-marker {
+  display: none;
+}
+
+.version-detail > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+.version-detail[open] > summary::after {
+  content: "–";
+}
+
+.version-detail-label {
+  font-weight: 600;
+}
+
+.version-detail-form {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.version-detail-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.version-detail-note strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.version-detail-cta {
+  margin-top: 0.6rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---- 详情页：首屏、版本选择器、规格、适用场景 ---- */
+
+.detail-main {
+  padding-top: 1rem;
+}
+
+.breadcrumb {
+  max-width: min(1184px, calc(100% - 3rem));
+  margin: 0 auto 0.5rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.breadcrumb a {
+  color: var(--text-muted);
+}
+
+.detail-hero-layout {
+  display: grid;
+  gap: 2rem;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  max-width: min(1184px, calc(100% - 3rem));
+  margin: 0 auto;
+}
+
+@media (min-width: 960px) {
+  .detail-hero-layout {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.detail-media {
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg-card);
+}
+
+.detail-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.detail-media figcaption {
+  padding: 0.5rem 0.7rem;
+  font-size: 0.74rem;
+}
+
+.version-picker {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.version-picker-title {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.version-picker-hint {
+  margin: 0;
+  max-width: 46rem;
+}
+
+.version-options {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.version-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  height: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--text);
+  text-decoration: none;
+  min-height: 44px;
+}
+
+.version-option:hover {
+  border-color: var(--accent-cyan-soft, rgba(92, 200, 255, 0.55));
+  text-decoration: none;
+}
+
+.version-option.is-current {
+  border-color: var(--accent-cyan, #5cc8ff);
+  background: rgba(92, 200, 255, 0.08);
+}
+
+.version-option-label {
+  font-weight: 600;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.version-option-meta {
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.version-option-assist {
+  border-style: dashed;
+}
+
+/* 版本选项的状态提示：让「当前选中」不只靠颜色 */
+.version-option.is-current .version-option-label::after {
+  content: " · selected";
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--accent-cyan, #5cc8ff);
+}
+
+.detail-specs {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.detail-specs-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr);
+  gap: 0.75rem 1.5rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.detail-specs-row dt {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.detail-specs-row dd {
+  margin: 0;
+  font-size: 0.95rem;
+  overflow-wrap: anywhere;
+}
+
+.fit-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+
+.fit-card {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+}
+
+.fit-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 0.95rem;
+}
+
+.fit-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* 版本差异表：宽表格只在自己容器内滚动 */
+.version-table {
+  min-width: 40rem;
+}
+
+.version-table th[scope="row"] {
+  text-align: left;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ---- 询价表单：摘要 + 折叠的补充信息 ---- */
+
+.rfq-summary {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.rfq-summary h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.rfq-summary-rows {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0;
+}
+
+.rfq-summary-rows > div {
+  display: grid;
+  grid-template-columns: minmax(6rem, 9rem) minmax(0, 1fr);
+  gap: 0.75rem;
+}
+
+.rfq-summary-rows dt {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.rfq-summary-rows dd {
+  margin: 0;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+.rfq-summary-note {
+  margin: 0.6rem 0 0;
+  font-size: 0.8rem;
+}
+
+.rfq-extra {
+  margin-top: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.9rem;
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.rfq-extra > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  list-style: none;
+}
+
+.rfq-extra > summary::-webkit-details-marker {
+  display: none;
+}
+
+.rfq-extra > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+.rfq-extra[open] > summary::after {
+  content: "–";
+}
+
+.rfq-extra .rfq-grid {
+  padding-bottom: 0.75rem;
+}
+
+.rfq-system-row[hidden] {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .rfq-summary-rows > div,
+  .detail-specs-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.15rem;
+  }
+
+  .detail-specs-row dt {
+    font-size: 0.72rem;
+  }
+}
