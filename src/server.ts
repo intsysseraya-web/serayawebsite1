@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { handleRfqRequest } from "./lib/rfq-http";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -98,6 +99,26 @@ async function withHtmlSecurityHeaders(response: Response): Promise<Response> {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
+
+    // -----------------------------------------------------------------------
+    // 询价提交入口（站内询价）。
+    //
+    // 放在 SSR 之前的原因：普通 HTML form POST 必须能直接命中，不经过 router，
+    // 这样即使 JS 未执行也能提交并拿到服务端的真实成功/失败结果。
+    // -----------------------------------------------------------------------
+    if (url.pathname === "/api/rfq" || url.pathname === "/api/rfq/") {
+      const response = await handleRfqRequest(request, url);
+      const headers = new Headers(response.headers);
+      for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
+        if (!headers.has(name)) headers.set(name, value);
+      }
+      return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+
     // 去掉末尾斜杠后再比对，使 /works/ 与 /works 行为一致。
     const pathname = url.pathname.length > 1 ? url.pathname.replace(/\/+$/, "") : url.pathname;
     const redirectTo = LEGACY_REDIRECTS[pathname];
