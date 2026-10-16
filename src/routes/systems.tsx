@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
 import { GPU_PRODUCTS } from "../data/gpu-catalog";
+import { renderSystemsHub } from "../lib/systems-lines";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 import {
   ALL_PRODUCTS,
@@ -156,6 +157,7 @@ ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-
         </div>
       </section>
 
+${renderSystemsHub()}
 ${CATALOG_HTML}
 
       <section id="how-we-quote" class="catalog-section quote-section">

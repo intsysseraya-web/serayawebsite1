@@ -45,6 +45,23 @@ ${siteChrome("home", "H100, BOM, storage...")}<main id="main">
           </article>
         </div>
         <p class="muted catalog-note">Selling instead? <a href="/purchasing">Sell a GPU lot</a>.</p>
+      <section class="section" aria-labelledby="home-systems-title">
+        <div class="section-head">
+          <h2 id="home-systems-title">Systems</h2>
+          <p class="muted">
+            Complete systems, configured per order and quoted per enquiry. Single GPU cards are
+            quoted separately.
+          </p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-ghost" href="/systems">All systems</a>
+          <a class="btn btn-ghost" href="/systems/ai-servers">AI Servers</a>
+          <a class="btn btn-ghost" href="/systems/workstations">AI Workstations</a>
+          <a class="btn btn-ghost" href="/systems/gaming">Gaming Systems</a>
+          <a class="btn btn-ghost" href="/systems/storage-networking">Storage &amp; Networking</a>
+        </div>
+      </section>
+
       </section>
 
       <section class="section product-section" aria-labelledby="built-title">
