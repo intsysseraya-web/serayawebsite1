@@ -2610,3 +2610,79 @@ article.prose {
   font-weight: 600;
   text-align: right;
 }
+/* Systems 线页的型号深度区块（补充方案 2026-10-16 §二） */
+.line-model-grid {
+  max-width: var(--container);
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 900px) {
+  .line-model-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.line-model {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  padding: 1.5rem;
+}
+.line-model-head h3 {
+  margin: 0.35rem 0 0;
+  font-size: 1.05rem;
+}
+.line-model-body {
+  display: grid;
+  gap: 0.5rem;
+}
+.line-model-body p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.line-model-body strong {
+  color: var(--text);
+  display: block;
+}
+/* Products 下拉（补充方案 2026-10-16 §一） */
+.main-nav .nav-dropdown {
+  position: relative;
+}
+.main-nav .nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  min-width: 15rem;
+  display: none;
+  flex-direction: column;
+  background: var(--bg-elevated, #12121c);
+  border: 1px solid var(--border);
+  border-radius: var(--radius, 6px);
+  padding: 0.4rem;
+  z-index: 60;
+}
+.main-nav .nav-dropdown:hover .nav-dropdown-menu,
+.main-nav .nav-dropdown:focus-within .nav-dropdown-menu {
+  display: flex;
+}
+.main-nav .nav-dropdown-menu a {
+  padding: 0.5rem 0.7rem;
+  white-space: nowrap;
+  border-radius: 4px;
+}
+.main-nav .nav-dropdown-menu a:hover {
+  background: rgba(92, 200, 255, 0.08);
+}
+/* 移动端：汉堡内平铺同一层级，不做浮层 */
+.mobile-nav .nav-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  padding-left: 0.9rem;
+}
+.mobile-nav .nav-dropdown > a {
+  font-weight: 600;
+}
