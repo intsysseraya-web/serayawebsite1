@@ -17,6 +17,10 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompanyRouteImport } from './routes/company'
 import { Route as BuyRouteImport } from './routes/buy'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SystemsWorkstationsRouteImport } from './routes/systems_.workstations'
+import { Route as SystemsStorageNetworkingRouteImport } from './routes/systems_.storage-networking'
+import { Route as SystemsGamingRouteImport } from './routes/systems_.gaming'
+import { Route as SystemsAiServersRouteImport } from './routes/systems_.ai-servers'
 import { Route as PurchasingKycRouteImport } from './routes/purchasing_.kyc'
 import { Route as PurchasingComplianceRouteImport } from './routes/purchasing_.compliance'
 import { Route as BuyGamingGpusRouteImport } from './routes/buy_.gaming-gpus'
@@ -62,6 +66,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SystemsWorkstationsRoute = SystemsWorkstationsRouteImport.update({
+  id: '/systems_/workstations',
+  path: '/systems/workstations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemsStorageNetworkingRoute =
+  SystemsStorageNetworkingRouteImport.update({
+    id: '/systems_/storage-networking',
+    path: '/systems/storage-networking',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SystemsGamingRoute = SystemsGamingRouteImport.update({
+  id: '/systems_/gaming',
+  path: '/systems/gaming',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SystemsAiServersRoute = SystemsAiServersRouteImport.update({
+  id: '/systems_/ai-servers',
+  path: '/systems/ai-servers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PurchasingKycRoute = PurchasingKycRouteImport.update({
   id: '/purchasing_/kyc',
   path: '/purchasing/kyc',
@@ -96,6 +121,10 @@ export interface FileRoutesByFullPath {
   '/buy/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing/compliance': typeof PurchasingComplianceRoute
   '/purchasing/kyc': typeof PurchasingKycRoute
+  '/systems/ai-servers': typeof SystemsAiServersRoute
+  '/systems/gaming': typeof SystemsGamingRoute
+  '/systems/storage-networking': typeof SystemsStorageNetworkingRoute
+  '/systems/workstations': typeof SystemsWorkstationsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +139,10 @@ export interface FileRoutesByTo {
   '/buy/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing/compliance': typeof PurchasingComplianceRoute
   '/purchasing/kyc': typeof PurchasingKycRoute
+  '/systems/ai-servers': typeof SystemsAiServersRoute
+  '/systems/gaming': typeof SystemsGamingRoute
+  '/systems/storage-networking': typeof SystemsStorageNetworkingRoute
+  '/systems/workstations': typeof SystemsWorkstationsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +158,10 @@ export interface FileRoutesById {
   '/buy_/gaming-gpus': typeof BuyGamingGpusRoute
   '/purchasing_/compliance': typeof PurchasingComplianceRoute
   '/purchasing_/kyc': typeof PurchasingKycRoute
+  '/systems_/ai-servers': typeof SystemsAiServersRoute
+  '/systems_/gaming': typeof SystemsGamingRoute
+  '/systems_/storage-networking': typeof SystemsStorageNetworkingRoute
+  '/systems_/workstations': typeof SystemsWorkstationsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +178,10 @@ export interface FileRouteTypes {
     | '/buy/gaming-gpus'
     | '/purchasing/compliance'
     | '/purchasing/kyc'
+    | '/systems/ai-servers'
+    | '/systems/gaming'
+    | '/systems/storage-networking'
+    | '/systems/workstations'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +196,10 @@ export interface FileRouteTypes {
     | '/buy/gaming-gpus'
     | '/purchasing/compliance'
     | '/purchasing/kyc'
+    | '/systems/ai-servers'
+    | '/systems/gaming'
+    | '/systems/storage-networking'
+    | '/systems/workstations'
   id:
     | '__root__'
     | '/'
@@ -169,6 +214,10 @@ export interface FileRouteTypes {
     | '/buy_/gaming-gpus'
     | '/purchasing_/compliance'
     | '/purchasing_/kyc'
+    | '/systems_/ai-servers'
+    | '/systems_/gaming'
+    | '/systems_/storage-networking'
+    | '/systems_/workstations'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +233,10 @@ export interface RootRouteChildren {
   BuyGamingGpusRoute: typeof BuyGamingGpusRoute
   PurchasingComplianceRoute: typeof PurchasingComplianceRoute
   PurchasingKycRoute: typeof PurchasingKycRoute
+  SystemsAiServersRoute: typeof SystemsAiServersRoute
+  SystemsGamingRoute: typeof SystemsGamingRoute
+  SystemsStorageNetworkingRoute: typeof SystemsStorageNetworkingRoute
+  SystemsWorkstationsRoute: typeof SystemsWorkstationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -244,6 +297,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/systems_/workstations': {
+      id: '/systems_/workstations'
+      path: '/systems/workstations'
+      fullPath: '/systems/workstations'
+      preLoaderRoute: typeof SystemsWorkstationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/systems_/storage-networking': {
+      id: '/systems_/storage-networking'
+      path: '/systems/storage-networking'
+      fullPath: '/systems/storage-networking'
+      preLoaderRoute: typeof SystemsStorageNetworkingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/systems_/gaming': {
+      id: '/systems_/gaming'
+      path: '/systems/gaming'
+      fullPath: '/systems/gaming'
+      preLoaderRoute: typeof SystemsGamingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/systems_/ai-servers': {
+      id: '/systems_/ai-servers'
+      path: '/systems/ai-servers'
+      fullPath: '/systems/ai-servers'
+      preLoaderRoute: typeof SystemsAiServersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/purchasing_/kyc': {
       id: '/purchasing_/kyc'
       path: '/purchasing/kyc'
@@ -288,6 +369,10 @@ const rootRouteChildren: RootRouteChildren = {
   BuyGamingGpusRoute: BuyGamingGpusRoute,
   PurchasingComplianceRoute: PurchasingComplianceRoute,
   PurchasingKycRoute: PurchasingKycRoute,
+  SystemsAiServersRoute: SystemsAiServersRoute,
+  SystemsGamingRoute: SystemsGamingRoute,
+  SystemsStorageNetworkingRoute: SystemsStorageNetworkingRoute,
+  SystemsWorkstationsRoute: SystemsWorkstationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
