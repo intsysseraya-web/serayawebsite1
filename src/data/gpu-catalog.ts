@@ -77,7 +77,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-5090",
     code: "SR-5090",
-    specs: [{ label: "Memory", value: "32 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
+    specs: [
+      { label: "Memory", value: "32 GB GDDR7" },
+      { label: "Memory bandwidth", value: "1,792 GB/s" },
+      { label: "Power", value: "575 W total graphics power" },
+      { label: "Form factor", value: "PCIe 5.0 x16" },
+      { label: "CUDA cores", value: "21,760" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "gaming",
     modelName: "GeForce RTX 5090",
     brand: null,
@@ -95,7 +101,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-5080",
     code: "SR-5080",
-    specs: [{ label: "Memory", value: "16 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
+    specs: [
+      { label: "Memory", value: "16 GB GDDR7" },
+      { label: "Memory bandwidth", value: "960 GB/s" },
+      { label: "Power", value: "360 W total graphics power" },
+      { label: "Form factor", value: "PCIe 5.0 x16" },
+      { label: "CUDA cores", value: "10,752" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "gaming",
     modelName: "GeForce RTX 5080",
     brand: null,
@@ -113,7 +125,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-5070",
     code: "SR-5070",
-    specs: [{ label: "Memory", value: "12 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
+    specs: [
+      { label: "Memory", value: "12 GB GDDR7" },
+      { label: "Memory bandwidth", value: "672 GB/s" },
+      { label: "Power", value: "250 W total graphics power" },
+      { label: "Form factor", value: "PCIe 5.0 x16" },
+      { label: "CUDA cores", value: "6,144" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "gaming",
     modelName: "GeForce RTX 5070",
     brand: null,
@@ -131,7 +149,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-5060-ti",
     code: "SR-5060TI",
-    specs: [{ label: "Memory", value: "8 GB / 16 GB GDDR7" }],   // 该芯片有 8GB 与 16GB 两个版本，故并列，不单选
+    specs: [
+      { label: "Memory", value: "8 GB or 16 GB GDDR7" },
+      { label: "Memory bandwidth", value: "448 GB/s" },
+      { label: "Power", value: "180 W total graphics power" },
+      { label: "Form factor", value: "PCIe 5.0 x8" },
+      { label: "CUDA cores", value: "4,608" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "gaming",
     modelName: "GeForce RTX 5060 Ti",
     brand: null,
@@ -149,7 +173,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-5060",
     code: "SR-5060",
-    specs: [{ label: "Memory", value: "8 GB GDDR7" }],   // NVIDIA 官方规格；单一显存版本
+    specs: [
+      { label: "Memory", value: "8 GB GDDR7" },
+      { label: "Memory bandwidth", value: "448 GB/s" },
+      { label: "Power", value: "145 W total graphics power" },
+      { label: "Form factor", value: "PCIe 5.0 x8" },
+      { label: "CUDA cores", value: "3,840" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "gaming",
     modelName: "GeForce RTX 5060",
     brand: null,
@@ -169,7 +199,13 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-rtx-pro-6000-blackwell",
     code: "SR-PRO6000",
-    specs: [{ label: "Memory", value: "96 GB GDDR7" }],   // 与仓库 /purchasing 收购口径「RTX PRO 6000 (Blackwell 96GB)」一致
+    specs: [
+      { label: "Memory", value: "96 GB GDDR7 with ECC" },
+      { label: "Memory bandwidth", value: "1,792 GB/s (Workstation Edition)" },
+      { label: "Power", value: "600 W Workstation Edition / 300 W Max-Q / Server Edition per system" },
+      { label: "CUDA cores", value: "24,064" },
+      { label: "Versions", value: "Workstation Edition, Max-Q Workstation Edition, Server Edition" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "professional",
     modelName: "NVIDIA RTX PRO 6000 Blackwell",
     brand: null,
@@ -189,7 +225,15 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-h100",
     code: "SR-H100",
-    specs: [{ label: "Memory", value: "80 GB / 94 GB HBM" }],   // 80GB(PCIe/SXM) 与 94GB(NVL) 两种形态；NVL 94GB 见整机目录
+    specs: [
+      { label: "Memory (SXM / NVL)", value: "80 GB HBM3 / 94 GB HBM3" },
+      { label: "Memory (PCIe)", value: "80 GB HBM2e" },
+      { label: "Memory bandwidth (SXM)", value: "3.35 TB/s" },
+      { label: "Memory bandwidth (PCIe)", value: "2.0 TB/s" },
+      { label: "Power", value: "Up to 700 W (SXM, NVL) / 350 W (PCIe)" },
+      { label: "Form factor", value: "SXM5, PCIe 5.0 x16, or dual-GPU NVLink (NVL)" },
+      { label: "CUDA cores", value: "16,896 (SXM/NVL) / 14,592 (PCIe)" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "datacenter",
     modelName: "NVIDIA H100",
     brand: null,
@@ -207,7 +251,14 @@ const PRODUCTS: GpuProduct[] = [
   {
     productId: "gpu-a100",
     code: "SR-A100",
-    specs: [{ label: "Memory", value: "80 GB HBM2e" }],   // 与仓库 /purchasing 收购口径「A100 (80GB)」一致
+    specs: [
+      { label: "Memory (SXM4 / PCIe)", value: "80 GB HBM2e" },
+      { label: "Memory bandwidth (SXM4)", value: "2,039 GB/s" },
+      { label: "Memory bandwidth (PCIe)", value: "1,935 GB/s" },
+      { label: "Power", value: "Up to 400 W (SXM4) / 250-300 W (PCIe)" },
+      { label: "Form factor", value: "SXM4 or PCIe 4.0 x16" },
+      { label: "CUDA cores", value: "6,912" },
+    ],   // 来源：NVIDIA 官方公开发布规格（CY 授权按发布值填写；未在本次会话抓取核验）
     category: "datacenter",
     modelName: "NVIDIA A100",
     brand: null,
