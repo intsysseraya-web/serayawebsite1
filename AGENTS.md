@@ -94,6 +94,83 @@ git diff --check
 
 For UI/content changes, inspect desktop and mobile layouts when practical.
 
+## Verification Tooling
+
+This repo has two dependency-free verification harnesses. They are the expected way to
+produce evidence for UI, content, navigation or RFQ changes — do not claim a layout or
+interaction works without running them. Neither adds an npm dependency (they use Node's
+built-in `fetch`/`WebSocket` and the locally installed Chrome/Edge via CDP).
+
+```powershell
+# 1) Start the dev server, then:
+node tools/verify-site.mjs http://localhost:8081      # routes, content, product data, /api/rfq behaviour
+node tools/verify-browser.mjs http://localhost:8081   # real-browser layout, tap targets, menu, form, screenshots
+```
+
+`verify-browser.mjs` writes full-page screenshots to `verification-evidence/` (created on
+demand; treat the output as a local artifact, not something to commit).
+
+What each harness is for:
+
+- `tools/verify-site.mjs` — server-rendered content and HTTP behaviour: every route returns
+  200, legacy 301s, page-internal `#` links resolve to real targets, declared product counts
+  equal the cards actually rendered, single GPUs are absent from the systems catalogue,
+  H100 / RTX PRO 6000 variants keep distinct specifications, quote links carry SKU context,
+  and `/api/rfq` returns 422 / 429 / 503 / 200 for the corresponding inputs.
+- `tools/verify-browser.mjs` — only real rendering can answer these: horizontal overflow at
+  375/390/768/1024/1440 and at 200% zoom, anchor targets landing below the sticky header,
+  44px tap targets, mobile drawer open/close/Escape/focus return, duplicate-submit
+  suppression, and whether images decode without distortion.
+- `tools/cdp-driver.mjs` — the shared Chrome DevTools Protocol driver both harnesses use.
+
+When you add a page or change navigation, extend `verify-site.mjs` route and anchor lists so
+the new surface is covered.
+
+## Site Architecture Notes
+
+- **Product data has one source per product kind.** GPU cards, SXM modules and accelerator
+  SKUs live in `src/data/gpu-catalog.ts`. Complete systems, storage and networking live in
+  `src/data/systems.ts`. Pages render from those; do not hand-write specs into a route.
+  Counts shown to users must be computed from the data, never hard-coded.
+- **GPU data is two layers.** `MODEL_FAMILIES` is what a customer recognises as a model
+  ("H100", "RTX PRO 6000 Blackwell"); `GpuProduct` records are the quotable versions inside a
+  family (H100 SXM / NVL / PCIe). Group by the explicit `familyId` field — never by truncating
+  or fuzzy-matching product names. Public copy must distinguish the **model count** from the
+  **version count**; do not use one number for both.
+- **Specifications must be verifiable.** Every entry carries `verified` / `unverifiedNotes` /
+  `specSource`. Anything not confirmed against vendor documentation stays marked as
+  unverified and is surfaced as such in the UI — never fill a gap from memory.
+- **Three page layers, three jobs.** The catalogue (`src/lib/buy-page.ts`) helps pick a model;
+  a model detail page (`src/lib/model-detail.ts`) explains versions; the shared form
+  (`src/lib/rfq-form.ts`) collects the requirement. Keep each layer to its own job: do not put
+  full spec tables in catalogue cards or a full form in every card.
+- **Model detail pages are data-driven and URL-stateful.** `renderModelDetail` is a reusable
+  template over any family; `?version=<sku>` selects a version and `?version=none` is the
+  explicit "help me choose" state. State lives in the URL (via TanStack Router
+  `validateSearch`), so direct links, refresh and back all work. Never default to the first
+  version in the array — an unselected state must stay unselected.
+  Note: TanStack Start drops bare boolean-style search params (`?assist=1`) during SSR search
+  normalisation, which is why the "help me choose" state uses an explicit `?version=none`.
+- **RFQ has one pipeline.** `src/lib/rfq.ts` holds paths, field groups, validation, glossary and
+  email templates; `src/lib/rfq-form.ts` renders the form; `src/lib/rfq.server.ts` does delivery;
+  `src/lib/rfq-http.ts` serves `/api/rfq` from `src/server.ts`. The form shows five core fields
+  by default with supplementary fields inside a collapsed `<details>`. `sku` and `config` are
+  **hidden context**, never customer-facing fields. The form is a plain POST that works without
+  JavaScript, and success is only ever shown after the server confirms delivery. With no
+  delivery channel configured the endpoint returns 503 on purpose.
+- **Styling layers, in load order:** `public/legacy/styles.css` (component CSS and tokens) →
+  `src/legacy-shim.css` (brand overrides + page-level components) → `src/fixes.css` (the
+  current repair layer). Add new cross-page rules to `src/fixes.css` and say which requirement
+  they serve, rather than appending to the end of the 2,700-line legacy file. When overriding a
+  legacy rule, match its specificity — `.reveal` does not beat `.reveal-ready .reveal`.
+- **Anchors need the JS fix as well as CSS.** Pages are rendered through
+  `dangerouslySetInnerHTML`, so the browser's own fragment scroll is lost when React replaces
+  the HTML. `initHashScroll()` in `public/legacy/script.js` re-runs the scroll after hydration;
+  `scroll-margin-top` alone is not sufficient.
+- **Catalogue → form context** travels via `data-rfq-model` / `data-rfq-sku` / `data-rfq-config`
+  on buttons, written into the form's hidden fields by `initCatalogRfqContext()`. Detail pages
+  do not need this: they render the hidden fields server-side for the selected version.
+
 ## Encoding Rules
 
 - Keep source files UTF-8. Do not save web/code files as Windows "Unicode" / UTF-16.
