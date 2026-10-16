@@ -1,72 +1,55 @@
 /**
- * 三个采购入口页的共享渲染器（《Seraya 网站方案 v3.0》§3.1 / §4.2 / §4.3 / §4.4）
+ * 三个采购入口页的共享渲染器（`/buy`、`/buy/gaming-gpus`、`/buy/ai-gpus`）。
  *
- * §13.1.4 要求「页面内容、结构化产品数据和交易口径保持单一来源，避免三页各自维护同一型号」，
- * 因此三页共用本文件：型号来自 `src/data/gpu-catalog.ts`，交易口径与 FAQ 来自
- * `src/lib/buy-flow.ts`，页面差异只在 BUY_PAGES 里声明。
+ * 本轮（2026-11）改版要点：
+ *   1. **目录按型号家族展示**，不再把每个 SKU 平铺成一张卡。家族卡片保持简洁：
+ *      一张参考图、型号名、一句话用途、版本摘要、一个明确动作。
+ *      详细规格、交易条款与完整表单移到版本展开区与询价区块，卡片里不再重复。
+ *   2. 计数文案区分**型号家族数**与**可选版本数**，两者都由数据实时计算。
+ *   3. 卡片动作指向真实存在的地方：有详情页的家族进详情页，其余家族就地展开版本
+ *      规格并给询价入口。不链接尚未实现的页面。
+ *   4. 交易条款集中在询价区块附近一处说明，卡片里不再重复。
  *
- * §4.3 的区块顺序按原文执行：
- *   1 首屏定位与 CTA / 2 型号与供货信息 / 3 RFQ 入口 / 4 价格与采购条件 /
- *   5 可验证的交易依据 / 6 交付、付款与售后 / 7 买家四步流程 / 8 核心 FAQ / 9 最后 CTA 与联系
+ * 单一来源：
+ *   - 型号家族与版本 → `src/data/gpu-catalog.ts`
+ *   - 家族卡片 / 规格渲染 → `src/lib/catalog-family.ts`
+ *   - 交易口径与 FAQ → `src/lib/rfq.ts`；表单 → `src/lib/rfq-form.ts`
+ *   - 页面骨架 → `src/lib/site-chrome.ts`
  */
 
 import {
   CATEGORY_LABEL,
-  GPU_PRODUCTS,
   type GpuCategory,
-  type GpuProduct,
-  availabilityText,
-  moqText,
-  priceText,
-  productsByCategory,
+  familiesWithVersions,
+  type FamilyWithVersions,
 } from "../data/gpu-catalog";
+import { renderSpecSource, renderUnverifiedNotice, renderVersionSpecs } from "./catalog-family";
 import {
   BUYER_FAQ,
   BUYER_FLOW,
   BUYER_TERMS,
   CONTACT_EMAIL,
+  RFQ_FULFILMENT_TERMS,
+  RFQ_PRICING_TERMS,
   rfqMailto,
-} from "./buy-flow";
-import { siteChrome, siteFooter, skipLink } from "./site-chrome";
+} from "./rfq";
+import { escapeHtml, renderRfqForm } from "./rfq-form";
+import { PRIMARY_CTA_LABEL, siteChrome, siteFooter, skipLink } from "./site-chrome";
 
 export type BuyPageKey = "overview" | "gaming" | "ai";
 
 export type BuyPageConfig = {
   key: BuyPageKey;
   path: string;
-  /** <head> 用；§12.1 SEO 基础 */
   title: string;
   description: string;
   eyebrow: string;
-  /** §4.2 首屏文案，逐字使用 */
   h1: string;
   support: string;
   cta: string;
-  /** §4.4 页面差异：本页负责的分类 */
   categories: GpuCategory[];
   searchPlaceholder: string;
 };
-
-/** §4.3 第 4 项与第 6 项各自对应的口径条目 */
-const PRICING_LABELS = [
-  "Pricing",
-  "Quantity and price",
-  "Minimum order",
-  "First response",
-  "Formal quotation",
-  "Quote validity",
-  "Stock hold",
-];
-const PRICING_TERMS = BUYER_TERMS.filter((t) => PRICING_LABELS.includes(t.label));
-const FULFILMENT_TERMS = BUYER_TERMS.filter((t) => !PRICING_LABELS.includes(t.label));
-
-/**
- * 供 /systems 复用：只输出分类区块与型号卡，不含整页骨架。
- * §13.1.4 要求三页共用单一来源，/systems 也从这里取，不另维护一份型号。
- */
-export function renderGpuCatalog(categories: GpuCategory[], ctaLabel: string): string {
-  return categories.map((c) => categoryBlock(c, ctaLabel, true)).join("\n");
-}
 
 export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
   overview: {
@@ -74,12 +57,12 @@ export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
     path: "/buy",
     title: "Wholesale GPU Supplier for Business Buyers | Seraya",
     description:
-      "Malaysia-based GPU trading for bulk procurement. Send the model, quantity and delivery destination to request a bulk quote.",
+      "Malaysia-based GPU trading for bulk procurement. Browse the models we quote, compare versions, and send the model, quantity and delivery destination.",
     eyebrow: "GPU wholesale &middot; Kuala Lumpur",
     h1: "Wholesale GPUs for Business Buyers",
     support:
-      "Malaysia-based GPU trading for bulk procurement. Tell us the model, quantity and delivery destination to request a quote.",
-    cta: "Request bulk quote",
+      "Browse the models we quote, pick the version you need, and tell us the quantity and delivery destination. Those are enough to start.",
+    cta: PRIMARY_CTA_LABEL,
     categories: ["gaming", "professional", "datacenter"],
     searchPlaceholder: "RTX 5090, H100, A100...",
   },
@@ -88,12 +71,12 @@ export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
     path: "/buy/gaming-gpus",
     title: "GeForce RTX GPU Wholesale & Bulk Quotes | Seraya",
     description:
-      "Compare listed GeForce RTX models and configurations, and request availability and pricing for your quantity and destination.",
+      "Compare listed GeForce RTX models and their memory versions, then request availability and pricing for your quantity and destination.",
     eyebrow: "Gaming GPUs &middot; bulk",
     h1: "GeForce RTX GPUs for Bulk Procurement",
     support:
-      "Compare the listed models and configurations. Request availability and pricing for your required quantity and destination.",
-    cta: "Request bulk quote",
+      "Five GeForce RTX models, including the two memory versions of the RTX 5060 Ti. Pick a model, then tell us the quantity and destination.",
+    cta: PRIMARY_CTA_LABEL,
     categories: ["gaming"],
     searchPlaceholder: "RTX 5090, RTX 5080, RTX 5070...",
   },
@@ -102,96 +85,149 @@ export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
     path: "/buy/ai-gpus",
     title: "Professional & Data Center GPU Supply | Seraya",
     description:
-      "Specify the exact professional or data center GPU model, version and quantity, and we will confirm the available supply route and quotation terms.",
+      "Specify the exact professional or data center GPU model and version — workstation, Max-Q, Server Edition, SXM or PCIe — and we will confirm the supply route and quotation terms.",
     eyebrow: "Professional &amp; data center &middot; bulk",
     h1: "Professional &amp; Data Center GPUs for Bulk Procurement",
     support:
-      "Specify the exact model, version and quantity. We will confirm the available supply route and quotation terms for your request.",
-    cta: "Request GPU quote",
+      "Edition and form factor decide what the card physically fits. Compare the versions on each model, then send the quantity and destination.",
+    cta: PRIMARY_CTA_LABEL,
     categories: ["professional", "datacenter"],
     searchPlaceholder: "RTX PRO 6000, H100, A100...",
   },
 };
 
-function esc(value: string): string {
-  return value
-    .replace(/&(?!(amp|mdash|middot|lt|gt|quot|#\d+);)/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+/**
+ * 目录里的家族卡片。
+ * 有详情页 → 一个「Compare editions」动作，版本链接指向详情页对应版本。
+ * 无详情页 → 就地用 `<details>` 展开每个版本的规格与平台要求，并给版本级询价入口，
+ *            这样客户不必点进一个不存在的页面才能看到版本差异。
+ */
+function familyCard(entry: FamilyWithVersions): string {
+  const { family, versions } = entry;
+  const detail = typeof family.slug === "string" && family.slug.length > 0;
 
-function gpuCard(p: GpuProduct, ctaLabel: string): string {
-  const media = p.image
-    ? `            <div class="gpu-card-media">
-              <img src="${p.image}" alt="" loading="lazy" decoding="async" width="960" height="540" />
-              ${
-                // §6.4：参考图不得标成当前 lot 的实拍
-                p.imageType === "reference"
-                  ? '<span class="gpu-media-note">Reference image</span>'
-                  : ""
-              }
-            </div>
-`
+  const media = family.image
+    ? `              <div class="family-card-media">
+                <img src="${family.image}" alt="" loading="lazy" decoding="async" width="960" height="540" />
+                <span class="gpu-media-note">Reference image</span>
+              </div>`
     : "";
 
+  const chips = versions
+    .map((v) => {
+      const label = escapeHtml(v.versionLabel);
+      const href = detail
+        ? `${family.slug}?version=${encodeURIComponent(v.sku)}`
+        : `#version-${escapeHtml(v.sku)}`;
+      return `                  <li><a href="${href}">${label}</a></li>`;
+    })
+    .join("\n");
+
+  const action = detail
+    ? `                <a class="btn btn-primary family-card-cta" href="${
+        family.slug
+      }" aria-label="Compare the three editions of ${escapeHtml(family.name)}">Compare editions</a>`
+    : `                <a class="btn btn-primary family-card-cta" href="#request-quote" data-rfq-model="${escapeHtml(
+        family.name,
+      )}" aria-label="${escapeHtml(PRIMARY_CTA_LABEL)} for ${escapeHtml(family.name)}, ${
+        versions.length
+      } versions">${PRIMARY_CTA_LABEL}</a>`;
+
+  const inlineVersions = detail
+    ? ""
+    : `
+              <div class="family-versions-inline">
+${versions
+  .map(
+    (v) => `                <details class="version-detail" id="version-${escapeHtml(v.sku)}">
+                  <summary>
+                    <span class="version-detail-label">${escapeHtml(v.versionLabel)}</span>
+                    <span class="version-detail-form">${escapeHtml(v.formSummary)}</span>
+                  </summary>
+                  <dl class="gpu-specs">
+${renderVersionSpecs(v)}
+                  </dl>
+${renderSpecSource(v)}
+${renderUnverifiedNotice(v)}
+                  <p class="version-detail-note"><strong>Fits</strong> ${escapeHtml(v.platform)}</p>
+                  <p class="version-detail-note"><strong>Best for</strong> ${escapeHtml(v.bestFor)}</p>
+                  <a class="btn btn-ghost version-detail-cta" href="#request-quote" data-rfq-model="${escapeHtml(
+                    v.modelName,
+                  )}" data-rfq-sku="${escapeHtml(v.sku)}" data-rfq-config="${escapeHtml(
+                    v.versionLabel,
+                  )}" aria-label="${escapeHtml(PRIMARY_CTA_LABEL)} for ${escapeHtml(
+                    v.modelName,
+                  )}, SKU ${escapeHtml(v.sku)}">${escapeHtml(PRIMARY_CTA_LABEL)} for ${escapeHtml(
+                    v.versionLabel,
+                  )}</a>
+                </details>`,
+  )
+  .join("\n")}
+              </div>`;
+
   return `
-          <article class="gpu-card">
-${media}            <h3>${esc(p.modelName)}</h3>
-            ${
-              // §6.2：只渲染已核实的规格；无数据则不输出该区块
-              p.specs && p.specs.length
-                ? `<dl class="gpu-specs">${p.specs
-                    .map(
-                      (s) =>
-                        `<div class="gpu-specs-row"><dt>${esc(s.label)}</dt><dd>${esc(s.value)}</dd></div>`,
-                    )
-                    .join("")}</dl>`
-                : ""
-            }
-            <dl class="gpu-meta">
-              <div class="gpu-meta-row"><dt>Availability</dt><dd>${availabilityText(p)}</dd></div>
-              <div class="gpu-meta-row"><dt>Minimum order</dt><dd>${moqText(p)}</dd></div>
-              <div class="gpu-meta-row"><dt>Price</dt><dd>${priceText(p)}</dd></div>
-            </dl>
-            <a class="btn btn-ghost gpu-card-cta" href="${rfqMailto(p.modelName)}">${esc(ctaLabel)}</a>
-          </article>`;
+            <article class="family-card" id="family-${family.id}" data-family="${family.id}">
+${media}              <div class="family-card-head">
+                <h3>${escapeHtml(family.name)}</h3>
+                <span class="version-count">${versions.length} ${
+                  versions.length === 1 ? "version" : "versions"
+                }</span>
+              </div>
+              <p class="family-card-tagline">${escapeHtml(family.tagline)}</p>
+              <div class="family-card-versions">
+                <p class="muted family-card-versions-label">Available to quote</p>
+                <ul class="version-chips">
+${chips}
+                </ul>
+              </div>
+${inlineVersions}              <div class="family-card-foot">
+${action}
+              </div>
+            </article>`;
 }
 
-function categoryBlock(category: GpuCategory, ctaLabel: string, expanded: boolean): string {
-  const items = productsByCategory(category);
-  if (items.length === 0) return "";
+function categoryBlock(category: GpuCategory): string {
+  const entries = familiesWithVersions([category]);
+  if (entries.length === 0) return "";
+  const versionTotal = entries.reduce((n, e) => n + e.versions.length, 0);
   return `
-        <div class="catalog-section" id="${category}">
-          <div class="catalog-section-head">
-            <h3>${CATEGORY_LABEL[category]}</h3>
-          </div>
-          <div class="gpu-grid">
-${items.map((p) => gpuCard(p, ctaLabel)).join("\n")}
-          </div>
-        </div>`;
+          <div class="catalog-section" id="${category}">
+            <div class="catalog-section-head">
+              <h3>${CATEGORY_LABEL[category]}</h3>
+              <p class="muted">
+                ${entries.length} ${entries.length === 1 ? "model" : "models"} &middot; ${versionTotal} ${
+                  versionTotal === 1 ? "version" : "versions"
+                } to quote
+              </p>
+            </div>
+            <div class="family-grid">
+${entries.map(familyCard).join("\n")}
+            </div>
+          </div>`;
 }
 
 function termsList(terms: { label: string; value: string }[]): string {
   return `
-          <dl class="terms-list">
+            <dl class="terms-list">
 ${terms
   .map(
     (t) =>
-      `            <div class="terms-row"><dt>${esc(t.label)}</dt><dd>${esc(t.value)}</dd></div>`,
+      `              <div class="terms-row"><dt>${escapeHtml(t.label)}</dt><dd>${escapeHtml(t.value)}</dd></div>`,
   )
   .join("\n")}
-          </dl>`;
+            </dl>`;
+}
+
+/** 供其他页面复用：只输出分类区块与家族卡，不含整页骨架。 */
+export function renderGpuCatalog(categories: GpuCategory[]): string {
+  return categories.map(categoryBlock).join("\n");
 }
 
 export function renderBuyPage(config: BuyPageConfig): string {
-  const multiCategory = config.categories.length > 1;
-  const modelCount = config.categories.reduce(
-    (n, c) => n + productsByCategory(c).length,
-    0,
-  );
-  const hasProfessionalOrDatacenter =
-    config.categories.includes("professional") || config.categories.includes("datacenter");
+  const entries = familiesWithVersions(config.categories);
+  const familyCount = entries.length;
+  const versionCount = entries.reduce((n, e) => n + e.versions.length, 0);
+  const pathLabels = config.categories.map((c) => CATEGORY_LABEL[c]).join(" · ");
 
   return `
 ${skipLink()}
@@ -203,8 +239,8 @@ ${siteChrome("buy", config.searchPlaceholder)}
         <h1>${config.h1}</h1>
         <p class="muted catalog-lede">${config.support}</p>
         <div class="btn-row">
-          <a class="btn btn-primary" href="#rfq">${config.cta}</a>
-          <a class="btn btn-ghost" href="#models">View GPU models</a>
+          <a class="btn btn-primary" href="#request-quote">${config.cta}</a>
+          <a class="btn btn-ghost" href="#models">Browse models</a>
         </div>
       </div>
     </div>
@@ -212,36 +248,39 @@ ${siteChrome("buy", config.searchPlaceholder)}
     <main id="main" class="buy-main">
       <section class="section" id="models" aria-labelledby="models-title">
         <div class="section-head">
-          <h2 id="models-title">GPU models</h2>
+          <h2 id="models-title">Models</h2>
           <p class="muted">
-            Supply status is held per model, not as one site-wide stock label. Where a lot is
-            confirmed we show the check date; otherwise availability is confirmed on enquiry.
+            ${familyCount} ${familyCount === 1 ? "model" : "models"} &middot; ${versionCount} versions to quote
+            (${pathLabels}). Availability is held per version, not as one site-wide stock label.
           </p>
         </div>
-${config.categories.map((c) => categoryBlock(c, config.cta, multiCategory)).join("\n")}
+${config.categories.map(categoryBlock).join("\n")}
         <p class="muted catalog-note">
-          ${modelCount} listed models. This is the range we accept enquiries for, not a stock list.
-          ${hasProfessionalOrDatacenter ? "Single cards, modules and complete systems are quoted as separate products." : ""}
+          This is the range we accept enquiries for, not a stock list. Add-in cards and SXM modules
+          are quoted as separate versions and are not interchangeable.
         </p>
       </section>
 
-      <section class="section" id="rfq" aria-labelledby="rfq-title">
+      <section class="section" id="request-quote" aria-labelledby="rfq-title">
         <div class="section-head">
           <h2 id="rfq-title">${config.cta}</h2>
           <p class="muted">
-            Send the model, the quantity you need and the delivery destination. Those three are
+            Pick the product and the version if you know it. Quantity and delivery destination are
             enough for us to start.
           </p>
         </div>
-        <div class="rfq-entry">
-          <a class="btn btn-primary" href="${rfqMailto()}">${config.cta}</a>
-          <div class="rfq-alternative">
-            <p class="muted">Prefer email? Write to
-              <a href="${rfqMailto()}">${CONTACT_EMAIL}</a>
-              with the subject tag <code>[Buyer RFQ]</code>.
-            </p>
-            <p class="muted">${BUYER_FLOW[0].body}</p>
-          </div>
+        <div class="rfq-wrap">
+${renderRfqForm({ path: "gpu", source: config.path }, { formId: `rfq-${config.key}` })}
+          <aside class="rfq-side">
+            <div class="rfq-alt-email">
+              <h3>Prefer email?</h3>
+              <p class="muted">
+                Write to <a href="${rfqMailto(null)}">${CONTACT_EMAIL}</a> with the subject tag
+                <code>[Buyer RFQ]</code> and the same details.
+              </p>
+              <p class="muted">${escapeHtml(BUYER_FLOW[0].body)}</p>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -253,7 +292,7 @@ ${config.categories.map((c) => categoryBlock(c, config.cta, multiCategory)).join
             per order rather than published site-wide.
           </p>
         </div>
-${termsList(PRICING_TERMS)}
+${termsList(RFQ_PRICING_TERMS)}
       </section>
 
       <section class="section" id="evidence" aria-labelledby="evidence-title">
@@ -276,13 +315,6 @@ ${termsList(PRICING_TERMS)}
             </p>
             <a class="btn btn-ghost" href="/purchasing/compliance">Compliance &amp; end-use</a>
           </article>
-          <article class="company-card">
-            <h3>Documents per transaction</h3>
-            <p class="muted">
-              Invoice, test, end-user or other documents are confirmed per product, use and
-              destination.
-            </p>
-          </article>
         </div>
       </section>
 
@@ -291,7 +323,7 @@ ${termsList(PRICING_TERMS)}
           <h2 id="fulfilment-title">Delivery, payment and after-sales</h2>
           <p class="muted">Each item below is confirmed in the written quotation for your order.</p>
         </div>
-${termsList(FULFILMENT_TERMS)}
+${termsList(RFQ_FULFILMENT_TERMS)}
       </section>
 
       <section class="section" aria-labelledby="flow-title">
@@ -299,10 +331,7 @@ ${termsList(FULFILMENT_TERMS)}
           <h2 id="flow-title">How a bulk purchase runs</h2>
         </div>
         <ol class="program-flow">
-${BUYER_FLOW.map(
-  (s, i) =>
-    `          <li><span>0${i + 1}</span><h3>${esc(s.title)}</h3><p>${esc(s.body)}</p></li>`,
-).join("\n")}
+${BUYER_FLOW.map((s, i) => `          <li><span>0${i + 1}</span><h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.body)}</p></li>`).join("\n")}
         </ol>
       </section>
 
@@ -311,10 +340,7 @@ ${BUYER_FLOW.map(
           <h2 id="faq-title">Buyer questions</h2>
         </div>
         <div class="faq-list">
-${BUYER_FAQ.map(
-  (f) =>
-    `          <details class="faq-item"><summary>${esc(f.question)}</summary><p>${esc(f.answer)}</p></details>`,
-).join("\n")}
+${BUYER_FAQ.map((f) => `          <details class="faq-item"><summary>${escapeHtml(f.question)}</summary><p>${escapeHtml(f.answer)}</p></details>`).join("\n")}
         </div>
       </section>
 
@@ -322,8 +348,7 @@ ${BUYER_FAQ.map(
         <div class="section-head">
           <h2 id="systems-lines-title">Need a complete system?</h2>
           <p class="muted">
-            Single cards are quoted here. Complete systems are configured and quoted on the
-            Systems line.
+            Cards are quoted here. Complete systems are configured and quoted on the Systems line.
           </p>
         </div>
         <div class="btn-row">
@@ -339,23 +364,22 @@ ${BUYER_FAQ.map(
           <p class="muted">${CONTACT_EMAIL}</p>
           <h2 id="buy-cta-title">${config.cta}</h2>
           <p class="muted">
-            Model, quantity and delivery destination are enough to start. ${BUYER_TERMS[3].value}
+            Model, version, quantity and delivery destination are enough to start. ${escapeHtml(
+              BUYER_TERMS[3].value,
+            )}
           </p>
         </div>
         <div class="btn-row">
-          <a class="btn btn-primary" href="${rfqMailto()}">${config.cta}</a>
+          <a class="btn btn-primary" href="#request-quote">${config.cta}</a>
           <a class="btn btn-ghost" href="/systems">Reference systems</a>
         </div>
       </section>
     </main>
 
-<div class="mobile-cta-bar">
-      <a class="btn btn-primary" href="#rfq">${config.cta}</a>
+    <div class="mobile-cta-bar">
+      <a class="btn btn-primary" href="#request-quote">${config.cta}</a>
     </div>
 
 ${siteFooter()}
   `;
 }
-
-/** §6.1 第 3 类信息（收购需求）不属于采购页，故此处只做存在性断言，避免被误用 */
-export const CATALOG_PRODUCT_COUNT = GPU_PRODUCTS.length;
