@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
+import fixesCss from "../fixes.css?url";
 import { SYSTEMS_LINES, renderSystemsLine } from "../lib/systems-lines";
 
 // Systems 线页（补充方案 2026-10-16 §二）。
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/systems_/ai-servers")({
       { rel: "canonical", href: "https://seraya.systems/systems/ai-servers" },
       { rel: "stylesheet", href: "/legacy/styles.css" },
       { rel: "stylesheet", href: legacyCss },
+      { rel: "stylesheet", href: fixesCss },
     ],
   }),
   component: LegacyPage,

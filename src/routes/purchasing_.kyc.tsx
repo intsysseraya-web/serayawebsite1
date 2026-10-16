@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
+import fixesCss from "../fixes.css?url";
 import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
 
 // 文案取自《SERAYA 网站改版方案 v1.0》§4.4，并执行两项已裁决的决定：
 //   决定 3：注册号与税号**只在本页**出现；页脚/JSON-LD/OG 均不含。
 //   CY 2026-10-12 裁决：**不放自然人姓名**（董事/UBO、公司秘书）——改为「随 KYC 包应索提供」。
 // 邮箱：`kyc@seraya.systems` 尚未开通（CY 确认），故一律用已确认的 felix.mm@seraya.systems。
+//
+// 2026-11 线上检查项 6：本页要**同时照顾买方与供应商核验需求**，因此把「谁向谁要」
+// 分开写清楚，并说明本页是买卖双方共同的核验入口。未新增任何资质、授权或认证。
 
 const BODY_HTML = `
 ${skipLink()}
@@ -41,6 +45,10 @@ ${siteChrome("purchasing", "KYC, registration, entity...")}
       <section class="section company-band" aria-labelledby="kyc-documents-title">
         <div class="section-head">
           <h2 id="kyc-documents-title">Documents we provide</h2>
+          <p class="muted">
+            The same pack serves both directions: a buyer verifying us before they place an order,
+            and a supplier verifying us before they release goods to us.
+          </p>
         </div>
         <ul class="rfq-checklist">
           <li>Certificate of incorporation and notice of registration</li>
@@ -51,6 +59,43 @@ ${siteChrome("purchasing", "KYC, registration, entity...")}
           <li>End-user information and export-licence position</li>
           <li>Signed undertaking: no re-export or diversion contrary to applicable controls</li>
         </ul>
+      </section>
+
+      <section class="section" aria-labelledby="kyc-directions-title">
+        <div class="section-head">
+          <h2 id="kyc-directions-title">Which direction are you verifying?</h2>
+        </div>
+        <div class="program-control-grid">
+          <article>
+            <h3>Buyer verifying Seraya</h3>
+            <p>
+              Ask for the pack before you place a purchase order or pay a deposit. We release it
+              before we ask you to quote, and the pack covers the entity, the signatory authority and
+              the licence position for the goods and route.
+            </p>
+          </article>
+          <article>
+            <h3>Supplier verifying Seraya</h3>
+            <p>
+              Ask for the same pack before you release a lot. State whether you also need funding
+              evidence for the specific deal, and whether your compliance team needs the end-use
+              statement in a particular format.
+            </p>
+          </article>
+          <article>
+            <h3>What we ask of you</h3>
+            <p>
+              For purchases of used equipment we ask for the entity you are selling through, who will
+              countersign, and the source and condition documentation for the goods. This is stated in
+              writing per deal and is not published as a blanket rule.
+            </p>
+          </article>
+        </div>
+        <p class="pending-doc">
+          <strong>Not published here:</strong> natural-person details (directors, UBO, company
+          secretary) and certified copies. Those are released per counterparty on request rather than
+          published on a public page.
+        </p>
       </section>
 
       <section class="section program-cta" aria-labelledby="kyc-request-title">
@@ -85,8 +130,10 @@ export const Route = createFileRoute("/purchasing_/kyc")({
       },
     ],
     links: [
+      { rel: "canonical", href: "https://seraya.systems/purchasing/kyc" },
       { rel: "stylesheet", href: "/legacy/styles.css" },
       { rel: "stylesheet", href: legacyCss },
+      { rel: "stylesheet", href: fixesCss },
     ],
   }),
   component: LegacyPage,

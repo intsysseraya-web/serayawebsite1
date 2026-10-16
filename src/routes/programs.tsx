@@ -1,6 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
-import { siteChrome, siteFooter, skipLink } from "../lib/site-chrome";
+import fixesCss from "../fixes.css?url";
+import { siteChrome, siteFooter, skipLink, PRIMARY_CTA_LABEL } from "../lib/site-chrome";
+import { abbreviation } from "../lib/rfq";
+import { escapeHtml, renderRfqForm } from "../lib/rfq-form";
+
+// Programs 页（线上检查项 6）：
+//   1. **前置客户实际拿到的交付物**：BOM 对比、替代方案、交期计划、验收记录。
+//      这一组放在最前面，而不是埋在流程描述里。
+//   2. **减少重复流程文案** —— 原来 program types / program controls / how a program runs
+//      三块讲同一件事。保留「怎么运行」四步，其余改为交付物与边界。
+//   3. 保留示例标识，不把示例包装成真实客户案例。
 
 const BODY_HTML = `
     ${skipLink()}
@@ -42,6 +52,46 @@ ${siteChrome("programs", "BOM, program, destinations...")}<div class="page-hero 
     </div>
 
     <main id="main">
+      <section class="section program-section" aria-labelledby="program-deliverables-title">
+        <div class="section-head">
+          <h2 id="program-deliverables-title">What you get out of a program</h2>
+          <p>
+            Four written deliverables. They are the reason to run a request as a program instead of
+            a product quote, and they are what you can hold us to.
+          </p>
+        </div>
+        <div class="program-card-grid">
+          <article class="program-type-card">
+            <h3>BOM comparison</h3>
+            <p>
+              Your parts list next to the options we can actually supply: what matches, what differs,
+              what is a like-for-like substitution and what is a step down. Written, line by line.
+            </p>
+          </article>
+          <article class="program-type-card">
+            <h3>Substitution alternatives</h3>
+            <p>
+              For each line we cannot fill as specified, the alternatives with the trade-off named
+              &mdash; performance, power, physical fit, firmware, warranty path.
+            </p>
+          </article>
+          <article class="program-type-card">
+            <h3>Lead-time plan</h3>
+            <p>
+              Per line: stock, dispatch, or estimated arrival, and what that estimate runs from. If we
+              do not know, it says so rather than showing a date we cannot hold.
+            </p>
+          </article>
+          <article class="program-type-card">
+            <h3>Acceptance record</h3>
+            <p>
+              What was agreed, what was checked, and what was handed over &mdash; kept against the
+              original requirement so procurement, IT and operations read the same version.
+            </p>
+          </article>
+        </div>
+      </section>
+
       <section class="section program-section" aria-labelledby="program-matter-title">
         <div class="section-head">
           <h2 id="program-matter-title">Procurement, minus the spreadsheet ping-pong.</h2>
@@ -127,33 +177,25 @@ ${siteChrome("programs", "BOM, program, destinations...")}<div class="page-hero 
 
       <section class="section program-section program-band" aria-labelledby="program-controls-title">
         <div class="section-head">
-          <h2 id="program-controls-title">Program controls</h2>
-          <p>We remove the guesswork before you commit budget, and keep a record of what was agreed after delivery.</p>
+          <h2 id="program-controls-title">What we control, and what we do not</h2>
+          <p>Stated up front so the deliverables above are read for what they are.</p>
         </div>
         <div class="program-control-grid">
           <article>
-            <h3>Lead-time visibility</h3>
-            <p>Compare realistic availability and timing across sourcing options.</p>
+            <h3>We control</h3>
+            <p>Option comparison, substitution proposals, the written assumptions, and keeping one thread from intake to handover.</p>
           </article>
           <article>
-            <h3>Controlled substitutions</h3>
-            <p>Document what can change, what cannot change, and who needs to approve it.</p>
+            <h3>We do not control</h3>
+            <p>Allocation decisions upstream, carrier schedules, and destination customs. Where these move, we say so and re-state the plan rather than absorbing it silently.</p>
           </article>
           <article>
-            <h3>Firmware and batch notes</h3>
-            <p>Keep configuration continuity visible across rollout waves.</p>
+            <h3>What we will not do</h3>
+            <p>We do not publish case studies for work that has not happened, and we do not put a lead-time or warranty number on this page that is not tied to a specific order.</p>
           </article>
           <article>
-            <h3>Destination requirements</h3>
-            <p>Make destination requirements, site needs, and timing assumptions part of the RFQ thread.</p>
-          </article>
-          <article>
-            <h3>Warranty path</h3>
-            <p>Tie RMA route, serials, and support contact back to the sourced program.</p>
-          </article>
-          <article>
-            <h3>Acceptance notes</h3>
-            <p>Give procurement, IT, and operations a shared record of what was agreed.</p>
+            <h3>What we need from you</h3>
+            <p>The requirement, the destination, the target date, the constraints that cannot move, and who signs off the configuration.</p>
           </article>
         </div>
       </section>
@@ -226,6 +268,29 @@ ${siteChrome("programs", "BOM, program, destinations...")}<div class="page-hero 
         <p class="muted program-deploy-note">Ownership, data handling and ongoing support are defined in the project scope.</p>
       </section>
 
+      <section class="section program-section" id="request-quote" aria-labelledby="program-rfq-title">
+        <div class="section-head">
+          <h2 id="program-rfq-title">Send the requirement</h2>
+          <p>
+            Product or requirement, quantity and delivery destination are required. The BOM itself is
+            optional here &mdash; paste what you have, or say you will send it by reply.
+          </p>
+        </div>
+        <div class="rfq-wrap">
+${renderRfqForm({ path: "system", source: "/programs" }, { formId: "rfq-programs" })}
+          <aside class="rfq-side">
+            <div class="rfq-alt-email">
+              <h3>Abbreviations</h3>
+              <div class="glossary">
+                <div class="glossary-item"><dt>BOM</dt><dd>${escapeHtml(abbreviation("BOM") ?? "")}</dd></div>
+                <div class="glossary-item"><dt>RFQ</dt><dd>${escapeHtml(abbreviation("RFQ") ?? "")}</dd></div>
+                <div class="glossary-item"><dt>RMA</dt><dd>${escapeHtml(abbreviation("RMA") ?? "")}</dd></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
       <section class="section program-cta" aria-labelledby="program-cta-title">
         <div>
           <p class="muted" style="margin: 0 0 0.5rem">Start with the requirement</p>
@@ -233,7 +298,7 @@ ${siteChrome("programs", "BOM, program, destinations...")}<div class="page-hero 
           <p class="muted">Send the parts list, workload, target date, and constraints. We respond to complete RFQs within one business day.</p>
         </div>
         <div class="btn-row">
-          <a class="btn btn-primary" href="/contact">Send us your RFQ</a>
+          <a class="btn btn-primary" href="#request-quote">${PRIMARY_CTA_LABEL}</a>
           <a class="btn btn-ghost" href="/systems">View reference systems</a>
         </div>
       </section>
@@ -262,8 +327,10 @@ export const Route = createFileRoute("/programs")({
       },
     ],
     links: [
+      { rel: "canonical", href: "https://seraya.systems/programs" },
       { rel: "stylesheet", href: "/legacy/styles.css" },
       { rel: "stylesheet", href: legacyCss },
+      { rel: "stylesheet", href: fixesCss },
     ],
   }),
   component: LegacyPage,

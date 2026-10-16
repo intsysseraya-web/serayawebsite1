@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import legacyCss from "../legacy-shim.css?url";
+import fixesCss from "../fixes.css?url";
 import { BUY_PAGES, renderBuyPage } from "../lib/buy-page";
 
 // 采购入口：专业与数据中心 GPU（方案 v3.0 §3.1 `/buy/ai-gpus`，承接 A3）
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/buy_/ai-gpus")({
       { rel: "canonical", href: "https://seraya.systems/buy/ai-gpus" },
       { rel: "stylesheet", href: "/legacy/styles.css" },
       { rel: "stylesheet", href: legacyCss },
+      { rel: "stylesheet", href: fixesCss },
     ],
   }),
   component: LegacyPage,
