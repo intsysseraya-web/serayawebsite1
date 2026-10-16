@@ -37,8 +37,15 @@
     }
 
     function seed() {
-      // density: ~1 node per 22000 px², capped
-      var target = Math.max(24, Math.min(52, Math.round((width * height) / 22000)));
+      /*
+       * 密度：每 22000 px² 一个节点，再整体 +10 个（CY 2026-11 要求星星多一些），
+       * 上下限 34–62 兜住极端视口：
+       *   - 下限保证窄屏不会太空（375px 宽时按面积算只有个位数）
+       *   - 上限保证超宽屏不会变成噪点、也压住 O(n²) 连线计算量
+       * 1440×430 的桌面上约为 28 → 38 个节点。
+       */
+      var base = Math.round((width * height) / 22000);
+      var target = Math.max(34, Math.min(62, base + 10));
       nodes = [];
       for (var i = 0; i < target; i++) {
         nodes.push({
@@ -52,6 +59,15 @@
     }
 
     var LINK = 150; // link distance in px
+
+    /*
+     * 暴露实际节点数，便于人工/脚本核对密度。只读数字，不影响渲染。
+     * 为什么留这个口子：这是纯视觉参数，出问题时「看起来太空/太密」很难量化，
+     * 有一个可读取的数字就能直接和改动前对比。
+     */
+    function publishCount() {
+      window.__serayaHeroNodes = nodes.length;
+    }
 
     function step() {
       ctx.clearRect(0, 0, width, height);
@@ -124,6 +140,7 @@
     }
 
     resize();
+    publishCount();
     if (reduced) {
       step(); // single frame
     } else {

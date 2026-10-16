@@ -2686,3 +2686,41 @@ article.prose {
 .mobile-nav .nav-dropdown > a {
   font-weight: 600;
 }
+/* 固定导航遮挡锚点（线上检查项 B）：对跳转目标统一补偿导航高度。
+ * 复用站点已有的 --header-h，避免再写死像素值。 */
+:target {
+  scroll-margin-top: calc(var(--header-h, 4.5rem) + 1rem);
+}
+@media (max-width: 900px) {
+  :target {
+    scroll-margin-top: calc(var(--header-h, 3.75rem) + 0.75rem);
+  }
+}
+/* Products 下拉加固（线上检查项 A）：显式纵向排列 + 行间距 + 长名称换行，
+ * 不依赖容器默认流向，避免子项被挤到同一行。 */
+.main-nav .nav-dropdown-menu {
+  flex-direction: column;
+  row-gap: 0.15rem;
+  align-items: stretch;
+}
+.main-nav .nav-dropdown-menu > a {
+  display: block;
+  white-space: normal;
+  line-height: 1.35;
+  max-width: 20rem;
+}
+/* 移动端：手风琴式单列，每项独立成行，间距清晰 */
+.mobile-nav .nav-dropdown-menu {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.3rem;
+  margin: 0.3rem 0 0.6rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--border);
+}
+.mobile-nav .nav-dropdown-menu > a {
+  display: block;
+  padding: 0.5rem 0;
+  white-space: normal;
+  line-height: 1.35;
+}
