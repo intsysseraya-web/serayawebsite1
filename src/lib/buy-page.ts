@@ -318,6 +318,22 @@ ${BUYER_FAQ.map(
         </div>
       </section>
 
+      <section class="section" aria-labelledby="systems-lines-title">
+        <div class="section-head">
+          <h2 id="systems-lines-title">Need a complete system?</h2>
+          <p class="muted">
+            Single cards are quoted here. Complete systems are configured and quoted on the
+            Systems line.
+          </p>
+        </div>
+        <div class="btn-row">
+          <a class="btn btn-ghost" href="/systems/ai-servers">AI Servers</a>
+          <a class="btn btn-ghost" href="/systems/workstations">AI Workstations</a>
+          <a class="btn btn-ghost" href="/systems/gaming">Gaming Systems</a>
+          <a class="btn btn-ghost" href="/systems/storage-networking">Storage &amp; Networking</a>
+        </div>
+      </section>
+
       <section class="section program-cta" aria-labelledby="buy-cta-title">
         <div>
           <p class="muted">${CONTACT_EMAIL}</p>

@@ -25,12 +25,25 @@ export type NavKey =
   | "legal";
 
 /** 主导航：标签与 URL 必须一一对应（§2） */
-const NAV: { key: NavKey; label: string; href: string }[] = [
-  // v3.0 §3.2 推荐主导航：Buy GPUs / Sell GPU Lots / Systems / Company / Contact。
-  // Programs 退出主导航但仍在页脚；第一期 Sell GPU Lots 指向现有 /purchasing（§3.2）。
-  { key: "buy", label: "Buy GPUs", href: "/buy" },
+/** 主导航（2026-10-16 补充方案 §一）：Buy 与 Systems 合并为 Products 下拉。
+ *  Sell GPU Lots 与 Contact 保持独立；移动端在汉堡内平铺展开同一层级。
+ */
+type NavChild = { label: string; href: string };
+const NAV: { key: NavKey; label: string; href: string; children?: NavChild[] }[] = [
+  {
+    key: "systems",
+    label: "Products",
+    href: "/systems",
+    children: [
+      { label: "Wholesale GPUs", href: "/buy" },
+      { label: "Systems", href: "/systems" },
+      { label: "AI Servers", href: "/systems/ai-servers" },
+      { label: "AI Workstations", href: "/systems/workstations" },
+      { label: "Gaming Systems", href: "/systems/gaming" },
+      { label: "Storage & Networking", href: "/systems/storage-networking" },
+    ],
+  },
   { key: "purchasing", label: "Sell GPU Lots", href: "/purchasing" },
-  { key: "systems", label: "Systems", href: "/systems" },
   { key: "company", label: "Company", href: "/company" },
   { key: "contact", label: "Contact", href: "/contact" },
 ];
@@ -50,7 +63,27 @@ export function announcementBar(): string {
 function navLinks(current: NavKey, className: string, ariaCurrent = true): string {
   return NAV.map((item) => {
     const isCurrent = ariaCurrent && item.key === current;
-    return `          <a href="${item.href}"${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
+    const self = `          <a href="${item.href}"${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
+    if (!item.children) return self;
+    const kids = item.children
+      .map((c) => `            <a href="${c.href}">${c.label}</a>`)
+      .join("\n");
+    return `          <div class="nav-dropdown">
+
+
+${self}
+
+
+            <div class="nav-dropdown-menu">
+
+
+${kids}
+
+
+            </div>
+
+
+          </div>`;
   }).join("\n");
 }
 
