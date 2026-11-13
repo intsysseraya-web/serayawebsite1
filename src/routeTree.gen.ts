@@ -9,32 +9,32 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WeAreBuyingRouteImport } from './routes/we-are-buying'
 import { Route as SystemsRouteImport } from './routes/systems'
-import { Route as PurchasingRouteImport } from './routes/purchasing'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as LocalRouteImport } from './routes/local'
+import { Route as GpuRouteImport } from './routes/gpu'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompanyRouteImport } from './routes/company'
-import { Route as BuyRouteImport } from './routes/buy'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WeAreBuyingKycRouteImport } from './routes/we-are-buying_.kyc'
+import { Route as WeAreBuyingComplianceRouteImport } from './routes/we-are-buying_.compliance'
 import { Route as SystemsWorkstationsRouteImport } from './routes/systems_.workstations'
 import { Route as SystemsStorageNetworkingRouteImport } from './routes/systems_.storage-networking'
 import { Route as SystemsGamingRouteImport } from './routes/systems_.gaming'
 import { Route as SystemsAiServersRouteImport } from './routes/systems_.ai-servers'
-import { Route as PurchasingKycRouteImport } from './routes/purchasing_.kyc'
-import { Route as PurchasingComplianceRouteImport } from './routes/purchasing_.compliance'
-import { Route as BuyRtxPro6000BlackwellRouteImport } from './routes/buy_.rtx-pro-6000-blackwell'
-import { Route as BuyGamingGpusRouteImport } from './routes/buy_.gaming-gpus'
-import { Route as BuyAiGpusRouteImport } from './routes/buy_.ai-gpus'
+import { Route as GpuRtxPro6000BlackwellRouteImport } from './routes/gpu_.rtx-pro-6000-blackwell'
+import { Route as GpuGamingGpusRouteImport } from './routes/gpu_.gaming-gpus'
+import { Route as GpuAiGpusRouteImport } from './routes/gpu_.ai-gpus'
 
+const WeAreBuyingRoute = WeAreBuyingRouteImport.update({
+  id: '/we-are-buying',
+  path: '/we-are-buying',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SystemsRoute = SystemsRouteImport.update({
   id: '/systems',
   path: '/systems',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PurchasingRoute = PurchasingRouteImport.update({
-  id: '/purchasing',
-  path: '/purchasing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -47,6 +47,11 @@ const LocalRoute = LocalRouteImport.update({
   path: '/local',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GpuRoute = GpuRouteImport.update({
+  id: '/gpu',
+  path: '/gpu',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -57,14 +62,19 @@ const CompanyRoute = CompanyRouteImport.update({
   path: '/company',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BuyRoute = BuyRouteImport.update({
-  id: '/buy',
-  path: '/buy',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeAreBuyingKycRoute = WeAreBuyingKycRouteImport.update({
+  id: '/we-are-buying_/kyc',
+  path: '/we-are-buying/kyc',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeAreBuyingComplianceRoute = WeAreBuyingComplianceRouteImport.update({
+  id: '/we-are-buying_/compliance',
+  path: '/we-are-buying/compliance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SystemsWorkstationsRoute = SystemsWorkstationsRouteImport.update({
@@ -88,184 +98,174 @@ const SystemsAiServersRoute = SystemsAiServersRouteImport.update({
   path: '/systems/ai-servers',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PurchasingKycRoute = PurchasingKycRouteImport.update({
-  id: '/purchasing_/kyc',
-  path: '/purchasing/kyc',
+const GpuRtxPro6000BlackwellRoute = GpuRtxPro6000BlackwellRouteImport.update({
+  id: '/gpu_/rtx-pro-6000-blackwell',
+  path: '/gpu/rtx-pro-6000-blackwell',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PurchasingComplianceRoute = PurchasingComplianceRouteImport.update({
-  id: '/purchasing_/compliance',
-  path: '/purchasing/compliance',
+const GpuGamingGpusRoute = GpuGamingGpusRouteImport.update({
+  id: '/gpu_/gaming-gpus',
+  path: '/gpu/gaming-gpus',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BuyRtxPro6000BlackwellRoute = BuyRtxPro6000BlackwellRouteImport.update({
-  id: '/buy_/rtx-pro-6000-blackwell',
-  path: '/buy/rtx-pro-6000-blackwell',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuyGamingGpusRoute = BuyGamingGpusRouteImport.update({
-  id: '/buy_/gaming-gpus',
-  path: '/buy/gaming-gpus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BuyAiGpusRoute = BuyAiGpusRouteImport.update({
-  id: '/buy_/ai-gpus',
-  path: '/buy/ai-gpus',
+const GpuAiGpusRoute = GpuAiGpusRouteImport.update({
+  id: '/gpu_/ai-gpus',
+  path: '/gpu/ai-gpus',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
+  '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
-  '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
-  '/buy/ai-gpus': typeof BuyAiGpusRoute
-  '/buy/gaming-gpus': typeof BuyGamingGpusRoute
-  '/buy/rtx-pro-6000-blackwell': typeof BuyRtxPro6000BlackwellRoute
-  '/purchasing/compliance': typeof PurchasingComplianceRoute
-  '/purchasing/kyc': typeof PurchasingKycRoute
+  '/we-are-buying': typeof WeAreBuyingRoute
+  '/gpu/ai-gpus': typeof GpuAiGpusRoute
+  '/gpu/gaming-gpus': typeof GpuGamingGpusRoute
+  '/gpu/rtx-pro-6000-blackwell': typeof GpuRtxPro6000BlackwellRoute
   '/systems/ai-servers': typeof SystemsAiServersRoute
   '/systems/gaming': typeof SystemsGamingRoute
   '/systems/storage-networking': typeof SystemsStorageNetworkingRoute
   '/systems/workstations': typeof SystemsWorkstationsRoute
+  '/we-are-buying/compliance': typeof WeAreBuyingComplianceRoute
+  '/we-are-buying/kyc': typeof WeAreBuyingKycRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
+  '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
-  '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
-  '/buy/ai-gpus': typeof BuyAiGpusRoute
-  '/buy/gaming-gpus': typeof BuyGamingGpusRoute
-  '/buy/rtx-pro-6000-blackwell': typeof BuyRtxPro6000BlackwellRoute
-  '/purchasing/compliance': typeof PurchasingComplianceRoute
-  '/purchasing/kyc': typeof PurchasingKycRoute
+  '/we-are-buying': typeof WeAreBuyingRoute
+  '/gpu/ai-gpus': typeof GpuAiGpusRoute
+  '/gpu/gaming-gpus': typeof GpuGamingGpusRoute
+  '/gpu/rtx-pro-6000-blackwell': typeof GpuRtxPro6000BlackwellRoute
   '/systems/ai-servers': typeof SystemsAiServersRoute
   '/systems/gaming': typeof SystemsGamingRoute
   '/systems/storage-networking': typeof SystemsStorageNetworkingRoute
   '/systems/workstations': typeof SystemsWorkstationsRoute
+  '/we-are-buying/compliance': typeof WeAreBuyingComplianceRoute
+  '/we-are-buying/kyc': typeof WeAreBuyingKycRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/buy': typeof BuyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
+  '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
-  '/purchasing': typeof PurchasingRoute
   '/systems': typeof SystemsRoute
-  '/buy_/ai-gpus': typeof BuyAiGpusRoute
-  '/buy_/gaming-gpus': typeof BuyGamingGpusRoute
-  '/buy_/rtx-pro-6000-blackwell': typeof BuyRtxPro6000BlackwellRoute
-  '/purchasing_/compliance': typeof PurchasingComplianceRoute
-  '/purchasing_/kyc': typeof PurchasingKycRoute
+  '/we-are-buying': typeof WeAreBuyingRoute
+  '/gpu_/ai-gpus': typeof GpuAiGpusRoute
+  '/gpu_/gaming-gpus': typeof GpuGamingGpusRoute
+  '/gpu_/rtx-pro-6000-blackwell': typeof GpuRtxPro6000BlackwellRoute
   '/systems_/ai-servers': typeof SystemsAiServersRoute
   '/systems_/gaming': typeof SystemsGamingRoute
   '/systems_/storage-networking': typeof SystemsStorageNetworkingRoute
   '/systems_/workstations': typeof SystemsWorkstationsRoute
+  '/we-are-buying_/compliance': typeof WeAreBuyingComplianceRoute
+  '/we-are-buying_/kyc': typeof WeAreBuyingKycRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/buy'
     | '/company'
     | '/contact'
+    | '/gpu'
     | '/local'
     | '/programs'
-    | '/purchasing'
     | '/systems'
-    | '/buy/ai-gpus'
-    | '/buy/gaming-gpus'
-    | '/buy/rtx-pro-6000-blackwell'
-    | '/purchasing/compliance'
-    | '/purchasing/kyc'
+    | '/we-are-buying'
+    | '/gpu/ai-gpus'
+    | '/gpu/gaming-gpus'
+    | '/gpu/rtx-pro-6000-blackwell'
     | '/systems/ai-servers'
     | '/systems/gaming'
     | '/systems/storage-networking'
     | '/systems/workstations'
+    | '/we-are-buying/compliance'
+    | '/we-are-buying/kyc'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/buy'
     | '/company'
     | '/contact'
+    | '/gpu'
     | '/local'
     | '/programs'
-    | '/purchasing'
     | '/systems'
-    | '/buy/ai-gpus'
-    | '/buy/gaming-gpus'
-    | '/buy/rtx-pro-6000-blackwell'
-    | '/purchasing/compliance'
-    | '/purchasing/kyc'
+    | '/we-are-buying'
+    | '/gpu/ai-gpus'
+    | '/gpu/gaming-gpus'
+    | '/gpu/rtx-pro-6000-blackwell'
     | '/systems/ai-servers'
     | '/systems/gaming'
     | '/systems/storage-networking'
     | '/systems/workstations'
+    | '/we-are-buying/compliance'
+    | '/we-are-buying/kyc'
   id:
     | '__root__'
     | '/'
-    | '/buy'
     | '/company'
     | '/contact'
+    | '/gpu'
     | '/local'
     | '/programs'
-    | '/purchasing'
     | '/systems'
-    | '/buy_/ai-gpus'
-    | '/buy_/gaming-gpus'
-    | '/buy_/rtx-pro-6000-blackwell'
-    | '/purchasing_/compliance'
-    | '/purchasing_/kyc'
+    | '/we-are-buying'
+    | '/gpu_/ai-gpus'
+    | '/gpu_/gaming-gpus'
+    | '/gpu_/rtx-pro-6000-blackwell'
     | '/systems_/ai-servers'
     | '/systems_/gaming'
     | '/systems_/storage-networking'
     | '/systems_/workstations'
+    | '/we-are-buying_/compliance'
+    | '/we-are-buying_/kyc'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BuyRoute: typeof BuyRoute
   CompanyRoute: typeof CompanyRoute
   ContactRoute: typeof ContactRoute
+  GpuRoute: typeof GpuRoute
   LocalRoute: typeof LocalRoute
   ProgramsRoute: typeof ProgramsRoute
-  PurchasingRoute: typeof PurchasingRoute
   SystemsRoute: typeof SystemsRoute
-  BuyAiGpusRoute: typeof BuyAiGpusRoute
-  BuyGamingGpusRoute: typeof BuyGamingGpusRoute
-  BuyRtxPro6000BlackwellRoute: typeof BuyRtxPro6000BlackwellRoute
-  PurchasingComplianceRoute: typeof PurchasingComplianceRoute
-  PurchasingKycRoute: typeof PurchasingKycRoute
+  WeAreBuyingRoute: typeof WeAreBuyingRoute
+  GpuAiGpusRoute: typeof GpuAiGpusRoute
+  GpuGamingGpusRoute: typeof GpuGamingGpusRoute
+  GpuRtxPro6000BlackwellRoute: typeof GpuRtxPro6000BlackwellRoute
   SystemsAiServersRoute: typeof SystemsAiServersRoute
   SystemsGamingRoute: typeof SystemsGamingRoute
   SystemsStorageNetworkingRoute: typeof SystemsStorageNetworkingRoute
   SystemsWorkstationsRoute: typeof SystemsWorkstationsRoute
+  WeAreBuyingComplianceRoute: typeof WeAreBuyingComplianceRoute
+  WeAreBuyingKycRoute: typeof WeAreBuyingKycRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/we-are-buying': {
+      id: '/we-are-buying'
+      path: '/we-are-buying'
+      fullPath: '/we-are-buying'
+      preLoaderRoute: typeof WeAreBuyingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/systems': {
       id: '/systems'
       path: '/systems'
       fullPath: '/systems'
       preLoaderRoute: typeof SystemsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/purchasing': {
-      id: '/purchasing'
-      path: '/purchasing'
-      fullPath: '/purchasing'
-      preLoaderRoute: typeof PurchasingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs': {
@@ -282,6 +282,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gpu': {
+      id: '/gpu'
+      path: '/gpu'
+      fullPath: '/gpu'
+      preLoaderRoute: typeof GpuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -296,18 +303,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompanyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/buy': {
-      id: '/buy'
-      path: '/buy'
-      fullPath: '/buy'
-      preLoaderRoute: typeof BuyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/we-are-buying_/kyc': {
+      id: '/we-are-buying_/kyc'
+      path: '/we-are-buying/kyc'
+      fullPath: '/we-are-buying/kyc'
+      preLoaderRoute: typeof WeAreBuyingKycRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/we-are-buying_/compliance': {
+      id: '/we-are-buying_/compliance'
+      path: '/we-are-buying/compliance'
+      fullPath: '/we-are-buying/compliance'
+      preLoaderRoute: typeof WeAreBuyingComplianceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/systems_/workstations': {
@@ -338,39 +352,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SystemsAiServersRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/purchasing_/kyc': {
-      id: '/purchasing_/kyc'
-      path: '/purchasing/kyc'
-      fullPath: '/purchasing/kyc'
-      preLoaderRoute: typeof PurchasingKycRouteImport
+    '/gpu_/rtx-pro-6000-blackwell': {
+      id: '/gpu_/rtx-pro-6000-blackwell'
+      path: '/gpu/rtx-pro-6000-blackwell'
+      fullPath: '/gpu/rtx-pro-6000-blackwell'
+      preLoaderRoute: typeof GpuRtxPro6000BlackwellRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/purchasing_/compliance': {
-      id: '/purchasing_/compliance'
-      path: '/purchasing/compliance'
-      fullPath: '/purchasing/compliance'
-      preLoaderRoute: typeof PurchasingComplianceRouteImport
+    '/gpu_/gaming-gpus': {
+      id: '/gpu_/gaming-gpus'
+      path: '/gpu/gaming-gpus'
+      fullPath: '/gpu/gaming-gpus'
+      preLoaderRoute: typeof GpuGamingGpusRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/buy_/rtx-pro-6000-blackwell': {
-      id: '/buy_/rtx-pro-6000-blackwell'
-      path: '/buy/rtx-pro-6000-blackwell'
-      fullPath: '/buy/rtx-pro-6000-blackwell'
-      preLoaderRoute: typeof BuyRtxPro6000BlackwellRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/buy_/gaming-gpus': {
-      id: '/buy_/gaming-gpus'
-      path: '/buy/gaming-gpus'
-      fullPath: '/buy/gaming-gpus'
-      preLoaderRoute: typeof BuyGamingGpusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/buy_/ai-gpus': {
-      id: '/buy_/ai-gpus'
-      path: '/buy/ai-gpus'
-      fullPath: '/buy/ai-gpus'
-      preLoaderRoute: typeof BuyAiGpusRouteImport
+    '/gpu_/ai-gpus': {
+      id: '/gpu_/ai-gpus'
+      path: '/gpu/ai-gpus'
+      fullPath: '/gpu/ai-gpus'
+      preLoaderRoute: typeof GpuAiGpusRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -378,22 +378,22 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BuyRoute: BuyRoute,
   CompanyRoute: CompanyRoute,
   ContactRoute: ContactRoute,
+  GpuRoute: GpuRoute,
   LocalRoute: LocalRoute,
   ProgramsRoute: ProgramsRoute,
-  PurchasingRoute: PurchasingRoute,
   SystemsRoute: SystemsRoute,
-  BuyAiGpusRoute: BuyAiGpusRoute,
-  BuyGamingGpusRoute: BuyGamingGpusRoute,
-  BuyRtxPro6000BlackwellRoute: BuyRtxPro6000BlackwellRoute,
-  PurchasingComplianceRoute: PurchasingComplianceRoute,
-  PurchasingKycRoute: PurchasingKycRoute,
+  WeAreBuyingRoute: WeAreBuyingRoute,
+  GpuAiGpusRoute: GpuAiGpusRoute,
+  GpuGamingGpusRoute: GpuGamingGpusRoute,
+  GpuRtxPro6000BlackwellRoute: GpuRtxPro6000BlackwellRoute,
   SystemsAiServersRoute: SystemsAiServersRoute,
   SystemsGamingRoute: SystemsGamingRoute,
   SystemsStorageNetworkingRoute: SystemsStorageNetworkingRoute,
   SystemsWorkstationsRoute: SystemsWorkstationsRoute,
+  WeAreBuyingComplianceRoute: WeAreBuyingComplianceRoute,
+  WeAreBuyingKycRoute: WeAreBuyingKycRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
