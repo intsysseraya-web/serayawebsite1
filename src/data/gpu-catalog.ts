@@ -207,7 +207,7 @@ export const MODEL_FAMILIES: ModelFamily[] = [
     name: "NVIDIA RTX PRO 6000 Blackwell",
     tagline:
       "96 GB workstation and server GPU. Three editions with different power, cooling and host platforms.",
-    slug: "/buy/rtx-pro-6000-blackwell",
+    slug: "/gpu/rtx-pro-6000-blackwell",
     category: "professional",
     image: "/static/sku/sr-rtxpro6000-16x9.jpg?v=3",
     order: 60,
