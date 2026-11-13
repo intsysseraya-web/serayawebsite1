@@ -1,0 +1,31 @@
+import { createFileRoute } from "@tanstack/react-router";
+import legacyCss from "../legacy-shim.css?url";
+import fixesCss from "../fixes.css?url";
+import { BUY_PAGES, renderBuyPage } from "../lib/buy-page";
+
+// 采购入口：专业与数据中心 GPU（方案 v3.0 §3.1 `/gpu/ai-gpus`，承接 A3）
+// 文件名中的 `buy_` 下划线是 TanStack Router 的「不嵌套」约定，生成路径为 `/gpu/ai-gpus`。
+const PAGE = BUY_PAGES.ai;
+const BODY_HTML = renderBuyPage(PAGE);
+
+export const Route = createFileRoute("/gpu_/ai-gpus")({
+  head: () => ({
+    meta: [
+      { title: PAGE.title },
+      { name: "description", content: PAGE.description },
+      { property: "og:title", content: PAGE.title },
+      { property: "og:description", content: PAGE.description },
+    ],
+    links: [
+      { rel: "canonical", href: "https://seraya.systems/gpu/ai-gpus" },
+      { rel: "stylesheet", href: "/legacy/styles.css" },
+      { rel: "stylesheet", href: legacyCss },
+      { rel: "stylesheet", href: fixesCss },
+    ],
+  }),
+  component: LegacyPage,
+});
+
+function LegacyPage() {
+  return <div dangerouslySetInnerHTML={{ __html: BODY_HTML }} />;
+}
