@@ -1,15 +1,16 @@
 /**
  * 全站共享页面骨架（header / 导航 / 抽屉 / 搜索面板 / 页脚）。
  *
- * 导航（2026-11 线检项 A 与 5 重做）：
- *   GPU Wholesale · Systems · Sell GPUs · Company · Contact   ＋ 主按钮 Get a quote
+ * 导航（2026-11-13 改版：标签与 URL 见下）：
+ *   GPU’s · Systems · We are buying · Company   ＋ 主按钮 Get a quote
  *
  * 为什么**取消 Products 下拉**：下拉把主营的 GPU 业务藏在二级菜单里，且是
- * 「子项挤在同一行 / 需要 hover 才能进入」这类问题的唯一来源。改成顶层五项后：
- *   - 主营 GPU 业务直接可见，一次点击可达 `/buy`
+ * 「子项挤在同一行 / 需要 hover 才能进入」这类问题的唯一来源。改成顶层四项后：
+ *   - 主营 GPU 业务直接可见，一次点击可达 `/gpu`
  *   - 没有浮层，就没有浮层在手机 / 平板 / 桌面上表现不一致的可能
  *   - 移动端不再需要手风琴，每个分类天然独立成行，点击区域 ≥ 44px
- * 旧的 `/systems` 等 URL 全部保留，只是入口层级变浅（`/buy` 下有二级分类导航）。
+ * 采购线与收购线分别落在 `/gpu` 与 `/we-are-buying`；旧 `/gpu`、`/we-are-buying`
+ * 由 `src/server.ts` 的 LEGACY_REDIRECTS 做 301，不在这里保留第二条路径。
  *
  * 约束：script.js 依赖下列 id/class 与 data 属性，改动会静默破坏交互 ——
  *   #btnMenu #mobileDrawer #btnCloseMenu #btnSearch #searchPanel #btnCloseSearch #q
@@ -39,16 +40,20 @@ type NavItem = { key: NavKey; label: string; href: string };
 
 /**
  * 主导航：标签与 URL 一一对应，无二级浮层。
- * 顺序按业务权重：GPU 批发 → 整机 → 收购 → 公司。
+ * 顺序按业务权重：GPU’s → 整机 → 我们收购 → 公司。
+ *
+ * 标签由 CY 指定（2026-11-13）：`GPU’s`、`We are buying`。视觉大写由
+ * `legacy/styles.css` 的 `.main-nav { text-transform: uppercase }` 统一实现，
+ * 源码保持词首大写，避免出现「大小写写死在 HTML、改样式也改不动」的情况。
  *
  * 为什么没有 Contact：右侧主按钮 `Get a quote` 指向的就是 `/contact`，
  * 再放一个 Contact 文字项等于同一目的地的第二个入口，反而让导航显得重复。
  * 联系页仍可从三处到达：主按钮、页脚 Company 栏的 Contact、各页的询价区块。
  */
 const NAV: NavItem[] = [
-  { key: "buy", label: "GPU Wholesale", href: "/buy" },
+  { key: "buy", label: "GPU’s", href: "/gpu" },
   { key: "systems", label: "Systems", href: "/systems" },
-  { key: "purchasing", label: "Sell GPUs", href: "/purchasing" },
+  { key: "purchasing", label: "We are buying", href: "/we-are-buying" },
   { key: "company", label: "Company", href: "/company" },
 ];
 
@@ -62,7 +67,7 @@ export function announcementBar(): string {
       <div class="announcement-inner">
         <a href="/contact">${PRIMARY_CTA_LABEL} &mdash; we answer complete RFQs within one business day</a>
         <span class="muted" aria-hidden="true">|</span>
-        <a href="/purchasing">Selling a GPU lot? Committed decision within 12 hours, business days</a>
+        <a href="/we-are-buying">Selling a GPU lot? Committed decision within 12 hours, business days</a>
       </div>
     </div>`;
 }
@@ -70,7 +75,7 @@ export function announcementBar(): string {
 function navLinks(current: NavKey, ariaCurrent = true): string {
   return NAV.map((item) => {
     const isCurrent = ariaCurrent && item.key === current;
-    return `          <a href="${item.href}"${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
+    return `          <a href="${item.href}" data-nav="${item.key}"${isCurrent ? ' aria-current="page"' : ""}>${item.label}</a>`;
   }).join("\n");
 }
 
@@ -104,8 +109,8 @@ ${navLinks(current, false)}
           <ul class="mobile-nav-secondary">
             <li><a href="/programs">Programs</a></li>
             <li><a href="/local">Local builds &amp; trade-ins</a></li>
-            <li><a href="/purchasing/kyc">Entity &amp; KYC pack</a></li>
-            <li><a href="/purchasing/compliance">Compliance &amp; end-use</a></li>
+            <li><a href="/we-are-buying/kyc">Entity &amp; KYC pack</a></li>
+            <li><a href="/we-are-buying/compliance">Compliance &amp; end-use</a></li>
           </ul>
         </div>
       </div>
@@ -136,15 +141,15 @@ export function siteFooter(): string {
             <li><a href="/company">Kuala Lumpur, Malaysia</a></li>
             <li><a href="/contact">Contact</a></li>
             <li><a href="/local">Local builds &amp; trade-in</a></li>
-            <li><a href="/buy">Buy GPUs</a></li>
+            <li><a href="/gpu">Buy GPUs</a></li>
           </ul>
         </div>
         <div class="footer-col">
           <h4>Purchasing</h4>
           <ul class="footer-links">
-            <li><a href="/purchasing">What we buy</a></li>
-            <li><a href="/purchasing/kyc">Entity &amp; KYC pack</a></li>
-            <li><a href="/purchasing/compliance">Compliance &amp; end-use</a></li>
+            <li><a href="/we-are-buying">What we buy</a></li>
+            <li><a href="/we-are-buying/kyc">Entity &amp; KYC pack</a></li>
+            <li><a href="/we-are-buying/compliance">Compliance &amp; end-use</a></li>
           </ul>
         </div>
         <div class="footer-col">
@@ -152,7 +157,7 @@ export function siteFooter(): string {
           <ul class="footer-links">
             <li><a href="/systems">Reference systems</a></li>
             <li><a href="/programs">Programs</a></li>
-            <li><a href="/purchasing/compliance#privacy">Privacy &amp; data handling</a></li>
+            <li><a href="/we-are-buying/compliance#privacy">Privacy &amp; data handling</a></li>
           </ul>
         </div>
       </div>
@@ -188,12 +193,19 @@ ${items
         </div>`;
 }
 
-/** 每页都要带上的 canonical 与三张样式表（修复层必须最后加载）。 */
+/** 每页都要带上的 canonical 与三张样式表（修复层必须最后加载）。
+ *
+ *  页头展示字体的预载不走 head：TanStack Start 会把 `rel="preload"` 的 link 丢掉
+ *  （实测 head 里只剩 canonical 与样式表）。改由 `src/server.ts` 在 HTML 响应上
+ *  发 `Link: …; rel=preload; as=font` 头，与托管方式无关，且可实测。
+ */
+type HeadLink = { rel: string; href: string };
+
 export function routeLinks(
   canonicalPath: string,
   legacyCss: string,
   fixesCss: string,
-): { rel: string; href: string }[] {
+): HeadLink[] {
   return [
     { rel: "canonical", href: `https://seraya.systems${canonicalPath}` },
     { rel: "stylesheet", href: "/legacy/styles.css" },

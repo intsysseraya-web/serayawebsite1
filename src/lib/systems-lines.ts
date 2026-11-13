@@ -32,7 +32,7 @@ import { PRIMARY_CTA_LABEL, siteChrome, siteFooter, skipLink } from "./site-chro
 export const SYSTEMS_RFQ_EMAIL = "felix.mm@seraya.systems";
 export const SYSTEMS_RFQ_SUBJECT_TAG = "[Systems RFQ]";
 
-/** 方案 §三 第 1 项：条款区块，沿用 /buy 的既有口径 */
+/** 方案 §三 第 1 项：条款区块，沿用 /gpu 的既有口径 */
 const LINE_TERMS: { label: string; value: string }[] = [
   { label: "Pricing", value: "Quotation based. No prices are published on this site." },
   {
@@ -440,7 +440,7 @@ ${siteChrome("systems", "H100, RTX PRO 6000, storage...")}
         <div class="btn-row">
           <a class="btn btn-primary" href="#request-quote">${PRIMARY_CTA_LABEL}</a>
           <a class="btn btn-ghost" href="/systems">All systems</a>
-          <a class="btn btn-ghost" href="/buy">Wholesale GPU cards</a>
+          <a class="btn btn-ghost" href="/gpu">Wholesale GPU cards</a>
         </div>
       </div>
     </div>
@@ -513,7 +513,7 @@ ${LINE_FAQ.map((f) => `          <details class="faq-item"><summary>${escapeHtml
         </div>
         <div class="btn-row">
           <a class="btn btn-primary" href="#request-quote">${PRIMARY_CTA_LABEL}</a>
-          <a class="btn btn-ghost" href="/buy">Wholesale GPU cards</a>
+          <a class="btn btn-ghost" href="/gpu">Wholesale GPU cards</a>
         </div>
       </section>
     </main>

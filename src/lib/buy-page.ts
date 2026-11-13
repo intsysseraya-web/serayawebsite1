@@ -1,5 +1,5 @@
 /**
- * 三个采购入口页的共享渲染器（`/buy`、`/buy/gaming-gpus`、`/buy/ai-gpus`）。
+ * 三个采购入口页的共享渲染器（`/gpu`、`/gpu/gaming-gpus`、`/gpu/ai-gpus`）。
  *
  * 本轮（2026-11）改版要点：
  *   1. **目录按型号家族展示**，不再把每个 SKU 平铺成一张卡。家族卡片保持简洁：
@@ -54,7 +54,7 @@ export type BuyPageConfig = {
 export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
   overview: {
     key: "overview",
-    path: "/buy",
+    path: "/gpu",
     title: "Wholesale GPU Supplier for Business Buyers | Seraya",
     description:
       "Malaysia-based GPU trading for bulk procurement. Browse the models we quote, compare versions, and send the model, quantity and delivery destination.",
@@ -68,7 +68,7 @@ export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
   },
   gaming: {
     key: "gaming",
-    path: "/buy/gaming-gpus",
+    path: "/gpu/gaming-gpus",
     title: "GeForce RTX GPU Wholesale & Bulk Quotes | Seraya",
     description:
       "Compare listed GeForce RTX models and their memory versions, then request availability and pricing for your quantity and destination.",
@@ -82,7 +82,7 @@ export const BUY_PAGES: Record<BuyPageKey, BuyPageConfig> = {
   },
   ai: {
     key: "ai",
-    path: "/buy/ai-gpus",
+    path: "/gpu/ai-gpus",
     title: "Professional & Data Center GPU Supply | Seraya",
     description:
       "Specify the exact professional or data center GPU model and version — workstation, Max-Q, Server Edition, SXM or PCIe — and we will confirm the supply route and quotation terms.",
@@ -306,14 +306,14 @@ ${termsList(RFQ_PRICING_TERMS)}
               Company registration, tax identification and corporate documents, released per
               counterparty.
             </p>
-            <a class="btn btn-ghost" href="/purchasing/kyc">Entity &amp; KYC pack</a>
+            <a class="btn btn-ghost" href="/we-are-buying/kyc">Entity &amp; KYC pack</a>
           </article>
           <article class="company-card">
             <h3>Test and grading documentation</h3>
             <p class="muted">
               Condition and test documentation for the units we supply, confirmed per model and lot.
             </p>
-            <a class="btn btn-ghost" href="/purchasing/compliance">Compliance &amp; end-use</a>
+            <a class="btn btn-ghost" href="/we-are-buying/compliance">Compliance &amp; end-use</a>
           </article>
         </div>
       </section>

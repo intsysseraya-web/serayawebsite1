@@ -242,7 +242,7 @@ ${renderRfqForm(
     config: product.versionLabel,
     requirement: product.modelName,
     familyName: product.modelName,
-    source: "/buy/rtx-pro-6000-blackwell",
+    source: "/gpu/rtx-pro-6000-blackwell",
   },
   { formId: "rfq-detail" },
 )}
@@ -312,7 +312,7 @@ ${renderRfqForm(
     requirement: state.family.name,
     familyName: state.family.name,
     assist: true,
-    source: "/buy/rtx-pro-6000-blackwell (assist)",
+    source: "/gpu/rtx-pro-6000-blackwell (assist)",
   },
   { formId: "rfq-detail" },
 )}
@@ -385,9 +385,9 @@ ${siteChrome("buy", "RTX PRO 6000, H100, A100...")}
 
     <main id="main" class="buy-main detail-main">
       <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/buy">GPU wholesale</a>
+        <a href="/gpu">GPU wholesale</a>
         <span aria-hidden="true">/</span>
-        <a href="/buy/ai-gpus">Professional &amp; data center</a>
+        <a href="/gpu/ai-gpus">Professional &amp; data center</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">${escapeHtml(family.name)}</span>
       </nav>

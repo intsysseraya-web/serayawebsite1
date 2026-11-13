@@ -165,7 +165,7 @@ export const RFQ_PATHS: Record<RfqPathKey, RfqPath> = {
     description: "Single cards and SXM modules, in volume.",
     subjectTag: RFQ_SUBJECT_TAG,
     defaultSubject: "bulk quote request",
-    href: "/buy",
+    href: "/gpu",
     quantityLabel: "Quantity (units)",
     quantityHint: "How many accelerators you need.",
     extraMailLines: [],
@@ -205,7 +205,7 @@ export const RFQ_PATHS: Record<RfqPathKey, RfqPath> = {
     description: "Graded accelerators, 20+ units per lot.",
     subjectTag: SELL_RFQ_SUBJECT_TAG,
     defaultSubject: "lot submission",
-    href: "/purchasing",
+    href: "/we-are-buying",
     quantityLabel: "Lot size (units)",
     quantityHint: "How many units are in the lot.",
     extraMailLines: [
