@@ -34,7 +34,7 @@ ${siteChrome("home", "H100, RTX PRO 6000, storage...")}<main id="main">
           </p>
           <div class="btn-row">
             <a class="btn btn-primary" href="#request-quote">${PRIMARY_CTA_LABEL}</a>
-            <a class="btn btn-ghost" href="/purchasing">Sell a GPU lot</a>
+            <a class="btn btn-ghost" href="/we-are-buying">Sell a GPU lot</a>
           </div>
         </div>
       </section>
@@ -55,7 +55,7 @@ ${siteChrome("home", "H100, RTX PRO 6000, storage...")}<main id="main">
               ${GAMING_FAMILY_COUNT} GeForce RTX models, including both memory versions of the
               RTX 5060 Ti.
             </p>
-            <a class="btn btn-primary" href="/buy/gaming-gpus">Browse gaming GPUs</a>
+            <a class="btn btn-primary" href="/gpu/gaming-gpus">Browse gaming GPUs</a>
           </article>
           <article class="entry-card">
             <p class="program-card-kicker">Professional &amp; data center</p>
@@ -64,7 +64,7 @@ ${siteChrome("home", "H100, RTX PRO 6000, storage...")}<main id="main">
               ${AIC_FAMILY_COUNT} models across workstation, Max-Q, Server Edition and the SXM /
               PCIe data center forms. Each version is quoted separately.
             </p>
-            <a class="btn btn-primary" href="/buy/ai-gpus">Browse professional &amp; data center</a>
+            <a class="btn btn-primary" href="/gpu/ai-gpus">Browse professional &amp; data center</a>
           </article>
           <article class="entry-card entry-card-secondary">
             <p class="program-card-kicker">Full list</p>
@@ -72,11 +72,11 @@ ${siteChrome("home", "H100, RTX PRO 6000, storage...")}<main id="main">
             <p class="muted">
               Every model we quote, with the versions available on each one.
             </p>
-            <a class="btn btn-ghost" href="/buy">Open the GPU catalogue</a>
+            <a class="btn btn-ghost" href="/gpu">Open the GPU catalogue</a>
           </article>
         </div>
         <p class="muted catalog-note">
-          Selling instead? <a href="/purchasing">Sell a GPU lot</a> &mdash; we buy graded
+          Selling instead? <a href="/we-are-buying">Sell a GPU lot</a> &mdash; we buy graded
           accelerators in bulk.
         </p>
       </section>
@@ -156,9 +156,9 @@ ${renderRfqForm({ path: "gpu", source: "/" }, { formId: "rfq-home" })}
             <div class="rfq-alt-email">
               <h3>Three ways to start</h3>
               <ul class="rfq-checklist">
-                <li><strong>Buy GPU cards</strong> &mdash; model, version, quantity, destination. <a href="/buy">GPU models</a></li>
+                <li><strong>Buy GPU cards</strong> &mdash; model, version, quantity, destination. <a href="/gpu">GPU models</a></li>
                 <li><strong>Buy a complete system</strong> &mdash; workload, how many systems, cards per system, destination. <a href="/systems">Systems</a></li>
-                <li><strong>Sell a lot</strong> &mdash; model, quantity, condition, location, test data. <a href="/purchasing">What we buy</a></li>
+                <li><strong>Sell a lot</strong> &mdash; model, quantity, condition, location, test data. <a href="/we-are-buying">What we buy</a></li>
               </ul>
             </div>
           </aside>

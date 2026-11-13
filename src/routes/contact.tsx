@@ -29,7 +29,7 @@ const CATEGORY_ROUTES: {
     kicker: "Buy GPUs",
     title: "Single cards and SXM modules",
     body: "Tell us the model, the version (for example RTX 5060 Ti 8 GB or 16 GB) and the quantity.",
-    href: "/buy#request-quote",
+    href: "/gpu#request-quote",
     cta: "GPU quote form",
   },
   {
@@ -43,7 +43,7 @@ const CATEGORY_ROUTES: {
     kicker: "Sell a GPU lot",
     title: "Submit a lot for a committed decision",
     body: "Model, quantity, condition, current location and any test or grading documentation.",
-    href: "/purchasing#sell-form",
+    href: "/we-are-buying#sell-form",
     cta: "Lot submission form",
   },
   {
@@ -57,14 +57,14 @@ const CATEGORY_ROUTES: {
     kicker: "After-sales",
     title: "Warranty, DOA and RMA",
     body: "Support paths tied to a Seraya-sourced order. Quote the order reference so we can trace it.",
-    href: "/purchasing/compliance#after-sales",
+    href: "/we-are-buying/compliance#after-sales",
     cta: "Compliance & after-sales",
   },
   {
     kicker: "Entity & KYC",
     title: "Counterparty verification",
     body: "Buyers and suppliers can both request the entity pack and confirm who they are dealing with.",
-    href: "/purchasing/kyc",
+    href: "/we-are-buying/kyc",
     cta: "Entity & KYC pack",
   },
 ];
@@ -105,7 +105,7 @@ const PREFILL_SCRIPT = `
     }
     var sourceEl = form.querySelector('[name="source"]');
     if (sourceEl) {
-      // 保留 SSR 渲染进来的来源页（例如 /buy/ai-gpus），只在有 from 时补充跳转入口
+      // 保留 SSR 渲染进来的来源页（例如 /gpu/ai-gpus），只在有 from 时补充跳转入口
       var from = params.get("from");
       var base = sourceEl.value || window.location.pathname;
       sourceEl.value = from ? base.split(" (from ")[0] + " (from " + from + ")" : base;
@@ -149,7 +149,7 @@ ${renderRfqForm({ path: "gpu", source: "/contact" }, { formId: "rfq-contact" })}
                 <div><dt>Email</dt><dd><a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></dd></div>
                 <div><dt>Location</dt><dd>Kuala Lumpur, Malaysia</dd></div>
                 <div><dt>Response</dt><dd>We respond to complete RFQs within one business day.</dd></div>
-                <div><dt>Entity &amp; KYC</dt><dd><a href="/purchasing/kyc">Entity and KYC pack</a></dd></div>
+                <div><dt>Entity &amp; KYC</dt><dd><a href="/we-are-buying/kyc">Entity and KYC pack</a></dd></div>
                 <div><dt>Attachments</dt><dd>Send them by reply. This form does not accept file uploads.</dd></div>
               </dl>
             </div>

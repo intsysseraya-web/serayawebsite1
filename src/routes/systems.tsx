@@ -27,7 +27,7 @@ import { GPU_MODEL_FAMILY_COUNT, GPU_VERSION_COUNT } from "../data/gpu-catalog";
  *   之前这一页把 `gpu-catalog.ts` 里的 8 条 GPU 记录并进「GPU / AI」分类，
  *   用整机卡片模板一起渲染，于是「15 reference configurations」旁边出现了 23 张卡，
  *   其中 8 张是单卡。现在：
- *     - 单卡 / 加速卡 / SXM 模块全部归 `gpu-catalog.ts`，由 `/buy` 承载
+ *     - 单卡 / 加速卡 / SXM 模块全部归 `gpu-catalog.ts`，由 `/gpu` 承载
  *     - 本页只展示完整系统或明确标注的参考配置
  *     - 数量由 `REFERENCE_CONFIGURATION_COUNT` 实时计算，不写死
  */
@@ -152,7 +152,7 @@ ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-
         <div class="toolbar count-line">
           <span>${REFERENCE_CONFIGURATION_COUNT} reference configurations &middot; ${CATEGORIES.length} categories</span>
           <span aria-hidden="true">&middot;</span>
-          <span><a href="/buy">${GPU_MODEL_FAMILY_COUNT} GPU models &middot; ${GPU_VERSION_COUNT} versions</a> are listed on the GPU line</span>
+          <span><a href="/gpu">${GPU_MODEL_FAMILY_COUNT} GPU models &middot; ${GPU_VERSION_COUNT} versions</a> are listed on the GPU line</span>
         </div>
       </div>
     </div>
@@ -168,9 +168,9 @@ ${siteChrome("systems", "H100, B100, storage...")}<div class="page-hero catalog-
             </p>
           </div>
           <div class="btn-row">
-            <a class="btn btn-primary" href="/buy">Wholesale GPUs</a>
-            <a class="btn btn-ghost" href="/buy/gaming-gpus">Gaming GPUs</a>
-            <a class="btn btn-ghost" href="/buy/ai-gpus">Professional &amp; data center</a>
+            <a class="btn btn-primary" href="/gpu">Wholesale GPUs</a>
+            <a class="btn btn-ghost" href="/gpu/gaming-gpus">Gaming GPUs</a>
+            <a class="btn btn-ghost" href="/gpu/ai-gpus">Professional &amp; data center</a>
           </div>
         </div>
       </section>

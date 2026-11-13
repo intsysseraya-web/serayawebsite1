@@ -93,7 +93,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       {
         // Organization JSON-LD。方案 v1.0 决定 3：**不含注册号与税号**
-        // （注册号/TIN 只出现在 /purchasing/kyc）。
+        // （注册号/TIN 只出现在 /we-are-buying/kyc）。
         rel: "alternate",
         type: "application/ld+json",
         href:

@@ -12,7 +12,7 @@ import { CONTACT_EMAIL } from "../lib/rfq";
 //   2. **明确自带配件情况下的责任划分** —— 客户自带件如何装配、测试，保修覆盖到哪一步，
 //      必须写清楚，不能含糊成「一个保修」。
 //   3. **不把本地服务限制写成全公司业务限制** —— 「不做批量、不做出口」只适用于本地线，
-//      公司层面的 GPU 批发与出口在 /buy 与 /purchasing 上照常进行，页内显式说明。
+//      公司层面的 GPU 批发与出口在 /gpu 与 /we-are-buying 上照常进行，页内显式说明。
 
 const BODY_HTML = `
 ${skipLink()}
@@ -119,9 +119,9 @@ ${siteChrome("local", "Tower, laptop, trade-in...")}
           </p>
         </div>
         <ul class="rfq-checklist">
-          <li><strong>No bulk lots on this line</strong> &mdash; local work is one machine to a small room. Bulk GPU purchasing and selling are handled on <a href="/purchasing">Sell GPU lots</a> and <a href="/buy">GPU wholesale</a>.</li>
+          <li><strong>No bulk lots on this line</strong> &mdash; local work is one machine to a small room. Bulk GPU purchasing and selling are handled on <a href="/we-are-buying">Sell GPU lots</a> and <a href="/gpu">GPU wholesale</a>.</li>
           <li><strong>No resale</strong> &mdash; we build and hand over; we do not resell units on.</li>
-          <li><strong>No cross-border shipping from this line</strong> &mdash; local delivery only. Cross-border supply is a separate, fully supported line: see <a href="/buy">GPU wholesale</a> and <a href="/systems">Systems</a>.</li>
+          <li><strong>No cross-border shipping from this line</strong> &mdash; local delivery only. Cross-border supply is a separate, fully supported line: see <a href="/gpu">GPU wholesale</a> and <a href="/systems">Systems</a>.</li>
           <li><strong>Not a repair shop for third-party builds</strong> &mdash; we can take on a machine we built, or one we are rebuilding from a supplied parts list. Diagnostics on an unrelated third-party machine are quoted per job if we accept them at all.</li>
         </ul>
       </section>

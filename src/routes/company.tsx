@@ -20,7 +20,7 @@ ${siteChrome("company", "KYC, company, contact...")}<div class="page-hero">
         <p class="muted">Seraya coordinates sourcing, configuration alignment, validation, and delivery support for enterprise compute infrastructure procurement.</p>
         <div class="btn-row">
           <a class="btn btn-primary" href="/contact">${PRIMARY_CTA_LABEL}</a>
-          <a class="btn btn-ghost" href="/purchasing/kyc">Entity &amp; KYC pack</a>
+          <a class="btn btn-ghost" href="/we-are-buying/kyc">Entity &amp; KYC pack</a>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@ ${siteChrome("company", "KYC, company, contact...")}<div class="page-hero">
               <div><dt>Directors / UBO</dt><dd>Released with the KYC pack on request</dd></div>
               <div><dt>Tax identification</dt><dd>Released with the KYC pack on request</dd></div>
             </dl>
-            <a class="btn btn-ghost" href="/purchasing/kyc">Open the entity &amp; KYC pack</a>
+            <a class="btn btn-ghost" href="/we-are-buying/kyc">Open the entity &amp; KYC pack</a>
           </div>
         </div>
       </section>
@@ -58,7 +58,7 @@ ${siteChrome("company", "KYC, company, contact...")}<div class="page-hero">
               Blackwell (Workstation, Max-Q and Server Edition) and data center accelerators such as
               H100 and A100. Priced per enquiry against real availability.
             </p>
-            <a class="btn btn-ghost" href="/buy">GPU wholesale</a>
+            <a class="btn btn-ghost" href="/gpu">GPU wholesale</a>
           </article>
           <article class="company-card">
             <h3>System integration</h3>
@@ -183,7 +183,7 @@ ${siteChrome("company", "KYC, company, contact...")}<div class="page-hero">
         </div>
         <div class="btn-row">
           <a class="btn btn-primary" href="/contact">${PRIMARY_CTA_LABEL}</a>
-          <a class="btn btn-ghost" href="/purchasing/kyc">Entity &amp; KYC pack</a>
+          <a class="btn btn-ghost" href="/we-are-buying/kyc">Entity &amp; KYC pack</a>
         </div>
       </section>
     </main>
