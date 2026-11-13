@@ -116,7 +116,7 @@ try {
 
   // -------------------------------------------------------------------------
   console.log("[1] 横向溢出：首页 / GPU 目录 / Systems / Contact / 详情页");
-  for (const path of ["/", "/buy", "/systems", "/contact", "/buy/rtx-pro-6000-blackwell"]) {
+  for (const path of ["/", "/gpu", "/systems", "/contact", "/gpu/rtx-pro-6000-blackwell"]) {
     for (const vp of WIDTHS) {
       await session.setViewport(vp.w, vp.h);
       await session.goto(BASE + path, { waitMs: 450 });
@@ -132,18 +132,18 @@ try {
   // -------------------------------------------------------------------------
   console.log("\n[2] 其他页面：桌面 + 手机 + 200% 缩放");
   for (const path of [
-    "/buy/gaming-gpus",
-    "/buy/ai-gpus",
+    "/gpu/gaming-gpus",
+    "/gpu/ai-gpus",
     "/systems/ai-servers",
     "/systems/workstations",
     "/systems/gaming",
     "/systems/storage-networking",
-    "/purchasing",
+    "/we-are-buying",
     "/company",
     "/programs",
     "/local",
-    "/purchasing/kyc",
-    "/purchasing/compliance",
+    "/we-are-buying/kyc",
+    "/we-are-buying/compliance",
   ]) {
     for (const vp of [
       { w: 390, h: 844, name: "390" },
@@ -162,7 +162,7 @@ try {
 
   // 200% 缩放等价于把 CSS 视口减半（1440 → 720）
   console.log("\n[2b] 200% 缩放（视口 720px，等效 1440px @200%）");
-  for (const path of ["/", "/buy", "/systems", "/contact", "/buy/rtx-pro-6000-blackwell"]) {
+  for (const path of ["/", "/gpu", "/systems", "/contact", "/gpu/rtx-pro-6000-blackwell"]) {
     await session.setViewport(720, 900);
     await session.goto(BASE + path, { waitMs: 400 });
     const probe = await session.evaluate(OVERFLOW_PROBE);
@@ -177,14 +177,14 @@ try {
   console.log("\n[3] 锚点跳转：目标标题完整可见（不被固定导航遮挡）");
   {
     const targets = [
-      { path: "/buy", frag: "request-quote", heading: "Get a quote" },
-      { path: "/buy", frag: "models", heading: "Models" },
+      { path: "/gpu", frag: "request-quote", heading: "Get a quote" },
+      { path: "/gpu", frag: "models", heading: "Models" },
       { path: "/systems", frag: "request-quote", heading: "Get a quote" },
       { path: "/systems", frag: "how-we-quote", heading: "Two supply routes" },
       { path: "/systems", frag: "networking", heading: "Networking" },
       { path: "/systems/storage-networking", frag: "storage", heading: "Storage" },
-      { path: "/purchasing", frag: "sell-form", heading: "Submit a lot" },
-      { path: "/purchasing/compliance", frag: "after-sales", heading: "Warranty, DOA and RMA" },
+      { path: "/we-are-buying", frag: "sell-form", heading: "Submit a lot" },
+      { path: "/we-are-buying/compliance", frag: "after-sales", heading: "Warranty, DOA and RMA" },
       { path: "/programs", frag: "request-quote", heading: "Send the requirement" },
       { path: "/contact", frag: "routes", heading: "Choose the right entry" },
       { path: "/", frag: "request-quote", heading: "Get a quote" },
@@ -406,7 +406,7 @@ try {
     const pairGroups = [
       { path: "/systems", label: "Systems hub 四卡", expectedCards: 4, expectedRows: 2 },
       {
-        path: "/buy/rtx-pro-6000-blackwell",
+        path: "/gpu/rtx-pro-6000-blackwell",
         label: "详情页相关系统",
         expectedCards: 2,
         expectedRows: 1,
@@ -443,7 +443,7 @@ try {
     // 详情页首屏按钮行与上文之间要有间距
     for (const w of [1440, 390]) {
       await session.setViewport(w, 900);
-      await session.goto(BASE + "/buy/rtx-pro-6000-blackwell", { waitMs: 500 });
+      await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell", { waitMs: 500 });
       const hero = await session.evaluate(`
         const copy = document.querySelector('.detail-hero-copy');
         if (!copy) return { error: 'no hero copy' };
@@ -472,16 +472,16 @@ try {
      * 出现在六个页面，任何一处漏掉规则都会单独错位。
      */
     const formPages = [
-      ["/purchasing", "Sell GPU lots"],
+      ["/we-are-buying", "We are buying"],
       ["/contact", "Contact"],
-      ["/buy", "GPU catalogue"],
+      ["/gpu", "GPU catalogue"],
       ["/systems", "Systems"],
       ["/programs", "Programs"],
       /*
        * 详情页必须带上 `?version=` 才有表单 —— 未选版本时按设计不显示表单
        * （不预设某个版本，也就没有可带入询价的上下文）。所以这里用已选版本的 URL。
        */
-      ["/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-WS", "Detail page (version selected)"],
+      ["/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-WS", "Detail page (version selected)"],
     ];
     for (const [path, label] of formPages) {
       for (const w of [1440, 390]) {
@@ -520,7 +520,7 @@ try {
   console.log("\n[4] 点击区域 ≥ 44px");
   {
     await session.setViewport(390, 844);
-    for (const path of ["/", "/buy", "/systems", "/contact"]) {
+    for (const path of ["/", "/gpu", "/systems", "/contact"]) {
       await session.goto(BASE + path, { waitMs: 400 });
       const small = await session.evaluate(`
         const out = [];
@@ -582,7 +582,9 @@ try {
     );
     check(
       "移动菜单含四个顶层入口",
-      opened.navLabels.length === 4 && opened.navLabels.includes("GPU Wholesale"),
+      opened.navLabels.length === 4 &&
+        opened.navLabels.includes("GPU’s") &&
+        opened.navLabels.includes("We are buying"),
       JSON.stringify(opened.navLabels),
     );
     check(
@@ -837,7 +839,7 @@ try {
   console.log("\n[8] 目录 → 详情页 → 版本切换 → 询价上下文（本轮端到端）");
   {
     await session.setViewport(1440, 900);
-    await session.goto(BASE + "/buy/ai-gpus", { waitMs: 600 });
+    await session.goto(BASE + "/gpu/ai-gpus", { waitMs: 600 });
 
     // 1) 从目录点进详情页（走真实链接，不直接 goto）
     const clickedFromCatalog = await session.evaluate(`
@@ -858,7 +860,7 @@ try {
     `);
     check(
       "目录卡片可点进详情页",
-      onDetail.url === "/buy/rtx-pro-6000-blackwell",
+      onDetail.url === "/gpu/rtx-pro-6000-blackwell",
       JSON.stringify({ clickedFromCatalog, onDetail }),
     );
     check("详情页有版本选择器", onDetail.hasPicker === true);
@@ -886,7 +888,7 @@ try {
     ];
     for (const v of versionChecks) {
       // 点选择器里的选项（真实交互，而不是改 URL）
-      await session.goto(BASE + "/buy/rtx-pro-6000-blackwell", { waitMs: 400 });
+      await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell", { waitMs: 400 });
       const switched = await session.evaluate(`
         const option = document.querySelector('[data-version-sku="${v.sku}"]');
         if (!option) return { error: 'option not found' };
@@ -942,7 +944,7 @@ try {
     }
 
     // 3) 刷新与返回：状态必须由 URL 决定，不依赖内存
-    await session.goto(BASE + "/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-WS", { waitMs: 700 });
+    await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-WS", { waitMs: 700 });
     const beforeReload = await session.evaluate(
       `return (document.querySelector('[data-detail-selection]')||{}).dataset?.detailSelection ?? '';`,
     );
@@ -963,7 +965,7 @@ try {
     check("刷新后规格仍是该版本", afterReload.specHas1792 === true, JSON.stringify(afterReload));
 
     // 直接链接（新标签页等价于直接打开带参数的 URL）
-    await session.goto(BASE + "/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-MQ", { waitMs: 700 });
+    await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-MQ", { waitMs: 700 });
     const directLink = await session.evaluate(`
       const form = document.querySelector('form[data-rfq-form]');
       return {
@@ -978,7 +980,7 @@ try {
     );
 
     // 4) 协助选型：明确状态，不伪装成已选
-    await session.goto(BASE + "/buy/rtx-pro-6000-blackwell?version=none", { waitMs: 700 });
+    await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell?version=none", { waitMs: 700 });
     const assist = await session.evaluate(`
       const form = document.querySelector('form[data-rfq-form]');
       return {
@@ -1005,7 +1007,7 @@ try {
     await session.send("Runtime.evaluate", { expression: "history.back()" });
     await new Promise((r) => setTimeout(r, 1500));
     const backState = await session.evaluate(`return window.location.pathname;`);
-    check("浏览器返回回到上一个页面", backState.startsWith("/buy"), backState);
+    check("浏览器返回回到上一个页面", backState.startsWith("/gpu"), backState);
   }
 
   // -------------------------------------------------------------------------
@@ -1014,7 +1016,7 @@ try {
     await session.setViewport(1440, 900);
 
     // 目录页：默认只显示五项，补充信息收起
-    await session.goto(BASE + "/buy", { waitMs: 600 });
+    await session.goto(BASE + "/gpu", { waitMs: 600 });
     const buyForm = await session.evaluate(`
       const form = document.querySelector('form[data-rfq-form]');
       const extra = form.querySelector('details[data-rfq-extra]');
@@ -1140,7 +1142,7 @@ try {
     );
 
     // 校验：错误后保留内容且不显示成功
-    await session.goto(BASE + "/buy", { waitMs: 600 });
+    await session.goto(BASE + "/gpu", { waitMs: 600 });
     const invalid = await session.evaluate(`
       const form = document.querySelector('form[data-rfq-form]');
       form.querySelector('[name="requirement"]').value = 'NVIDIA H100 SXM';
@@ -1215,7 +1217,7 @@ try {
   {
     // 键盘：Tab 能到版本选项，Enter 可激活
     await session.setViewport(1440, 900);
-    await session.goto(BASE + "/buy/rtx-pro-6000-blackwell", { waitMs: 700 });
+    await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell", { waitMs: 700 });
     const keyboard = await session.evaluate(`
       const option = document.querySelector('[data-version-sku="SR-PRO6000-WS"]');
       option.focus();
@@ -1229,7 +1231,7 @@ try {
     // 移动端：版本选项点击区域 ≥ 44px，且不横向溢出
     for (const w of [375, 390]) {
       await session.setViewport(w, 844);
-      await session.goto(BASE + "/buy/rtx-pro-6000-blackwell", { waitMs: 600 });
+      await session.goto(BASE + "/gpu/rtx-pro-6000-blackwell", { waitMs: 600 });
       const mobile = await session.evaluate(`
         const opts = [...document.querySelectorAll('.version-option')].map((el) => Math.round(el.getBoundingClientRect().height));
         const chips = [...document.querySelectorAll('.version-chips a')].map((el) => Math.round(el.getBoundingClientRect().height));
@@ -1245,7 +1247,7 @@ try {
   console.log("\n[9] 图片：加载成功、比例正确、无布局跳动");
   {
     await session.setViewport(1440, 900);
-    for (const path of ["/", "/buy", "/systems", "/systems/storage-networking"]) {
+    for (const path of ["/", "/gpu", "/systems", "/systems/storage-networking"]) {
       await session.goto(BASE + path, { waitMs: 900 });
       await settleImages(session);
       const imgs = await session.evaluate(`
@@ -1474,7 +1476,7 @@ try {
   console.log("\n[11b] 淡入不得让正文缺席（无头 Chrome 截图抓到的真实问题）");
   {
     await session.setViewport(1440, 900);
-    for (const path of ["/", "/buy", "/systems", "/contact"]) {
+    for (const path of ["/", "/gpu", "/systems", "/contact"]) {
       await session.goto(BASE + path, { waitMs: 1600 });
       const hidden = await session.evaluate(`
         const out = [];
@@ -1512,9 +1514,9 @@ try {
     const shots = [
       { path: "/", name: "home", vp: { w: 1440, h: 900 } },
       { path: "/", name: "home-mobile", vp: { w: 390, h: 844 } },
-      { path: "/buy", name: "buy", vp: { w: 1440, h: 900 } },
-      { path: "/buy/ai-gpus", name: "buy-ai-gpus", vp: { w: 1440, h: 900 } },
-      { path: "/buy/ai-gpus", name: "buy-ai-gpus-mobile", vp: { w: 390, h: 844 } },
+      { path: "/gpu", name: "buy", vp: { w: 1440, h: 900 } },
+      { path: "/gpu/ai-gpus", name: "buy-ai-gpus", vp: { w: 1440, h: 900 } },
+      { path: "/gpu/ai-gpus", name: "buy-ai-gpus-mobile", vp: { w: 390, h: 844 } },
       { path: "/systems", name: "systems", vp: { w: 1440, h: 900 } },
       {
         path: "/systems/storage-networking",
@@ -1524,51 +1526,51 @@ try {
       { path: "/systems/workstations", name: "systems-workstations", vp: { w: 1440, h: 900 } },
       { path: "/contact", name: "contact", vp: { w: 1440, h: 900 } },
       { path: "/contact", name: "contact-mobile", vp: { w: 390, h: 844 } },
-      { path: "/purchasing", name: "purchasing", vp: { w: 1440, h: 900 } },
-      { path: "/purchasing/compliance", name: "compliance", vp: { w: 1440, h: 900 } },
+      { path: "/we-are-buying", name: "purchasing", vp: { w: 1440, h: 900 } },
+      { path: "/we-are-buying/compliance", name: "compliance", vp: { w: 1440, h: 900 } },
       { path: "/company", name: "company", vp: { w: 1440, h: 900 } },
       { path: "/programs", name: "programs", vp: { w: 1440, h: 900 } },
       { path: "/local", name: "local", vp: { w: 1440, h: 900 } },
-      { path: "/buy/gaming-gpus", name: "buy-gaming-gpus", vp: { w: 1440, h: 900 } },
+      { path: "/gpu/gaming-gpus", name: "buy-gaming-gpus", vp: { w: 1440, h: 900 } },
       // 本轮新增：详情页三个版本状态 + 移动端
       {
-        path: "/buy/rtx-pro-6000-blackwell",
+        path: "/gpu/rtx-pro-6000-blackwell",
         name: "detail-no-version",
         vp: { w: 1440, h: 900 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-SE",
+        path: "/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-SE",
         name: "detail-server-edition",
         vp: { w: 1440, h: 900 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-WS",
+        path: "/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-WS",
         name: "detail-workstation-edition",
         vp: { w: 1440, h: 900 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell?version=SR-PRO6000-MQ",
+        path: "/gpu/rtx-pro-6000-blackwell?version=SR-PRO6000-MQ",
         name: "detail-maxq-edition",
         vp: { w: 1440, h: 900 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell?version=none",
+        path: "/gpu/rtx-pro-6000-blackwell?version=none",
         name: "detail-assist",
         vp: { w: 1440, h: 900 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell",
+        path: "/gpu/rtx-pro-6000-blackwell",
         name: "detail-mobile",
         vp: { w: 390, h: 844 },
       },
       {
-        path: "/buy/rtx-pro-6000-blackwell",
+        path: "/gpu/rtx-pro-6000-blackwell",
         name: "detail-tablet-768",
         vp: { w: 768, h: 1024 },
       },
-      { path: "/buy", name: "buy-mobile-375", vp: { w: 375, h: 812 } },
-      { path: "/buy", name: "buy-desktop-1024", vp: { w: 1024, h: 768 } },
-      { path: "/buy", name: "buy-zoom-200", vp: { w: 720, h: 900 } },
+      { path: "/gpu", name: "buy-mobile-375", vp: { w: 375, h: 812 } },
+      { path: "/gpu", name: "buy-desktop-1024", vp: { w: 1024, h: 768 } },
+      { path: "/gpu", name: "buy-zoom-200", vp: { w: 720, h: 900 } },
     ];
     for (const shot of shots) {
       await session.setViewport(shot.vp.w, shot.vp.h);
@@ -1597,18 +1599,18 @@ try {
     const paths = new Set();
     for (const p of [
       "/",
-      "/buy",
+      "/gpu",
       "/systems",
       "/contact",
-      "/purchasing",
+      "/we-are-buying",
       "/company",
       "/programs",
       "/local",
-      "/purchasing/kyc",
-      "/purchasing/compliance",
-      "/buy/ai-gpus",
-      "/buy/gaming-gpus",
-      "/buy/rtx-pro-6000-blackwell",
+      "/we-are-buying/kyc",
+      "/we-are-buying/compliance",
+      "/gpu/ai-gpus",
+      "/gpu/gaming-gpus",
+      "/gpu/rtx-pro-6000-blackwell",
       "/systems/ai-servers",
       "/systems/workstations",
       "/systems/gaming",

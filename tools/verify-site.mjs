@@ -45,21 +45,21 @@ console.log("[1] 路由可达性");
 {
   const routes = [
     "/",
-    "/buy",
-    "/buy/gaming-gpus",
-    "/buy/ai-gpus",
+    "/gpu",
+    "/gpu/gaming-gpus",
+    "/gpu/ai-gpus",
     "/systems",
     "/systems/ai-servers",
     "/systems/workstations",
     "/systems/gaming",
     "/systems/storage-networking",
-    "/purchasing",
+    "/we-are-buying",
     "/company",
     "/contact",
     "/programs",
     "/local",
-    "/purchasing/kyc",
-    "/purchasing/compliance",
+    "/we-are-buying/kyc",
+    "/we-are-buying/compliance",
     "/robots.txt",
     "/sitemap.xml",
     "/llms.txt",
@@ -77,6 +77,15 @@ console.log("\n[2] 旧 URL 301 迁移");
     ["/works", "/systems"],
     ["/case-study", "/programs"],
     ["/about", "/company"],
+    /* 2026-11-13 目录改名：采购线 /buy → /gpu，收购线 /purchasing → /we-are-buying。
+       子路径逐条覆盖，防止旧落地页与旧 SEO 链接 404。 */
+    ["/buy", "/gpu"],
+    ["/buy/gaming-gpus", "/gpu/gaming-gpus"],
+    ["/buy/ai-gpus", "/gpu/ai-gpus"],
+    ["/buy/rtx-pro-6000-blackwell", "/gpu/rtx-pro-6000-blackwell"],
+    ["/purchasing", "/we-are-buying"],
+    ["/purchasing/kyc", "/we-are-buying/kyc"],
+    ["/purchasing/compliance", "/we-are-buying/compliance"],
   ]) {
     const res = await fetch(BASE + from, { redirect: "manual" });
     const location = res.headers.get("location");
@@ -91,11 +100,12 @@ console.log("\n[2] 旧 URL 301 迁移");
 // ---------------------------------------------------------------------------
 console.log("\n[3] 固定导航：无下拉浮层、主按钮文案统一");
 {
-  const pages = ["/", "/buy", "/systems", "/contact", "/company", "/programs", "/purchasing"];
+  const pages = ["/", "/gpu", "/systems", "/contact", "/company", "/programs", "/we-are-buying"];
   for (const path of pages) {
     const { body } = await get(path);
     check(`${path} 无 nav-dropdown 浮层`, !body.includes("nav-dropdown"));
-    check(`${path} 主导航含 GPU Wholesale`, body.includes(">GPU Wholesale<"));
+    check(`${path} 主导航含 GPU’s`, body.includes(">GPU’s<"));
+    check(`${path} 主导航含 We are buying`, body.includes(">We are buying<"));
     check(`${path} 主按钮为 Get a quote`, body.includes("Get a quote"));
     check(`${path} 页头不含旧 RFQ 按钮`, !body.includes('aria-label="Request a bulk quote"'));
   }
@@ -105,16 +115,16 @@ console.log("\n[3] 固定导航：无下拉浮层、主按钮文案统一");
 console.log("\n[4] 锚点目标存在（防跳转后落空）");
 {
   const expectations = [
-    ["/buy", ["request-quote", "models", "terms", "evidence"]],
+    ["/gpu", ["request-quote", "models", "terms", "evidence"]],
     [
       "/systems",
       ["request-quote", "how-we-quote", "gpu", "storage", "networking", "workstation", "compute"],
     ],
-    ["/buy/gaming-gpus", ["request-quote", "models", "gaming"]],
-    ["/buy/ai-gpus", ["request-quote", "professional", "datacenter"]],
-    ["/purchasing", ["sell-form", "what-we-buy"]],
+    ["/gpu/gaming-gpus", ["request-quote", "models", "gaming"]],
+    ["/gpu/ai-gpus", ["request-quote", "professional", "datacenter"]],
+    ["/we-are-buying", ["sell-form", "what-we-buy"]],
     ["/systems/storage-networking", ["request-quote", "storage", "networking"]],
-    ["/purchasing/compliance", ["privacy", "after-sales"]],
+    ["/we-are-buying/compliance", ["privacy", "after-sales"]],
     ["/programs", ["request-quote"]],
     ["/local", ["book", "scope"]],
     ["/contact", ["request-quote", "routes"]],
@@ -173,7 +183,7 @@ console.log("\n[5b] GPU 目录：型号家族与版本关联（本轮新增）")
   const expectedFamilies = MODEL_FAMILIES.length;
   const expectedVersions = GPU_PRODUCTS.length;
 
-  const buy = await get("/buy");
+  const buy = await get("/gpu");
   const familyCards = countOf(buy.body, 'class="family-card"');
   const declared = buy.body.match(/(\d+) models &middot; (\d+) versions to quote/);
 
@@ -225,7 +235,7 @@ console.log("\n[5b] GPU 目录：型号家族与版本关联（本轮新增）")
   );
   check(
     "RTX PRO 6000 版本 chip 指向详情页带版本参数",
-    /id="family-rtx-pro-6000-blackwell"[\s\S]*?\/buy\/rtx-pro-6000-blackwell\?version=SR-PRO6000-SE/.test(
+    /id="family-rtx-pro-6000-blackwell"[\s\S]*?\/gpu\/rtx-pro-6000-blackwell\?version=SR-PRO6000-SE/.test(
       buy.body,
     ),
   );
@@ -272,11 +282,11 @@ console.log("\n[5b] GPU 目录：型号家族与版本关联（本轮新增）")
   check("没有零版本的家族", empty.length === 0, empty.map((e) => e.family.id).join(", "));
 
   // 分类页各自只展示自己的家族
-  const gaming = await get("/buy/gaming-gpus");
+  const gaming = await get("/gpu/gaming-gpus");
   const gamingFamilies = countOf(gaming.body, 'class="family-card"');
   check("gaming 页展示 5 个家族", gamingFamilies === 5, `got ${gamingFamilies}`);
   check("gaming 页不出现专业卡家族", !gaming.body.includes("NVIDIA RTX PRO 6000 Blackwell"));
-  const ai = await get("/buy/ai-gpus");
+  const ai = await get("/gpu/ai-gpus");
   const aiFamilies = countOf(ai.body, 'class="family-card"');
   check("ai 页展示 3 个家族", aiFamilies === 3, `got ${aiFamilies}`);
   check("ai 页不出现游戏卡家族", !ai.body.includes("NVIDIA GeForce RTX 5090"));
@@ -284,7 +294,7 @@ console.log("\n[5b] GPU 目录：型号家族与版本关联（本轮新增）")
   // 未实现的详情页不得被链接
   check(
     "不存在指向未实现详情页的链接",
-    !/href="\/buy\/(?!rtx-pro-6000-blackwell)[a-z0-9-]+"/.test(buy.body),
+    !/href="\/gpu\/(?!rtx-pro-6000-blackwell)[a-z0-9-]+"/.test(buy.body),
   );
   check("没有 Auxiliary 这类内部分类术语", !buy.body.includes("Auxiliary"));
 }
@@ -292,7 +302,7 @@ console.log("\n[5b] GPU 目录：型号家族与版本关联（本轮新增）")
 // ---------------------------------------------------------------------------
 console.log("\n[5c] RTX PRO 6000 Blackwell 详情页（本轮新增）");
 {
-  const base = "/buy/rtx-pro-6000-blackwell";
+  const base = "/gpu/rtx-pro-6000-blackwell";
   const none = (await get(base)).body;
   const server = (await get(`${base}?version=SR-PRO6000-SE`)).body;
   const workstation = (await get(`${base}?version=SR-PRO6000-WS`)).body;
@@ -413,7 +423,7 @@ console.log("\n[6] Storage & Networking 内容完整（线检项 D）");
 // ---------------------------------------------------------------------------
 console.log("\n[7] 产品参数纠错（线检项 4）");
 {
-  const ai = await get("/buy/ai-gpus");
+  const ai = await get("/gpu/ai-gpus");
   check(
     "H100 SXM 独立版本",
     ai.body.includes("SR-H100-SXM") && ai.body.includes("NVIDIA H100 SXM"),
@@ -459,7 +469,7 @@ console.log("\n[7] 产品参数纠错（线检项 4）");
   check("A100 不再用「(PCIe / SXM4)」这种混放一行的写法", !/\(PCIe \/ SXM4\)/.test(ai.body));
   check("A100 家族级锚点 #family-a100 仍有效", ai.body.includes('id="family-a100"'));
 
-  const gaming = await get("/buy/gaming-gpus");
+  const gaming = await get("/gpu/gaming-gpus");
   check("RTX 5060 Ti 16 GB 独立版本", gaming.body.includes("SR-5060TI-16G"));
   check("RTX 5060 Ti 8 GB 独立版本", gaming.body.includes("SR-5060TI-8G"));
   check(
@@ -494,7 +504,7 @@ console.log("\n[8] 产品询价携带上下文（线检项 E，本轮改为家�
    *   (a) 目录的版本级按钮用 data-rfq-* 携带型号 / 版本 / SKU，由脚本写进表单隐藏字段；
    *   (b) 详情页在服务端渲染时就把所选版本写进隐藏字段（已在 [5c] 覆盖，这里抽验）。
    */
-  for (const path of ["/buy", "/buy/gaming-gpus", "/buy/ai-gpus"]) {
+  for (const path of ["/gpu", "/gpu/gaming-gpus", "/gpu/ai-gpus"]) {
     const { body } = await get(path);
     const triggers = [...body.matchAll(/data-rfq-model="([^"]*)"([^>]*)>/g)];
     check(`${path} 存在携带上下文的询价按钮`, triggers.length > 0, `found ${triggers.length}`);
@@ -504,7 +514,7 @@ console.log("\n[8] 产品询价携带上下文（线检项 E，本轮改为家�
     check(`${path} 版本级按钮带 SKU（家族级按钮留空，由客户在表单里说明）`, withSku.length > 0);
   }
 
-  const gaming = await get("/buy/gaming-gpus");
+  const gaming = await get("/gpu/gaming-gpus");
   check(
     "版本级询价按钮的 data-rfq-sku 是真实 SKU",
     /data-rfq-sku="SR-5060TI-16G"/.test(gaming.body) && /data-rfq-sku="SR-5090"/.test(gaming.body),
@@ -514,7 +524,7 @@ console.log("\n[8] 产品询价携带上下文（线检项 E，本轮改为家�
     /aria-label="Get a quote for NVIDIA GeForce RTX 5090, SKU SR-5090"/.test(gaming.body),
   );
 
-  const buy = await get("/buy");
+  const buy = await get("/gpu");
   check(
     "邮件备用入口仍带类型标记",
     /mailto:felix\.mm(%40|@)seraya\.systems\?subject=%5BBuyer%20RFQ%5D/.test(buy.body),
@@ -545,7 +555,7 @@ console.log("\n[8b] 询价表单渐进展开（本轮新增）");
 {
   for (const [path, formId] of [
     ["/", "rfq-home"],
-    ["/buy", "rfq-overview"],
+    ["/gpu", "rfq-overview"],
     ["/contact", "rfq-contact"],
   ]) {
     const { body } = await get(path);
@@ -586,7 +596,7 @@ console.log("\n[8b] 询价表单渐进展开（本轮新增）");
   }
 
   // 每系统卡数只在整机需求下出现
-  const buyForm = (await get("/buy")).body;
+  const buyForm = (await get("/gpu")).body;
   const detailsStart = buyForm.indexOf("<details");
   const visibleBuy = detailsStart > 0 ? buyForm.slice(0, detailsStart) : buyForm;
   check(
@@ -601,7 +611,7 @@ console.log("\n[8b] 询价表单渐进展开（本轮新增）");
 
   // 字段提示随需求类型区分
   check("数量字段标签随需求类型变化（整机为 systems）", /Quantity \(systems\)/.test(systemsForm));
-  check("出售批次使用 Lot size 提示", /Lot size \(units\)/.test((await get("/purchasing")).body));
+  check("出售批次使用 Lot size 提示", /Lot size \(units\)/.test((await get("/we-are-buying")).body));
 }
 
 // ---------------------------------------------------------------------------
@@ -628,7 +638,7 @@ console.log("\n[9] Contact 分类与表单（线检项 F 与 5）");
 // ---------------------------------------------------------------------------
 console.log("\n[10] 隐私政策入口（线检项 G）");
 {
-  const compliance = await get("/purchasing/compliance");
+  const compliance = await get("/we-are-buying/compliance");
   check("compliance 有 #privacy 区块", compliance.body.includes('id="privacy"'));
   check("提及 privacy policy 处已改为站内可点锚点", compliance.body.includes('href="#privacy"'));
   check("明确标注隐私政策正文尚未发布", /Not yet published/i.test(compliance.body));
@@ -637,9 +647,9 @@ console.log("\n[10] 隐私政策入口（线检项 G）");
     !/this privacy policy (constitutes|governs)|PDPA 2010 section/i.test(compliance.body),
   );
   const footer = (await get("/")).body;
-  check("页脚有 Privacy & data handling 入口", footer.includes("/purchasing/compliance#privacy"));
+  check("页脚有 Privacy & data handling 入口", footer.includes("/we-are-buying/compliance#privacy"));
   const company = (await get("/company")).body;
-  check("Company 页附近有 KYC 入口", company.includes("/purchasing/kyc"));
+  check("Company 页附近有 KYC 入口", company.includes("/we-are-buying/kyc"));
   check(
     "Company 页删除「资料已移至另一页」类改版说明",
     !/now live on their own page/i.test(company),
@@ -653,8 +663,8 @@ console.log("\n[11] 缩写解释（线检项 5）");
   for (const term of ["RFQ", "BOM", "MOQ", "ITAD", "DOA", "RMA", "SXM"]) {
     check(`/contact 解释 ${term}`, contact.includes(`<dt>${term}</dt>`));
   }
-  const purchasing = (await get("/purchasing")).body;
-  check("/purchasing 解释 ITAD", purchasing.includes("<dt>ITAD</dt>"));
+  const purchasing = (await get("/we-are-buying")).body;
+  check("/we-are-buying 解释 ITAD", purchasing.includes("<dt>ITAD</dt>"));
   check("12 小时决定写明适用条件", /business hours/i.test(purchasing));
 }
 
@@ -676,12 +686,12 @@ console.log("\n[12] 首页结构（线检项 6）");
   );
   // 首屏改为纯文字后，首页不再有可标注的参考图；
   // 「参考图必须标注」的断言挪到真正有产品图的页面（见下）。
-  check("产品卡片标注参考图（/buy）", /Reference image/.test((await get("/buy")).body));
+  check("产品卡片标注参考图（/gpu）", /Reference image/.test((await get("/gpu")).body));
   check(
     "Gaming GPUs 与 Professional 同级入口",
-    body.includes("/buy/gaming-gpus") && body.includes("/buy/ai-gpus"),
+    body.includes("/gpu/gaming-gpus") && body.includes("/gpu/ai-gpus"),
   );
-  check("总目录为辅助入口", /entry-card-secondary[\s\S]*?\/buy"/.test(body));
+  check("总目录为辅助入口", /entry-card-secondary[\s\S]*?\/gpu"/.test(body));
   check(
     "底部询价不再只问 BOM 与 workload",
     !/Email the BOM, workload, and target lead time/.test(body),
@@ -810,9 +820,9 @@ console.log("\n[14] 图片引用可加载");
 {
   const pages = [
     "/",
-    "/buy",
-    "/buy/gaming-gpus",
-    "/buy/ai-gpus",
+    "/gpu",
+    "/gpu/gaming-gpus",
+    "/gpu/ai-gpus",
     "/systems",
     "/systems/storage-networking",
     "/systems/ai-servers",
