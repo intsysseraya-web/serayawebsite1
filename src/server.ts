@@ -36,6 +36,15 @@ const LEGACY_REDIRECTS: Record<string, string> = {
   "/works": "/systems",
   "/case-study": "/programs",
   "/about": "/company",
+  // 2026-11-13 目录改名：采购线 `/buy` → `/gpu`，收购线 `/purchasing` → `/we-are-buying`。
+  // 子路径逐条列出（本表按 pathname 精确匹配），避免旧落地页与旧 SEO 链接变成 404。
+  "/buy": "/gpu",
+  "/buy/gaming-gpus": "/gpu/gaming-gpus",
+  "/buy/ai-gpus": "/gpu/ai-gpus",
+  "/buy/rtx-pro-6000-blackwell": "/gpu/rtx-pro-6000-blackwell",
+  "/purchasing": "/we-are-buying",
+  "/purchasing/kyc": "/we-are-buying/kyc",
+  "/purchasing/compliance": "/we-are-buying/compliance",
 };
 
 // ---------------------------------------------------------------------------
@@ -73,6 +82,15 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
+// ---------------------------------------------------------------------------
+// 页头展示字体预载（2026-11-13）
+//
+// `rel="preload"` 走不了 head：TanStack Start 会把这类 link 丢掉（实测 head 里只剩
+// canonical 与样式表）。所以在 HTML 响应上加 `Link` 预载头——浏览器在解析 HTML
+// 之前就开始取字体，页头不会先闪一次系统字，也不依赖具体托管方式。
+// ---------------------------------------------------------------------------
+const FONT_PRELOAD = '</fonts/orbitron-var.woff2>; rel=preload; as=font; type="font/woff2"; crossorigin';
+
 async function withHtmlSecurityHeaders(response: Response): Promise<Response> {
   const contentType = response.headers.get("content-type") ?? "";
   if (!contentType.includes("text/html")) return response;
@@ -84,6 +102,10 @@ async function withHtmlSecurityHeaders(response: Response): Promise<Response> {
       headers.set(name, value);
       added = true;
     }
+  }
+  if (!headers.has("link")) {
+    headers.set("link", FONT_PRELOAD);
+    added = true;
   }
   if (!added) return response;
 

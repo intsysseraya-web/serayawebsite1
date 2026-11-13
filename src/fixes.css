@@ -1567,3 +1567,220 @@ html:not(.js) .reveal {
     font-size: 0.72rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   E. 收购线首屏事实条（2026-11-13 `/we-are-buying` 改版）
+   `.program-fact-strip` 原本固定 3 列（/programs 用）。收购页首屏是 4 条事实，
+   3 列会让第 4 条单独换行，因此加一个 4 列变体；窄屏回到 2 列、再窄回收 1 列。
+   -------------------------------------------------------------------------- */
+
+.program-fact-strip--4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 860px) {
+  .program-fact-strip--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .program-fact-strip--4 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 5 步流程变体（收购页「How a lot runs」）。
+   `legacy/styles.css` 在 ≥800px 时把 `.program-flow` 定为 4 列，5 步会 4+1 落单：
+   1180px 以上排 5 列，800–1179px 排 3 列（3+2），800px 以下回到单列。 */
+@media (min-width: 1180px) {
+  .program-flow--5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 800px) and (max-width: 1179px) {
+  .program-flow--5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 收购页两列小标题用 h3（区块 h2 → 列 h3 的层级），排版参数对齐 `.buy-col h2`。 */
+.buy-col h3 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.2rem, 2.1vw, 1.5rem);
+  letter-spacing: -0.02em;
+}
+
+/* 收购页条款区是 4 张卡。`.program-control-grid` 在 ≥800px 是 3 列，4 张会 3+1
+   落单；这里改为 2×2，避免第二行只有一张卡。 */
+@media (min-width: 800px) {
+  .program-control-grid--4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   F. 收购页「What we buy」区块（2026-11-13，按 CY 指定的版式实现）
+   版式来源：`we-buy-gpus.html` 的同名区块 —— 分组小标签 + 胶囊型号 +
+   条件带 + 结尾两句。只取版式与信息顺序；字体、颜色、圆角一律用本站 token。
+   全部规则收在 `.buy-what` 作用域内，不外溢到其他页面。
+   -------------------------------------------------------------------------- */
+
+.buy-what {
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+.buy-what .chip-group {
+  margin-bottom: 1.9rem;
+}
+
+.buy-what .chip-label {
+  margin: 0 0 0.85rem;
+  font: 700 0.7rem/1 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.buy-what .chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.buy-what .chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.62rem 1rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.buy-what .more-line {
+  margin: 0;
+  max-width: 72ch;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.buy-what .more-line strong {
+  color: var(--text);
+}
+
+.buy-what .condition-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 1.6rem 0 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(92, 200, 255, 0.22);
+  border-radius: var(--radius);
+  background: rgba(92, 200, 255, 0.05);
+}
+
+.buy-what .condition-band .k {
+  margin-right: 0.2rem;
+  font: 700 0.7rem/1.4 var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.buy-what .condition-band b {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.buy-what .condition-band .or {
+  font: 600 0.7rem/1 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-cyan, #5cc8ff);
+}
+
+.buy-what .closing-line {
+  margin: 0.95rem 0 0;
+  max-width: 72ch;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.buy-what .closing-line strong {
+  color: var(--text);
+}
+
+/* --------------------------------------------------------------------------
+   G. 页头展示字体（2026-11-13）
+   需求：页头要有明显科技感，第一眼就能看出跟普通企业站不同。
+   做法：自托管 **Orbitron 600**（SIL OFL 1.1，latin 子集 6.4 KiB，随站点发布在
+   /fonts/），只作用于**页头导航与页头主按钮**（含移动抽屉导航）。
+   正文保持 system-ui —— 全站换成展示字体会把采购站做成游戏站，反而降低可信度。
+
+   为什么是 Orbitron：几何字形最“科幻”，一眼可辨；字宽大，所以导航字号压到
+   0.8rem、字距 0.1em，实测 1024px 下导航与主按钮仍有 16px 间距、不重叠。
+   备选 Chakra Petch（同一份 OFL、latin 9.7 KiB，切角风格更克制）：把下面 src 换成
+   /fonts/chakra-petch-600.woff2，并把 .main-nav 字号改回 0.86rem、字距 0.12em。
+   Michroma 只有 400 字重、Oxanium 偏游戏、Rajdhani 偏工业，均未采用。
+   -------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "Seraya Display";
+  src: url("/fonts/orbitron-var.woff2") format("woff2");
+  /* Google 的 Orbitron 是可变字体（wght 400–900），一个文件覆盖所有字重：
+     「WE ARE BUYING」要加厚就只改字重，不用再下第二份文件。 */
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+.main-nav,
+.mobile-nav,
+.header-cta {
+  font-family: "Seraya Display", var(--font);
+}
+
+/* 展示字体字宽比系统字大，字号与字距各压一档；0.86rem 是与原 13.76px 等效的
+   观感尺寸，实测 960/1024/1440 三档下导航与主按钮都还有余量。 */
+.main-nav {
+  font-size: 0.86rem;
+  letter-spacing: 0.09em;
+}
+
+/* CY 2026-11-13：收购线入口加厚，让「我们收购」在页头里先被读到。
+   Orbitron 的字重轴在 13.76px 下几乎无效：实测同一串标签的墨水像素
+   600 → 852、800 → 888（+4%，肉眼不可辨）、900 → 980（+15%）。
+   所以取 900 字重再叠 0.3px 同色描边，实测 1136（+33%），才有明确加厚观感；
+   继续加到 0.4px 只多 2%，反而先糊字腔。
+   2026-11-13 追加：字号从 0.86rem 提到 0.94rem（13.76 → 15.04px），
+   比加笔画更直观；桌面与移动抽屉各放大一档。 */
+.main-nav a[data-nav="purchasing"],
+.mobile-nav a[data-nav="purchasing"] {
+  font-weight: 900;
+  -webkit-text-stroke: 0.3px currentColor;
+  font-size: 0.94rem;
+}
+
+.mobile-nav a[data-nav="purchasing"] {
+  font-size: 1.06rem;
+}
+
+.header-cta {
+  letter-spacing: 0.11em;
+  font-weight: 600;
+}
+
+.mobile-nav {
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+}
