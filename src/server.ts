@@ -129,7 +129,9 @@ export default {
     // 这样即使 JS 未执行也能提交并拿到服务端的真实成功/失败结果。
     // -----------------------------------------------------------------------
     if (url.pathname === "/api/rfq" || url.pathname === "/api/rfq/") {
-      const response = await handleRfqRequest(request, url);
+      // env 必须显式传下去：Cloudflare 的绑定只在请求期从这个对象拿得到，
+      // 不能指望 process.env（wrangler.toml 没有 nodejs_compat）。
+      const response = await handleRfqRequest(request, url, env as Record<string, string> | undefined);
       const headers = new Headers(response.headers);
       for (const [name, value] of Object.entries(SECURITY_HEADERS)) {
         if (!headers.has(name)) headers.set(name, value);
