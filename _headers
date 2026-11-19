@@ -9,3 +9,25 @@
 
 /*.html
   Content-Type: text/html; charset=utf-8
+
+# ---------------------------------------------------------------------------
+# 缓存策略（2026-11-19）
+#
+# 问题：`public/` 下的资源文件名没有内容哈希（/legacy/script.js、styles.css），
+# 浏览器会按启发式缓存，部署新代码后仍执行旧脚本——表现为“push 了但功能还是旧的”，
+# 必须 Ctrl+F5 才正常。
+#
+# 规则：
+#   /legacy/*  未带指纹 → no-cache，每次用 ETag 回源校验（命中 304，开销很小）
+#   /fonts/*   二进制大件 → 缓存一周（换字体时文件名/内容变化，一周内自动更新）
+#   /assets/*  Vite 产物带内容哈希 → 一年 + immutable，换版本必然换文件名
+# ---------------------------------------------------------------------------
+
+/legacy/*
+  Cache-Control: no-cache
+
+/fonts/*
+  Cache-Control: public, max-age=604800
+
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
