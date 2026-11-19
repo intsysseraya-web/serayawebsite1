@@ -18,17 +18,28 @@ export type RfqDeliveryResult =
   | { status: "not-configured"; reference: string; message: string }
   | { status: "failed"; reference: string; message: string };
 
-/** 环境变量读取一律放在函数内：Cloudflare Workers 的 env 只在请求期绑定。 */
-function readEnv(name: string): string | undefined {
-  const env = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
-    ?.env;
-  const value = env?.[name];
-  return value && value.trim() ? value.trim() : undefined;
+/**
+ * 运行期环境变量。两条来源，按顺序取：
+ *   1. Worker 的 `env` 对象（Cloudflare 在请求期注入）——生产主路径
+ *   2. `process.env` —— 本地 Node / Vite dev
+ *
+ * 为什么不能只读 process.env：wrangler.toml 没有 `nodejs_compat`，
+ * Cloudflare Worker 里 `process` 可能是 undefined，那样即使在 Pages 里配了
+ * 环境变量，代码也永远判定「未配置」——线上与本地都会 503。
+ */
+export type RuntimeEnv = Record<string, string | undefined>;
+
+function readEnv(name: string, env?: RuntimeEnv): string | undefined {
+  const fromBinding = env?.[name];
+  if (typeof fromBinding === "string" && fromBinding.trim()) return fromBinding.trim();
+  const fromProcess = (globalThis as { process?: { env?: Record<string, string | undefined> } }).process
+    ?.env?.[name];
+  return fromProcess && fromProcess.trim() ? fromProcess.trim() : undefined;
 }
 
-export function rfqDeliveryChannel(): "webhook" | "resend" | "none" {
-  if (readEnv("RFQ_WEBHOOK_URL")) return "webhook";
-  if (readEnv("RESEND_API_KEY")) return "resend";
+export function rfqDeliveryChannel(env?: RuntimeEnv): "webhook" | "resend" | "none" {
+  if (readEnv("RFQ_WEBHOOK_URL", env)) return "webhook";
+  if (readEnv("RESEND_API_KEY", env)) return "resend";
   return "none";
 }
 
@@ -103,6 +114,7 @@ async function deliverByWebhook(
 
 async function deliverByResend(
   apiKey: string,
+  from: string,
   to: string,
   subject: string,
   body: string,
@@ -113,7 +125,7 @@ async function deliverByResend(
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${apiKey}` },
       body: JSON.stringify({
-        from: readEnv("RFQ_MAIL_FROM") ?? "Seraya website <onboarding@resend.dev>",
+        from,
         to: [to],
         reply_to: replyTo,
         subject,
@@ -130,7 +142,7 @@ async function deliverByResend(
 
 export async function submitRfq(
   input: Record<string, string>,
-  meta: { source?: string; clientKey?: string },
+  meta: { source?: string; clientKey?: string; env?: RuntimeEnv },
 ): Promise<RfqSubmissionResult> {
   const reference = makeReference();
   const errors = validateRfq(input).map((e) => ({ field: String(e.field), message: e.message }));
@@ -163,7 +175,7 @@ export async function submitRfq(
   const receivedAt = new Date().toISOString();
   const subject = rfqEmailSubject(input);
   const body = rfqEmailBody(input, { receivedAt, source: meta.source });
-  const channel = rfqDeliveryChannel();
+  const channel = rfqDeliveryChannel(meta.env);
 
   if (channel === "none") {
     // 关键：未配置凭据时绝不返回成功。
@@ -174,7 +186,7 @@ export async function submitRfq(
       reference,
       errors: [],
       message:
-        "Online submission is not configured on the server, so nothing was sent. Please email the same details instead.",
+        "Online submission is temporarily unavailable, so nothing was sent. Email the same details and we will pick it up from there.",
     };
   }
 
@@ -189,10 +201,11 @@ export async function submitRfq(
 
   const result =
     channel === "webhook"
-      ? await deliverByWebhook(readEnv("RFQ_WEBHOOK_URL")!, payload)
+      ? await deliverByWebhook(readEnv("RFQ_WEBHOOK_URL", meta.env)!, payload)
       : await deliverByResend(
-          readEnv("RESEND_API_KEY")!,
-          readEnv("RFQ_MAIL_TO") ?? CONTACT_EMAIL,
+          readEnv("RESEND_API_KEY", meta.env)!,
+          readEnv("RFQ_MAIL_FROM", meta.env) ?? "Seraya website <onboarding@resend.dev>",
+          readEnv("RFQ_MAIL_TO", meta.env) ?? CONTACT_EMAIL,
           subject,
           body,
           input.email || CONTACT_EMAIL,

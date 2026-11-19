@@ -10,9 +10,9 @@
  *   - 其他                        → 完整 HTML 页面（no-JS 分支用；失败时回吐已填字段）
  */
 
-import { renderRfqForm, renderRfqSuccess, renderRfqUnavailable, escapeHtml } from "./rfq-form";
-import { submitRfq, type RfqSubmissionResult } from "./rfq.server";
-import { CONTACT_EMAIL } from "./rfq";
+import { renderRfqForm, renderRfqUnavailable, escapeHtml } from "./rfq-form";
+import { submitRfq, type RfqSubmissionResult, type RuntimeEnv } from "./rfq.server";
+import { CONTACT_EMAIL, RFQ_PATHS } from "./rfq";
 
 const NO_JS_STYLES = `
     :root { color-scheme: dark; }
@@ -119,7 +119,21 @@ function prefillFrom(input: Record<string, string>) {
   return prefill;
 }
 
-export async function handleRfqRequest(request: Request, url: URL): Promise<Response> {
+/**
+ * 表单里的需求类型是给人看的标签（"Buy GPUs" / "Sell a GPU lot" …），
+ * Thank You 页的 `path` 参数要的是稳定 slug，两者在这里对齐，避免字符串散落。
+ */
+function thankYouPath(label: string | undefined): string {
+  if (!label) return "other";
+  const hit = Object.values(RFQ_PATHS).find((p) => p.label === label);
+  return hit ? hit.key : "other";
+}
+
+export async function handleRfqRequest(
+  request: Request,
+  url: URL,
+  env?: RuntimeEnv,
+): Promise<Response> {
   if (request.method !== "POST") {
     return wantsJson(request)
       ? Response.json({ ok: false, message: "Use POST to submit an RFQ." }, { status: 405 })
@@ -141,6 +155,7 @@ export async function handleRfqRequest(request: Request, url: URL): Promise<Resp
   const result: RfqSubmissionResult = await submitRfq(input, {
     source: input.source || url.searchParams.get("from") || "",
     clientKey,
+    env,
   });
 
   if (wantsJson(request)) {
@@ -155,26 +170,30 @@ export async function handleRfqRequest(request: Request, url: URL): Promise<Resp
     );
   }
 
-  // no-JS HTML 分支
+  // no-JS 分支：成功后 **303** 到独立 Thank You 页（2026-11-19）
+  //   用 303 而不是 200 直出：地址栏有独立 URL，刷新不会重复提交，
+  //   且与 JS 分支落到同一个页面，不再维护两套成功文案。
   if (result.ok) {
-    return htmlDocument(
-      `RFQ received — ${result.reference}`,
-      `<h1>RFQ received</h1>
-${renderRfqSuccess(result.reference, false)}
-      <p class="muted">Need to add attachments? Reply to
-      <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> quoting the reference.</p>`,
-      200,
-    );
+    const target = new URL("/thank-you", url.origin);
+    if (result.reference) target.searchParams.set("ref", result.reference);
+    target.searchParams.set("path", thankYouPath(input.path));
+    return new Response(null, {
+      status: 303,
+      headers: {
+        location: `${target.pathname}${target.search}`,
+        "cache-control": "no-store",
+      },
+    });
   }
 
   const heading =
-    result.httpStatus === 503 ? "Online submission unavailable" : "We could not send that yet";
+    result.httpStatus === 503 ? "Email us instead" : "We could not send that yet";
 
   return htmlDocument(
     heading,
     `<h1>${heading}</h1>
       <p class="muted">${escapeHtml(result.message)}</p>
-${result.httpStatus === 503 ? renderRfqUnavailable() : ""}
+${result.httpStatus === 503 ? renderRfqUnavailable(prefillFrom(input)) : ""}
       <p class="muted">Your entries are kept below &mdash; nothing was lost.</p>
 ${renderRfqForm(prefillFrom(input) as never, { errors: result.errors, formId: "rfq-form" })}`,
     result.httpStatus,

@@ -140,7 +140,7 @@ export function skuCategoryTag(category: SkuCategory): string {
 // 三条主路径
 // ---------------------------------------------------------------------------
 
-export type RfqPathKey = "gpu" | "system" | "sell" | "component";
+export type RfqPathKey = "gpu" | "system" | "sovereignty" | "sell" | "component";
 
 export type RfqPath = {
   key: RfqPathKey;
@@ -156,6 +156,14 @@ export type RfqPath = {
   extraMailLines: string[];
   /** 整机路径才有：区分整机数量与每台显卡数量 */
   cardCount?: { label: string; hint: string };
+  /**
+   * 该路径下对通用字段文案的覆盖（label / placeholder / hint）。
+   * 只用于不需要问具体型号的路径：问“负载与边界”，而不是“产品型号”。
+   * 国家/邮箱这类采购必需字段不覆盖。
+   */
+  fields?: Partial<
+    Record<"requirement" | "destination", { label?: string; placeholder?: string; hint?: string }>
+  >;
 };
 
 export const RFQ_PATHS: Record<RfqPathKey, RfqPath> = {
@@ -188,6 +196,29 @@ export const RFQ_PATHS: Record<RfqPathKey, RfqPath> = {
       hint: "Separate from the number of systems.",
     },
   },
+  sovereignty: {
+    key: "sovereignty",
+    label: "AI sovereignty deployment",
+    description: "AI deployed on infrastructure you control, scoped to your systems.",
+    subjectTag: RFQ_SUBJECT_TAG,
+    defaultSubject: "AI sovereignty deployment enquiry",
+    href: "/ai-sovereignty",
+    quantityLabel: "Sites / deployments",
+    quantityHint:
+      "How many sites or environments the deployment has to cover. It is a number — put 1 for a single deployment.",
+    fields: {
+      requirement: {
+        label: "Workload and boundary",
+        placeholder: "e.g. private inference for 8 GPUs, on-prem in Kuala Lumpur",
+        hint: "What the AI has to do, where it must run, and who needs access.",
+      },
+    },
+    extraMailLines: [
+      "Where the data must live (country / site):",
+      "Who needs access (roles or teams):",
+      "Which systems the AI may reach:",
+    ],
+  },
   component: {
     key: "component",
     label: "Buy storage or networking",
@@ -216,7 +247,13 @@ export const RFQ_PATHS: Record<RfqPathKey, RfqPath> = {
   },
 };
 
-export const RFQ_PATH_ORDER: RfqPathKey[] = ["gpu", "system", "component", "sell"];
+export const RFQ_PATH_ORDER: RfqPathKey[] = [
+  "gpu",
+  "system",
+  "sovereignty",
+  "component",
+  "sell",
+];
 
 // ---------------------------------------------------------------------------
 // 表单字段口径 —— 必填 vs 选填
@@ -374,6 +411,7 @@ export function quantityLabelForPath(pathLabel: string): string {
   if (pathLabel === RFQ_PATHS.system.label) return RFQ_PATHS.system.quantityLabel;
   if (pathLabel === RFQ_PATHS.component.label) return RFQ_PATHS.component.quantityLabel;
   if (pathLabel === RFQ_PATHS.sell.label) return RFQ_PATHS.sell.quantityLabel;
+  if (pathLabel === RFQ_PATHS.sovereignty.label) return RFQ_PATHS.sovereignty.quantityLabel;
   return RFQ_PATHS.gpu.quantityLabel;
 }
 

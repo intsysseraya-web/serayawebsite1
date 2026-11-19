@@ -136,14 +136,24 @@ ${errors
         </div>`
     : "";
 
+  const pathDef = Object.values(RFQ_PATHS).find((p) => p.label === pathLabel);
+
   const renderField = (def: RfqField) => {
     const value = (prefill[def.key as keyof RfqPrefill] as string | undefined) ?? "";
     const err = errorFor(def.key);
     const id = `${formId}-${def.key}`;
-    const describedBy = [err ? `${id}-error` : "", def.hint ? `${id}-hint` : ""]
+    /* 路径级文案覆盖（目前只有 AI sovereignty 覆盖 requirement） */
+    const fieldOverride = pathDef?.fields?.[def.key as "requirement" | "destination"];
+    const hint =
+      def.key === "quantity"
+        ? (pathDef?.quantityHint ?? def.hint)
+        : (fieldOverride?.hint ?? def.hint);
+    const placeholder = fieldOverride?.placeholder ?? def.placeholder;
+    const describedBy = [err ? `${id}-error` : "", hint ? `${id}-hint` : ""]
       .filter(Boolean)
       .join(" ");
-    const label = def.key === "quantity" ? quantityLabelForPath(pathLabel) : def.label;
+    const label =
+      def.key === "quantity" ? quantityLabelForPath(pathLabel) : (fieldOverride?.label ?? def.label);
     const common = [
       `id="${id}"`,
       `name="${def.key}"`,
@@ -158,24 +168,40 @@ ${errors
     let control = "";
     if (def.type === "textarea") {
       control = `<textarea class="rfq-input rfq-textarea" ${common} rows="3" placeholder="${escapeHtml(
-        def.placeholder ?? "",
+        placeholder ?? "",
       )}">${escapeHtml(value)}</textarea>`;
     } else if (def.type === "select") {
-      const opts =
-        def.key === "path" ? RFQ_PATH_ORDER.map((k) => RFQ_PATHS[k].label) : (def.options ?? []);
+      const pathKeys = def.key === "path" ? RFQ_PATH_ORDER : null;
+      const optValues = pathKeys ? pathKeys.map((k) => RFQ_PATHS[k].label) : (def.options ?? []);
       control = `<select class="rfq-input rfq-select" ${common}>
-${opts
-  .map((opt) => {
+${optValues
+  .map((opt, index) => {
     const isSelected =
-      def.key === "path" ? opt === pathLabel : String(value) === opt || (!value && opt === opts[0]);
-    return `                <option value="${escapeHtml(opt)}"${isSelected ? " selected" : ""}>${escapeHtml(opt)}</option>`;
+      def.key === "path" ? opt === pathLabel : String(value) === opt || (!value && opt === optValues[0]);
+    /* 把该路径的字段覆盖写进 option 的 data-*，脚本切换时无需再做字符串匹配 */
+    const pathDefForOption = pathKeys ? RFQ_PATHS[pathKeys[index]] : undefined;
+    const fieldAttrs = pathKeys
+      ? [
+          ...Object.entries(pathDefForOption?.fields ?? {}).flatMap(([fieldKey, cfg]) =>
+            [
+              cfg?.label ? ` data-${fieldKey}-label="${escapeHtml(cfg.label)}"` : "",
+              cfg?.placeholder ? ` data-${fieldKey}-placeholder="${escapeHtml(cfg.placeholder)}"` : "",
+              cfg?.hint ? ` data-${fieldKey}-hint="${escapeHtml(cfg.hint)}"` : "",
+            ].filter(Boolean),
+          ),
+          pathDefForOption?.quantityHint
+            ? ` data-quantity-hint="${escapeHtml(pathDefForOption.quantityHint)}"`
+            : "",
+        ].join("")
+      : "";
+    return `                <option value="${escapeHtml(opt)}"${fieldAttrs}${isSelected ? " selected" : ""}>${escapeHtml(opt)}</option>`;
   })
   .join("\n")}
               </select>`;
     } else {
       const type = def.type === "email" ? "email" : def.type === "number" ? "number" : "text";
       control = `<input class="rfq-input" type="${type}" ${common} value="${escapeHtml(value)}" placeholder="${escapeHtml(
-        def.placeholder ?? "",
+        placeholder ?? "",
       )}" ${def.type === "number" ? 'min="1" step="1" inputmode="numeric"' : ""} />`;
     }
 
@@ -187,7 +213,7 @@ ${opts
                   : ' <span class="rfq-optional">optional</span>'
               }</label>
 ${control}
-${def.hint ? `              <p class="rfq-hint" id="${id}-hint">${escapeHtml(def.hint)}</p>` : ""}
+${hint ? `              <p class="rfq-hint" id="${id}-hint">${escapeHtml(hint)}</p>` : ""}
 ${err ? `              <p class="rfq-error" id="${id}-error">${escapeHtml(err)}</p>` : ""}
             </div>`;
   };
@@ -256,14 +282,54 @@ export function renderRfqSuccess(reference: string, viaEmailFallback: boolean): 
         </div>`;
 }
 
-/** 服务端未配置投递通道时的真实错误卡（不是成功）。 */
-export function renderRfqUnavailable(): string {
+/** 兜底邮件的字段顺序与标签（与服务端表单字段同名，只做展示） */
+const FALLBACK_FIELDS: [string, string][] = [
+  ["requirement", "Product or requirement"],
+  ["sku", "SKU"],
+  ["config", "Version / configuration"],
+  ["quantity", "Quantity"],
+  ["cardsPerSystem", "Cards per system"],
+  ["destination", "Delivery country / city"],
+  ["condition", "Condition"],
+  ["targetDate", "Target date"],
+  ["company", "Company"],
+  ["notes", "Notes"],
+];
+
+/**
+ * 投递通道不可用时的一键邮件：把客户已填内容带进 mailto，
+ * 避免「表单没发出去、客户还要重打一遍」——线上未配通道时这是唯一保命通路。
+ */
+export function rfqFallbackMailto(prefill: Record<string, string> = {}): string {
+  const pathLabel = (prefill.path ?? "").trim();
+  const subject = pathLabel ? `[Seraya website] ${pathLabel}` : "[Seraya website] Enquiry";
+  const lines: string[] = [];
+  for (const [key, label] of FALLBACK_FIELDS) {
+    const value = String(prefill[key] ?? "").trim();
+    if (value) lines.push(`${label}: ${value}`);
+  }
+  const replyTo = String(prefill.email ?? "").trim();
+  if (replyTo) lines.push(`Reply to: ${replyTo}`);
+  lines.push("");
+  lines.push("Sent from the website form — the server could not deliver it automatically.");
+  const body = lines.join("\n").slice(0, 1800);
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/** 服务端投递通道不可用时的真实错误卡（不是成功），并给出预填好的邮件入口。 */
+export function renderRfqUnavailable(prefill: Record<string, string> = {}): string {
   return `
         <div class="rfq-error-panel" role="alert">
-          <h3>Online submission is not available right now</h3>
+          <h3>Email us instead</h3>
           <p class="muted">
-            The form endpoint is reachable but no delivery channel is configured on the server, so nothing was sent.
-            Please email the same details to <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> and we will pick it up.
+            Online submission is temporarily unavailable, so nothing was sent from the form.
+            Your details are already filled in &mdash; one click opens them in your mail app.
+          </p>
+          <p class="rfq-fallback">
+            <a class="btn btn-primary" href="${escapeHtml(rfqFallbackMailto(prefill))}">Email these details</a>
+          </p>
+          <p class="muted">
+            No mail app? Write to <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a> and paste the same details.
           </p>
         </div>`;
 }
