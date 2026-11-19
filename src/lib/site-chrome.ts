@@ -238,7 +238,7 @@ ${whatsappFab()}`;
  * 号码目前是**占位**：CY 之后给真实号码，只改这一行常量即可，链接与文案会自动跟随。
  * 用 wa.me 深链而不是自建聊天窗口：不需要后端、不会在页面里暴露第三方脚本。
  */
-export const WHATSAPP_NUMBER = "60123456789";
+export const WHATSAPP_NUMBER = "60197720526";
 
 const WHATSAPP_PREFILL = "Hi Seraya, I would like to ask about GPU supply.";
 
