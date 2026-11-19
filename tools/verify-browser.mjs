@@ -557,8 +557,9 @@ try {
           ariaExpanded: document.getElementById('btnMenu').getAttribute('aria-expanded'),
           focusInsideDrawer: d.contains(document.activeElement),
           activeId: document.activeElement ? document.activeElement.id : '',
-          navRows: [...d.querySelectorAll('.mobile-nav > a')].map(a => a.getBoundingClientRect().height),
-          navLabels: [...d.querySelectorAll('.mobile-nav > a')].map(a => a.textContent.trim())
+          navRows: [...d.querySelectorAll('.mobile-nav > a:not(.mobile-subnav)')].map(a => a.getBoundingClientRect().height),
+          navLabels: [...d.querySelectorAll('.mobile-nav > a:not(.mobile-subnav)')].map(a => a.textContent.trim()),
+          subLabels: [...d.querySelectorAll('.mobile-nav > a.mobile-subnav')].map(a => a.textContent.trim())
         });
       }, 350));
     `);
@@ -586,6 +587,13 @@ try {
         opened.navLabels.includes("GPU’s") &&
         opened.navLabels.includes("We are buying"),
       JSON.stringify(opened.navLabels),
+    );
+    check(
+      "移动菜单在 Systems 下展开两个子项",
+      opened.subLabels.length === 2 &&
+        opened.subLabels.includes("Complete Systems") &&
+        opened.subLabels.includes("AI Sovereignty"),
+      JSON.stringify(opened.subLabels),
     );
     check(
       "移动菜单不再重复列出 Contact（由 Get a quote 承担）",
@@ -656,14 +664,14 @@ try {
     await session.setViewport(1440, 900);
     await session.goto(BASE + "/", { waitMs: 400 });
     const nav = await session.evaluate(`
-      const links = [...document.querySelectorAll('.main-nav > a')].map(a => ({
+      const links = [...document.querySelectorAll('.main-nav > a, .main-nav > .nav-item--menu > a')].map(a => ({
         label: a.textContent.trim(),
         href: a.getAttribute('href'),
         h: Math.round(a.getBoundingClientRect().height),
         visible: a.getBoundingClientRect().width > 0
       }));
       const overlaps = [];
-      const nodes = [...document.querySelectorAll('.main-nav > a')];
+      const nodes = [...document.querySelectorAll('.main-nav > a, .main-nav > .nav-item--menu > a')];
       for (let i = 1; i < nodes.length; i++) {
         const prev = nodes[i-1].getBoundingClientRect();
         const cur = nodes[i].getBoundingClientRect();
@@ -724,6 +732,56 @@ try {
       JSON.stringify(nav.links.map((l) => l.h)),
     );
     check("没有 nav-dropdown 浮层元素", nav.dropdowns === 0);
+
+    // 2026-11-19 恢复的一级下拉：默认收起、标签本身可点、caret 可开、Esc 可关
+    const dropdown = await session.evaluate(`
+      const group = document.querySelector('.nav-item--menu');
+      const menu = group ? group.querySelector('.nav-menu') : null;
+      const btn = group ? group.querySelector('.nav-caret-btn') : null;
+      const label = group ? group.querySelector('a') : null;
+      return {
+        hasGroup: Boolean(group),
+        hidden: menu ? menu.hidden : null,
+        expanded: btn ? btn.getAttribute('aria-expanded') : null,
+        labelHref: label ? label.getAttribute('href') : null,
+        items: menu
+          ? [...menu.querySelectorAll('a')].map((a) => ({
+              label: a.querySelector('strong') ? a.querySelector('strong').textContent : a.textContent.trim(),
+              href: a.getAttribute('href'),
+            }))
+          : [],
+      };
+    `);
+    check("Systems 是下拉组", dropdown.hasGroup === true);
+    check("下拉默认收起", dropdown.hidden === true && dropdown.expanded === "false", JSON.stringify(dropdown));
+    check("Systems 文字本身仍指向 /systems", dropdown.labelHref === "/systems");
+    check(
+      "下拉含 Complete Systems 与 AI Sovereignty",
+      dropdown.items.length === 2 &&
+        dropdown.items[0].href === "/systems" &&
+        dropdown.items[1].href === "/ai-sovereignty",
+      JSON.stringify(dropdown.items),
+    );
+
+    const toggled = await session.evaluate(`
+      const group = document.querySelector('.nav-item--menu');
+      const btn = group.querySelector('.nav-caret-btn');
+      btn.click();
+      const openState = { expanded: btn.getAttribute('aria-expanded'), hidden: group.querySelector('.nav-menu').hidden };
+      group.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+      const closedState = { expanded: btn.getAttribute('aria-expanded'), hidden: group.querySelector('.nav-menu').hidden };
+      return { openState, closedState };
+    `);
+    check(
+      "caret 按钮可打开下拉",
+      toggled.openState.expanded === "true" && toggled.openState.hidden === false,
+      JSON.stringify(toggled.openState),
+    );
+    check(
+      "Esc 关闭下拉",
+      toggled.closedState.expanded === "false" && toggled.closedState.hidden === true,
+      JSON.stringify(toggled.closedState),
+    );
   }
 
   // -------------------------------------------------------------------------
@@ -806,8 +864,21 @@ try {
     check("连点三次只发出一次提交", doubleSubmit.calls === 1, `calls=${doubleSubmit.calls}`);
     check("提交结束后释放 busy 标记", doubleSubmit.busyCleared === true);
 
-    // 成功路径：mock 一个 200 响应，断言成功卡只在收到 ok:true 后出现
-    const successPath = await session.evaluate(`
+    // 成功路径：mock 一个 200 响应，断言跳转到 /thank-you（2026-11-19 起不再原地插成功卡）
+    const successNav = new Promise((resolve) => {
+      const off = session.on((msg) => {
+        const url = msg?.params?.frame?.url ?? "";
+        if (msg.method === "Page.frameNavigated" && url.includes("/thank-you")) {
+          off();
+          resolve(url);
+        }
+      });
+      setTimeout(() => {
+        off();
+        resolve(null);
+      }, 6000);
+    });
+    await session.evaluate(`
       const form = document.getElementById('rfq-contact');
       const orig = window.fetch;
       window.fetch = function (url, opts) {
@@ -817,22 +888,48 @@ try {
         return orig.apply(this, [url, opts]);
       };
       form.querySelector('[data-rfq-submit]').click();
-      return new Promise((resolve) => setTimeout(() => {
-        window.fetch = orig;
-        const card = document.querySelector('.rfq-success');
-        resolve({ successCard: card ? 1 : 0, cardText: card ? card.textContent.replace(/\\s+/g, ' ').trim().slice(0, 120) : '' });
-      }, 900));
+      return true;
     `);
-    check(
-      "服务端返回 ok:true 时出现成功卡",
-      successPath.successCard === 1,
-      JSON.stringify(successPath),
-    );
-    check(
-      "成功卡包含服务端返回的引用号",
-      /SRY-RFQ-TEST-0001/.test(successPath.cardText),
-      successPath.cardText,
-    );
+    const navigatedTo = await successNav;
+    check("服务端返回 ok:true 后跳转 /thank-you", Boolean(navigatedTo), String(navigatedTo));
+    check("跳转携带引用号", /ref=SRY-RFQ-TEST-0001/.test(navigatedTo || ""), String(navigatedTo));
+
+    // Thank You 页：引用号可见 + Back 按钮回到上一页
+    await session.goto(BASE + "/gpu", { waitMs: 600 });
+    await session.goto(BASE + "/thank-you?ref=SRY-RFQ-TEST-0001&path=gpu", { waitMs: 700 });
+    const thankYou = await session.evaluate(`
+      return {
+        hasRef: document.body.textContent.includes('SRY-RFQ-TEST-0001'),
+        hasBack: Boolean(document.querySelector('[data-history-back]')),
+        hasWa: Boolean(document.querySelector('.wa-fab')),
+        noForm: !document.querySelector('form[data-rfq-form]'),
+      };
+    `);
+    check("Thank You 页显示引用号", thankYou.hasRef === true, JSON.stringify(thankYou));
+    check("Thank You 页有返回按钮", thankYou.hasBack === true);
+    check("Thank You 页带 WhatsApp 浮动入口", thankYou.hasWa === true);
+    check("Thank You 页不重复放表单", thankYou.noForm === true);
+
+    const backNav = new Promise((resolve) => {
+      const off = session.on((msg) => {
+        const url = msg?.params?.frame?.url ?? "";
+        if (msg.method === "Page.frameNavigated" && !url.includes("/thank-you")) {
+          off();
+          resolve(url);
+        }
+      });
+      setTimeout(() => {
+        off();
+        resolve(null);
+      }, 6000);
+    });
+    try {
+      await session.evaluate(`document.querySelector('[data-history-back]').click(); return true;`);
+    } catch {
+      /* 导航会销毁执行上下文，属预期 */
+    }
+    const backUrl = await backNav;
+    check("Back 按钮回到上一页", (backUrl || "").includes("/gpu"), String(backUrl));
   }
 
   // -------------------------------------------------------------------------

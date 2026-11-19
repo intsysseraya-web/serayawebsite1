@@ -56,6 +56,7 @@ console.log("[1] 路由可达性");
     "/we-are-buying",
     "/company",
     "/contact",
+    "/thank-you",
     "/programs",
     "/local",
     "/we-are-buying/kyc",
@@ -68,6 +69,26 @@ console.log("[1] 路由可达性");
     const { status } = await get(route);
     check(`GET ${route} → 200`, status === 200, `got ${status}`);
   }
+}
+
+// ---------------------------------------------------------------------------
+console.log("\n[1b] Thank You 页（询价提交后的落地页）");
+{
+  const { status, body } = await get("/thank-you?ref=SRY-RFQ-TEST-0001&path=sell");
+  check("/thank-you → 200", status === 200, `got ${status}`);
+  check("Thank You 页 noindex", /name="robots"[^>]*content="noindex/.test(body));
+  check("Thank You 页回显引用号", body.includes("SRY-RFQ-TEST-0001"));
+  check("Thank You 页有返回按钮", body.includes("data-history-back"));
+  check("Thank You 页不再重复放表单", !body.includes("data-rfq-form"));
+  check(
+    "Thank You 页按 path 切换文案（sell）",
+    body.includes("We have your lot list"),
+  );
+  const fallback = await get("/thank-you?ref=%3Cscript%3E&path=../../etc");
+  check(
+    "Thank You 页丢弃非法 ref / path",
+    !fallback.body.includes("<script>") && !fallback.body.includes("lot list"),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -106,6 +127,16 @@ console.log("\n[3] 固定导航：无下拉浮层、主按钮文案统一");
     check(`${path} 无 nav-dropdown 浮层`, !body.includes("nav-dropdown"));
     check(`${path} 主导航含 GPU’s`, body.includes(">GPU’s<"));
     check(`${path} 主导航含 We are buying`, body.includes(">We are buying<"));
+    check(
+      `${path} 有 WhatsApp 浮动入口`,
+      body.includes('class="wa-fab"') && body.includes("https://wa.me/"),
+    );
+    check(
+      `${path} Systems 下拉含两个子项`,
+      body.includes('data-nav-group="systems"') &&
+        body.includes("Complete Systems") &&
+        body.includes("AI Sovereignty"),
+    );
     check(`${path} 主按钮为 Get a quote`, body.includes("Get a quote"));
     check(`${path} 页头不含旧 RFQ 按钮`, !body.includes('aria-label="Request a bulk quote"'));
   }
@@ -621,6 +652,7 @@ console.log("\n[9] Contact 分类与表单（线检项 F 与 5）");
   check("需求类别含购买 GPU 单卡", /Single cards and SXM modules/.test(body));
   check("需求类别含购买整机", /Servers, workstations, storage and networking/.test(body));
   check("需求类别含出售批次", /Submit a lot for a committed decision/.test(body));
+  check("需求类别含 AI sovereignty 部署", body.includes("AI sovereignty deployment"));
   check("需求类别含 BOM 需求", /Send a parts list for review/.test(body));
   check("需求类别含售后", /Warranty, DOA and RMA/.test(body));
   check("表单含 path 选择器", body.includes('name="path"'));
@@ -784,7 +816,7 @@ console.log("\n[13] 询价接口行为（成功只在服务端确认后出现）
   });
   check("蜜罐字段命中时拒绝提交", honeypot.status === 422, `got ${honeypot.status}`);
 
-  // 13d: 非 JSON 客户端（no-JS）拿到 HTML 且失败时回吐已填内容
+  // 13d: 非 JSON 客户端（no-JS）—— 失败时回吐已填内容；成功时 303 到 Thank You 页
   const form = new URLSearchParams({
     path: "Buy GPUs",
     requirement: "NVIDIA H100 SXM",
@@ -796,11 +828,12 @@ console.log("\n[13] 询价接口行为（成功只在服务端确认后出现）
   const noJs = await fetch(BASE + "/api/rfq", {
     method: "POST",
     headers: { "content-type": "application/x-www-form-urlencoded" },
+    redirect: "manual",
     body: form.toString(),
   });
   const noJsBody = await noJs.text();
-  check("no-JS 提交返回 HTML", (noJs.headers.get("content-type") ?? "").includes("text/html"));
   if (!channel) {
+    check("no-JS 提交返回 HTML", (noJs.headers.get("content-type") ?? "").includes("text/html"));
     check("no-JS 未配置时返回 503", noJs.status === 503, `got ${noJs.status}`);
     check(
       "no-JS 失败页保留已填内容",
@@ -808,6 +841,18 @@ console.log("\n[13] 询价接口行为（成功只在服务端确认后出现）
     );
     check("no-JS 失败页不出现成功文案", !/RFQ received/.test(noJsBody));
     check("no-JS 失败页给出邮箱替代", noJsBody.includes("felix.mm@seraya.systems"));
+  } else {
+    const location = noJs.headers.get("location") ?? "";
+    check(
+      "no-JS 成功后 303 到 /thank-you",
+      noJs.status === 303 && location.startsWith("/thank-you?"),
+      `got ${noJs.status} ${location}`,
+    );
+    check(
+      "no-JS 跳转带 path=gpu 与引用号",
+      /[?&]path=gpu(&|$)/.test(location) && /[?&]ref=SRY-RFQ-/.test(location),
+      location,
+    );
   }
 
   // 13e: GET 不允许
