@@ -1775,6 +1775,212 @@ html:not(.js) .reveal {
   font-size: 1.06rem;
 }
 
+/* --------------------------------------------------------------------------
+   H. WhatsApp 浮动入口（2026-11-19）
+   全站右下角常驻，52px 圆形，深色玻璃底 + 白图标，悬停转青色；
+   ≤720px 时上移，避让底部 Get a quote 固定条（`.mobile-cta-bar`，高约 3.9rem）。
+   动效只做位移与描边，`prefers-reduced-motion` 下全部关闭。
+   -------------------------------------------------------------------------- */
+
+.wa-fab {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: rgba(12, 12, 18, 0.92);
+  color: var(--text);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.wa-fab:hover,
+.wa-fab:focus-visible {
+  border-color: var(--accent-cyan, #5cc8ff);
+  color: var(--accent-cyan, #5cc8ff);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.wa-fab:focus-visible {
+  outline: 2px solid var(--accent-cyan, #5cc8ff);
+  outline-offset: 3px;
+}
+
+.wa-fab-icon {
+  display: block;
+}
+
+@media (max-width: 720px) {
+  .wa-fab {
+    right: 0.9rem;
+    bottom: calc(4.7rem + env(safe-area-inset-bottom));
+    width: 48px;
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab {
+    transition: none;
+  }
+
+  .wa-fab:hover,
+  .wa-fab:focus-visible {
+    transform: none;
+  }
+}
+
+/* Thank You 页（2026-11-19）：引用号用等宽字，和正文区分开，便于抄写与邮件引用 */
+.thank-you-ref {
+  margin-top: 0.85rem;
+}
+
+.thank-you-ref code {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  letter-spacing: 0.02em;
+  color: var(--text);
+}
+
+/* 三步流程：`.program-flow` 在 ≥800px 是 4 列，3 步会留一个空列 */
+@media (min-width: 800px) {
+  .program-flow--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* 询价兜底（2026-11-19）：投递通道不可用时的一键邮件按钮，
+   服务端 no-JS 与前端 JS 两条路径共用这个间距 */
+.rfq-fallback {
+  margin: 0.85rem 0 0;
+}
+
+/* --------------------------------------------------------------------------
+   I. 页头 SYSTEMS 一级下拉（2026-11-19）
+   只作用于 `.nav-item--menu`，不复用旧的 `.nav-dropdown` 类（那套在 fixes.css
+   顶部被整体隐藏，且是为多级手风琴设计的）。
+   打开方式：桌面 hover / caret 按钮 / 键盘，菜单项是普通链接。
+   -------------------------------------------------------------------------- */
+
+.nav-item--menu {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.nav-caret-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 44px;
+  margin-right: -6px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.nav-caret-btn:focus-visible {
+  outline: 2px solid var(--accent-cyan, #5cc8ff);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.nav-caret {
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4.5px solid currentColor;
+  transition: transform 0.15s ease;
+}
+
+.nav-caret-btn[aria-expanded="true"] .nav-caret {
+  transform: rotate(180deg);
+}
+
+.nav-menu {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 50%;
+  z-index: 70;
+  min-width: 21rem;
+  padding: 0.4rem;
+  transform: translateX(-50%);
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: rgba(8, 8, 12, 0.98);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+}
+
+.nav-menu[hidden] {
+  display: none;
+}
+
+/* 必须压过 `.main-nav a` 的 inline-flex / min-height / padding，否则菜单项会排成一行 */
+.main-nav .nav-menu-item {
+  display: block;
+  min-height: 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: normal;
+}
+
+.main-nav .nav-menu-item strong {
+  display: block;
+  font-family: var(--font);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text);
+}
+
+.main-nav .nav-menu-item span {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font);
+  font-size: 0.74rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text-muted);
+}
+
+.main-nav .nav-menu-item:hover,
+.main-nav .nav-menu-item:focus-visible {
+  background: rgba(255, 255, 255, 0.06);
+  text-decoration: none;
+}
+
+/* 移动抽屉里子项直接展开，不做浮层 */
+.mobile-nav .mobile-subnav {
+  padding-left: 1.1rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
 .header-cta {
   letter-spacing: 0.11em;
   font-weight: 600;

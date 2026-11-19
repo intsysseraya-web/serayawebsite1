@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WeAreBuyingRouteImport } from './routes/we-are-buying'
+import { Route as ThankYouRouteImport } from './routes/thank-you'
 import { Route as SystemsRouteImport } from './routes/systems'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as LocalRouteImport } from './routes/local'
 import { Route as GpuRouteImport } from './routes/gpu'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompanyRouteImport } from './routes/company'
+import { Route as AiSovereigntyRouteImport } from './routes/ai-sovereignty'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WeAreBuyingKycRouteImport } from './routes/we-are-buying_.kyc'
 import { Route as WeAreBuyingComplianceRouteImport } from './routes/we-are-buying_.compliance'
@@ -30,6 +32,11 @@ import { Route as GpuAiGpusRouteImport } from './routes/gpu_.ai-gpus'
 const WeAreBuyingRoute = WeAreBuyingRouteImport.update({
   id: '/we-are-buying',
   path: '/we-are-buying',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ThankYouRoute = ThankYouRouteImport.update({
+  id: '/thank-you',
+  path: '/thank-you',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SystemsRoute = SystemsRouteImport.update({
@@ -60,6 +67,11 @@ const ContactRoute = ContactRouteImport.update({
 const CompanyRoute = CompanyRouteImport.update({
   id: '/company',
   path: '/company',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiSovereigntyRoute = AiSovereigntyRouteImport.update({
+  id: '/ai-sovereignty',
+  path: '/ai-sovereignty',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -116,12 +128,14 @@ const GpuAiGpusRoute = GpuAiGpusRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-sovereignty': typeof AiSovereigntyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/systems': typeof SystemsRoute
+  '/thank-you': typeof ThankYouRoute
   '/we-are-buying': typeof WeAreBuyingRoute
   '/gpu/ai-gpus': typeof GpuAiGpusRoute
   '/gpu/gaming-gpus': typeof GpuGamingGpusRoute
@@ -135,12 +149,14 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-sovereignty': typeof AiSovereigntyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/systems': typeof SystemsRoute
+  '/thank-you': typeof ThankYouRoute
   '/we-are-buying': typeof WeAreBuyingRoute
   '/gpu/ai-gpus': typeof GpuAiGpusRoute
   '/gpu/gaming-gpus': typeof GpuGamingGpusRoute
@@ -155,12 +171,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-sovereignty': typeof AiSovereigntyRoute
   '/company': typeof CompanyRoute
   '/contact': typeof ContactRoute
   '/gpu': typeof GpuRoute
   '/local': typeof LocalRoute
   '/programs': typeof ProgramsRoute
   '/systems': typeof SystemsRoute
+  '/thank-you': typeof ThankYouRoute
   '/we-are-buying': typeof WeAreBuyingRoute
   '/gpu_/ai-gpus': typeof GpuAiGpusRoute
   '/gpu_/gaming-gpus': typeof GpuGamingGpusRoute
@@ -176,12 +194,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-sovereignty'
     | '/company'
     | '/contact'
     | '/gpu'
     | '/local'
     | '/programs'
     | '/systems'
+    | '/thank-you'
     | '/we-are-buying'
     | '/gpu/ai-gpus'
     | '/gpu/gaming-gpus'
@@ -195,12 +215,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-sovereignty'
     | '/company'
     | '/contact'
     | '/gpu'
     | '/local'
     | '/programs'
     | '/systems'
+    | '/thank-you'
     | '/we-are-buying'
     | '/gpu/ai-gpus'
     | '/gpu/gaming-gpus'
@@ -214,12 +236,14 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ai-sovereignty'
     | '/company'
     | '/contact'
     | '/gpu'
     | '/local'
     | '/programs'
     | '/systems'
+    | '/thank-you'
     | '/we-are-buying'
     | '/gpu_/ai-gpus'
     | '/gpu_/gaming-gpus'
@@ -234,12 +258,14 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiSovereigntyRoute: typeof AiSovereigntyRoute
   CompanyRoute: typeof CompanyRoute
   ContactRoute: typeof ContactRoute
   GpuRoute: typeof GpuRoute
   LocalRoute: typeof LocalRoute
   ProgramsRoute: typeof ProgramsRoute
   SystemsRoute: typeof SystemsRoute
+  ThankYouRoute: typeof ThankYouRoute
   WeAreBuyingRoute: typeof WeAreBuyingRoute
   GpuAiGpusRoute: typeof GpuAiGpusRoute
   GpuGamingGpusRoute: typeof GpuGamingGpusRoute
@@ -259,6 +285,13 @@ declare module '@tanstack/react-router' {
       path: '/we-are-buying'
       fullPath: '/we-are-buying'
       preLoaderRoute: typeof WeAreBuyingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/thank-you': {
+      id: '/thank-you'
+      path: '/thank-you'
+      fullPath: '/thank-you'
+      preLoaderRoute: typeof ThankYouRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/systems': {
@@ -301,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/company'
       fullPath: '/company'
       preLoaderRoute: typeof CompanyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-sovereignty': {
+      id: '/ai-sovereignty'
+      path: '/ai-sovereignty'
+      fullPath: '/ai-sovereignty'
+      preLoaderRoute: typeof AiSovereigntyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -378,12 +418,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiSovereigntyRoute: AiSovereigntyRoute,
   CompanyRoute: CompanyRoute,
   ContactRoute: ContactRoute,
   GpuRoute: GpuRoute,
   LocalRoute: LocalRoute,
   ProgramsRoute: ProgramsRoute,
   SystemsRoute: SystemsRoute,
+  ThankYouRoute: ThankYouRoute,
   WeAreBuyingRoute: WeAreBuyingRoute,
   GpuAiGpusRoute: GpuAiGpusRoute,
   GpuGamingGpusRoute: GpuGamingGpusRoute,
