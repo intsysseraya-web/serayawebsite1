@@ -4,3 +4,9 @@
 name = "serayawebsite1"
 compatibility_date = "2026-05-05"
 pages_build_output_dir = "dist"
+
+# 非敏感的运行时变量放这里（Pages 现在只允许在 Dashboard 管 Secret）。
+# RESEND_API_KEY 是 Secret，在 Dashboard → Variables and secrets 添加，不要写进本文件。
+[vars]
+RFQ_MAIL_TO = "felix.mm@seraya.systems"
+RFQ_MAIL_FROM = "Seraya website <website@seraya.systems>"
