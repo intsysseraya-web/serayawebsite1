@@ -158,6 +158,7 @@ ${renderRfqForm({ path: "gpu", source: "/contact" }, { formId: "rfq-contact" })}
               <ul class="rfq-checklist">
                 <li><strong>Buy GPUs</strong> &mdash; ${escapeHtml(RFQ_PATHS.gpu.quantityHint.toLowerCase())} Model and version.</li>
                 <li><strong>Buy a system</strong> &mdash; ${escapeHtml(RFQ_PATHS.system.quantityHint.toLowerCase())} Cards per system if known.</li>
+                <li><strong>AI sovereignty deployment</strong> &mdash; ${escapeHtml(RFQ_PATHS.sovereignty.quantityHint.toLowerCase())} Where the data must live, and who needs access.</li>
                 <li><strong>Buy storage or networking</strong> &mdash; ${escapeHtml(RFQ_PATHS.component.quantityHint.toLowerCase())} Redundancy requirement.</li>
                 <li><strong>Sell a lot</strong> &mdash; ${escapeHtml(RFQ_PATHS.sell.quantityHint.toLowerCase())} Condition, location, test data.</li>
               </ul>
