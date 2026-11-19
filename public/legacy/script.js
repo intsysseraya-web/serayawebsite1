@@ -355,13 +355,151 @@
    *
    * 这个函数只是**增强**：表单本身是普通 POST 到 /api/rfq，脚本没跑也能提交。
    * 因此：
-   *   - 成功文案只在 fetch 收到 2xx 且 ok:true 之后才出现，绝不预先显示；
+   *   - 成功只在 fetch 收到 2xx 且 ok:true 之后才发生（跳转到 /thank-you）；
    *   - 失败显示服务端返回的真实原因，并保留用户已填内容；
    *   - 提交期间禁用按钮，防止重复提交，结束后恢复；
    *   - 校验规则与服务端同源（src/lib/rfq.ts 的 validateRfq），不另写一套。
    */
-  function initRfqForm() {
-    var forms = document.querySelectorAll("form[data-rfq-form]");
+
+  /* 需求类型标签 → Thank You 页的 path slug。与服务端 rfq-http.ts 的
+   * thankYouPath() 保持同一份映射；标签同源于 src/lib/rfq.ts 的 RFQ_PATHS。 */
+  function rfqPathSlug(label) {
+    switch (label) {
+      case "Buy GPUs":
+        return "gpu";
+      case "Buy a complete system":
+        return "system";
+      case "AI sovereignty deployment":
+        return "sovereignty";
+      case "Buy storage or networking":
+        return "component";
+      case "Sell a GPU lot":
+        return "sell";
+      default:
+        return "other";
+    }
+  }
+
+  /*
+   * 投递通道不可用（503）时的一键邮件兜底（2026-11-19）。
+   *
+   * 背景：线上没有配置投递通道时，表单内容真的没发出去。只显示错误文案会让客户
+   * 重打一遍、或者直接走掉。这里把已填内容拼进 mailto，一点就能发到收件箱。
+   * 服务端 no-JS 分支有同样的兜底（renderRfqUnavailable），两边字段顺序保持一致。
+   */
+  var RFQ_FALLBACK_FIELDS = [
+    ["requirement", "Product or requirement"],
+    ["sku", "SKU"],
+    ["config", "Version / configuration"],
+    ["quantity", "Quantity"],
+    ["cardsPerSystem", "Cards per system"],
+    ["destination", "Delivery country / city"],
+    ["condition", "Condition"],
+    ["targetDate", "Target date"],
+    ["company", "Company"],
+    ["notes", "Notes"],
+  ];
+
+  function rfqFallbackMailto(payload) {
+    var lines = [];
+    RFQ_FALLBACK_FIELDS.forEach(function (pair) {
+      var value = String(payload[pair[0]] || "").trim();
+      if (value) lines.push(pair[1] + ": " + value);
+    });
+    var replyTo = String(payload.email || "").trim();
+    if (replyTo) lines.push("Reply to: " + replyTo);
+    lines.push("");
+    lines.push("Sent from the website form \u2014 the server could not deliver it automatically.");
+    var subject = payload.path
+      ? "[Seraya website] " + String(payload.path)
+      : "[Seraya website] Enquiry";
+    return (
+      "mailto:felix.mm@seraya.systems?subject=" +
+      encodeURIComponent(subject) +
+      "&body=" +
+      encodeURIComponent(lines.join("\n").slice(0, 1800))
+    );
+  }
+
+  function showEmailFallback(form, payload) {
+    if (form.querySelector("[data-rfq-fallback]")) return;
+    var wrap = document.createElement("p");
+    wrap.className = "rfq-fallback";
+    wrap.setAttribute("data-rfq-fallback", "");
+    var link = document.createElement("a");
+    link.className = "btn btn-primary";
+    link.href = rfqFallbackMailto(payload);
+    link.textContent = "Email these details instead";
+    wrap.appendChild(link);
+    var status = form.querySelector("[data-rfq-status]");
+    if (status && status.parentNode) status.parentNode.insertBefore(wrap, status.nextSibling);
+    else form.insertBefore(wrap, form.firstChild);
+  }
+
+  /* ---------- 页头一级下拉（2026-11-19） ----------
+   *
+   * 只有 SYSTEMS 一个组。三条通路都能开合，不依赖 hover：
+   *   - 鼠标悬停（桌面，pointer: fine）
+   *   - 单独的 caret 按钮（触屏 / 键盘，aria-expanded 同步）
+   *   - Esc 关闭并把焦点还给 caret；焦点移出整组自动收起
+   * 菜单里的链接就是普通链接，不拦默认跳转。
+   */
+  function initNavMenu() {
+    var groups = document.querySelectorAll(".nav-item--menu");
+    if (!groups.length) return;
+
+    function setOpen(group, open) {
+      var btn = group.querySelector(".nav-caret-btn");
+      var menu = group.querySelector(".nav-menu");
+      if (!btn || !menu) return;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      menu.hidden = !open;
+      group.setAttribute("data-open", open ? "true" : "false");
+    }
+
+    groups.forEach(function (group) {
+      var btn = group.querySelector(".nav-caret-btn");
+      var menu = group.querySelector(".nav-menu");
+      if (!btn || !menu) return;
+
+      var hoverTimer = null;
+      var canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+      if (canHover) {
+        group.addEventListener("mouseenter", function () {
+          if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; }
+          setOpen(group, true);
+        });
+        group.addEventListener("mouseleave", function () {
+          hoverTimer = setTimeout(function () { setOpen(group, false); }, 180);
+        });
+      }
+
+      btn.addEventListener("click", function (event) {
+        event.preventDefault();
+        setOpen(group, btn.getAttribute("aria-expanded") !== "true");
+      });
+
+      group.addEventListener("focusout", function (event) {
+        if (!group.contains(event.relatedTarget)) setOpen(group, false);
+      });
+
+      group.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") {
+          setOpen(group, false);
+          btn.focus();
+        }
+      });
+    });
+
+    document.addEventListener("click", function (event) {
+      groups.forEach(function (group) {
+        if (!group.contains(event.target)) setOpen(group, false);
+      });
+    });
+  }
+
+  function initRfqForm() {    var forms = document.querySelectorAll("form[data-rfq-form]");
     if (!forms.length) return;
 
     function setStatus(form, message, kind) {
@@ -476,20 +614,15 @@
           .then(function (out) {
             var data = out.data || {};
             if (out.status >= 200 && out.status < 300 && data.ok) {
-              var card = document.createElement("div");
-              card.className = "rfq-success";
-              card.setAttribute("role", "status");
-              card.setAttribute("tabindex", "-1");
-              card.innerHTML =
-                "<h3>RFQ received</h3>" +
-                '<p class="muted">Reference <strong></strong>. We respond to complete RFQs within one business day.</p>' +
-                '<p class="muted">Our team has been notified by email. Need to add attachments or correct anything? Reply to ' +
-                '<a href="mailto:felix.mm@seraya.systems">felix.mm@seraya.systems</a> quoting the reference.</p>';
-              var strong = card.querySelector("strong");
-              if (strong) strong.textContent = String(data.reference || "");
-              form.parentNode.insertBefore(card, form);
-              form.hidden = true;
-              card.focus();
+              /*
+               * 2026-11-19：成功后跳到独立的 Thank You 页，不再在原地插成功卡。
+               * ref 用于双方对齐同一笔询价；path 决定感谢页的文案分支。
+               * 与 no-JS 分支（/api/rfq 的 303）落点相同，两条路径只有一套成功页。
+               */
+              var params = new URLSearchParams();
+              if (data.reference) params.set("ref", String(data.reference));
+              params.set("path", rfqPathSlug(payload.path));
+              window.location.assign("/thank-you?" + params.toString());
               return;
             }
 
@@ -502,6 +635,8 @@
                 "The RFQ was not sent. Please try again or use the email address below.",
               "error",
             );
+            // 503 = 服务端没有可用的投递通道：给出预填邮件，别让客户重打一遍
+            if (out.status === 503) showEmailFallback(form, payload);
           })
           .catch(function () {
             setStatus(
@@ -564,41 +699,127 @@
    * 「Buy a complete system」时，上方摘要仍写着 Buy GPUs —— 同一张表里两处
    * 自相矛盾，客户无法判断到底按哪个提交（这是实际报过的问题）。
    * 这里不做字符串匹配，直接读下拉框当前选中项的文本，永远与它一致。
+   *
+   * 2026-11-19 改为事件委托：页面由 dangerouslySetInnerHTML 渲染，React 水合可能
+   * 替换表单节点，直接绑在 select 上的 change 监听会随之丢失——线上就是这样复现的
+   * （选整机、摘要仍旧 Buy GPUs，且控制台无报错）。
    */
-  function initRfqPathSwitch() {
-    document.querySelectorAll("form[data-rfq-form]").forEach(function (form) {
-      var pathField = form.querySelector('[name="path"]');
-      var systemRow = form.querySelector("[data-rfq-system-row]");
-      var summaryRequirement = form.querySelector('[data-rfq-summary="requirement"]');
-      if (!pathField) return;
+  function syncRfqPathState(form) {
+    var pathField = form.querySelector('[name="path"]');
+    if (!pathField) return;
 
-      function selectedLabel() {
-        var opt = pathField.options[pathField.selectedIndex];
-        return opt ? opt.textContent.trim() : pathField.value;
+    var option = pathField.options[pathField.selectedIndex];
+    var label = option ? option.textContent.trim() : pathField.value;
+    var isSystem = label === "Buy a complete system";
+
+    /* 1) 摘要里的需求类型：只改文本，不动结构 */
+    var summaryRequirement = form.querySelector('[data-rfq-summary="requirement"]');
+    if (summaryRequirement) summaryRequirement.textContent = label;
+
+    /* 2) 数量字段：标签 + 说明都随需求类型变化
+     *    （说明来自 RFQ_PATHS.<key>.quantityHint；该字段默认没有说明节点，
+     *      需要时动态创建、切走时移除，避免留下过期文案） */
+    var qtyLabel = form.querySelector('label[for$="-quantity"]');
+    if (qtyLabel) {
+      var text = "Quantity (units)";
+      if (isSystem) text = "Quantity (systems)";
+      else if (label === "Sell a GPU lot") text = "Lot size (units)";
+      else if (label === "AI sovereignty deployment") text = "Sites / deployments";
+      qtyLabel.innerHTML = text + ' <span class="rfq-required" aria-hidden="true">*</span>';
+    }
+
+    var qtyInput = form.querySelector('input[name="quantity"]');
+    var qtyField = qtyInput && qtyInput.closest ? qtyInput.closest(".rfq-field") : null;
+    var qtyHint = qtyField ? qtyField.querySelector(".rfq-hint") : null;
+    var qtyHintText = option ? option.getAttribute("data-quantity-hint") : null;
+
+    if (qtyField && qtyInput) {
+      if (!qtyInput.hasAttribute("data-rfq-default-describedby")) {
+        qtyInput.setAttribute("data-rfq-default-describedby", qtyInput.getAttribute("aria-describedby") || "");
       }
-
-      function sync() {
-        var value = pathField.value;
-        var isSystem = value === "Buy a complete system";
-
-        /* 1) 摘要里的需求类型：只改文本，不动结构 */
-        if (summaryRequirement) summaryRequirement.textContent = selectedLabel();
-
-        /* 2) 数量字段标签随需求类型变化 */
-        var qtyLabel = form.querySelector('label[for$="-quantity"]');
-        if (qtyLabel) {
-          var text = "Quantity (units)";
-          if (isSystem) text = "Quantity (systems)";
-          else if (value === "Sell a GPU lot") text = "Lot size (units)";
-          qtyLabel.innerHTML = text + ' <span class="rfq-required" aria-hidden="true">*</span>';
+      if (qtyHintText) {
+        if (!qtyHint) {
+          qtyHint = document.createElement("p");
+          qtyHint.className = "rfq-hint";
+          qtyHint.id = (qtyInput.id || "rfq-quantity") + "-hint";
+          qtyHint.setAttribute("data-rfq-dynamic", "1");
+          qtyField.appendChild(qtyHint);
+          var described = (qtyInput.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean);
+          if (described.indexOf(qtyHint.id) === -1) {
+            described.push(qtyHint.id);
+            qtyInput.setAttribute("aria-describedby", described.join(" "));
+          }
         }
-
-        /* 3) 每系统卡数只在整机需求下出现 */
-        if (systemRow) systemRow.hidden = !isSystem;
+        qtyHint.hidden = false;
+        qtyHint.textContent = qtyHintText;
+      } else if (qtyHint && qtyHint.getAttribute("data-rfq-dynamic") === "1") {
+        qtyHint.remove();
+        qtyInput.setAttribute("aria-describedby", qtyInput.getAttribute("data-rfq-default-describedby") || "");
       }
+    }
 
-      pathField.addEventListener("change", sync);
-      sync();
+    /* 3) 每系统卡数只在整机需求下出现 */
+    var systemRow = form.querySelector("[data-rfq-system-row]");
+    if (systemRow) systemRow.hidden = !isSystem;
+
+    /* 4) 路径级字段文案（如 AI sovereignty 不问"产品型号"，改问负载与边界）。
+     *    覆盖值写在 option 的 data-* 上，由服务端从 RFQ_PATHS 生成；
+     *    没有覆盖的路径恢复成首次渲染时的默认文案。 */
+    var reqInput = form.querySelector('input[name="requirement"], textarea[name="requirement"]');
+    if (reqInput) {
+      var reqField = reqInput.closest ? reqInput.closest(".rfq-field") : null;
+      var reqLabel = reqField ? reqField.querySelector("label") : null;
+      var reqHint = reqField ? reqField.querySelector(".rfq-hint") : null;
+
+      if (!form.__rfqRequirementDefaults) {
+        form.__rfqRequirementDefaults = {
+          label: reqLabel ? reqLabel.innerHTML : "",
+          placeholder: reqInput.getAttribute("placeholder") || "",
+          hint: reqHint ? reqHint.innerHTML : "",
+        };
+      }
+      var defaults = form.__rfqRequirementDefaults;
+      var overrideLabel = option ? option.getAttribute("data-requirement-label") : null;
+      var overridePlaceholder = option ? option.getAttribute("data-requirement-placeholder") : null;
+      var overrideHint = option ? option.getAttribute("data-requirement-hint") : null;
+
+      if (reqLabel) {
+        reqLabel.innerHTML = overrideLabel
+          ? overrideLabel + ' <span class="rfq-required" aria-hidden="true">*</span>'
+          : defaults.label;
+      }
+      reqInput.setAttribute("placeholder", overridePlaceholder || defaults.placeholder);
+      if (reqHint) reqHint.innerHTML = overrideHint || defaults.hint;
+    }
+  }
+
+  function initRfqPathSwitch() {
+    document.querySelectorAll("form[data-rfq-form]").forEach(syncRfqPathState);
+
+    document.addEventListener("change", function (event) {
+      var target = event.target;
+      if (!target || target.name !== "path" || !target.closest) return;
+      var form = target.closest("form[data-rfq-form]");
+      if (form) syncRfqPathState(form);
+    });
+  }
+
+  /* ---------- Thank You 页的返回按钮（2026-11-19） ----------
+   *
+   * 优先回到上一页；没有可回退的历史（直接打开链接 / 新标签页）时回首页，
+   * 避免按钮按了没反应。用事件委托，因此页面内任何 [data-history-back] 都可用。
+   */
+  function initHistoryBack() {
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      var trigger = target && target.closest ? target.closest("[data-history-back]") : null;
+      if (!trigger) return;
+      event.preventDefault();
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.location.assign("/");
+      }
     });
   }
 
@@ -610,6 +831,8 @@
       initHashScroll();
       initCatalogRfqContext();
       initRfqPathSwitch();
+      initHistoryBack();
+      initNavMenu();
     });
   } else {
     initReveal();
@@ -618,5 +841,7 @@
     initHashScroll();
     initCatalogRfqContext();
     initRfqPathSwitch();
+    initHistoryBack();
+    initNavMenu();
   }
 })();
